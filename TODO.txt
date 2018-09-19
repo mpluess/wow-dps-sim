@@ -1,0 +1,24 @@
+set bonus
+unit tests
+validation / error handling client-side and server-side. check if item id matches slot.
+save / load configuration
+improve layout: stats on the right side of the form, improve table layout
+
+fury warrior pre-raid bis:
+12640
+15411
+12927
+13340
+12757
+12936
+15063
+13959
+15062
+13210
+17713
+18500
+11815
+13965
+17705
+15806
+18323

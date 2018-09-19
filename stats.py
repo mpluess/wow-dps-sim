@@ -1,0 +1,105 @@
+from collections import defaultdict
+import copy
+
+from scraper import Scraper
+
+
+class Stats:
+    def __init__(self):
+        self.scraper = Scraper()
+
+    def base_stats(self, race, class_):
+        stats = defaultdict(int)
+        if race == 'human' and class_ == 'warrior':
+            # https://www.getmangos.eu/forums/topic/8703-level-60-stats/
+            stats['agi'] = 80
+            stats['int'] = 30
+            stats['spi'] = 50
+            stats['sta'] = 110
+            stats['str'] = 120
+            stats['crit'] = 5
+            stats['maces'] = 5
+            stats['swords'] = 5
+        else:
+            raise NotImplementedError(f'Base stats for the combination race={race}, class={class_} are not implemented.')
+
+        return stats
+
+    def spec_stats(self, class_, spec):
+        stats = defaultdict(int)
+        if class_ == 'warrior' and spec == 'fury':
+            # Berserker Stance
+            stats['crit'] += 3
+
+            # Talents
+            stats['crit'] += 5
+        else:
+            raise NotImplementedError(f'Stats for class={class_}, spec={spec} are not implemented.')
+
+        return stats
+
+    def enchant_stats(self, class_, spec):
+        stats = defaultdict(int)
+        if class_ == 'warrior' and spec == 'fury':
+            # Head
+            stats['haste'] += 1
+
+            # Back
+            stats['agi'] += 3
+
+            # Chest
+            stats['agi'] += 4
+            stats['int'] += 4
+            stats['spi'] += 4
+            stats['sta'] += 4
+            stats['str'] += 4
+
+            # Wrist
+            stats['str'] += 9
+
+            # Hands
+            stats['haste'] += 1
+
+            # Legs
+            stats['haste'] += 1
+
+            # Off Hand
+            stats['str'] += 15
+        else:
+            raise NotImplementedError(
+                f'Enchant stats for class={class_}, spec={spec} are not implemented.')
+
+        return stats
+
+    def item_stats(self, item_ids):
+        stats = defaultdict(int)
+        for item_id in item_ids:
+            item = self.scraper.scrape_item(item_id)
+            for stat_key, stat_value in item['stats'].items():
+                stats[stat_key] += stat_value
+
+        return stats
+
+    def apply_primary_stats_effects(self, race, class_, spec, stats):
+        stats = copy.copy(stats)
+
+        if class_ == 'warrior' and spec == 'fury':
+            stats['ap'] += stats['str'] * 2
+            stats['armor'] += stats['agi'] * 2
+            stats['crit'] += stats['agi'] / 20
+        else:
+            raise NotImplementedError(
+                f'Primary stats effects for class={class_}, spec={spec} are not implemented.')
+
+        return stats
+
+    def add_tertiary_stats(self, race, class_, spec, stats):
+        stats = copy.copy(stats)
+
+        if class_ == 'warrior' and spec == 'fury':
+            stats['health'] = 1509 + min(stats['sta'], 20) * 1 + max(stats['sta'] - 20, 0) * 10
+        else:
+            raise NotImplementedError(
+                f'Primary stats effects for class={class_}, spec={spec} are not implemented.')
+
+        return stats

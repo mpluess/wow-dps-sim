@@ -1,0 +1,293 @@
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+        <link type="text/css" href="//code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.css" rel="stylesheet" />
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+        <script type="text/javascript" src="//code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
+
+        <title>WoW Vanilla Character Planner</title>
+    </head>
+    <body>
+        <div id="form"></div>
+        <div id="stats">
+            <div id="base_stats"></div>
+            <br />
+            <div id="primary_stats"></div>
+            <br />
+            <div id="secondary_stats"></div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#form").alpaca({
+                    "schema": {
+                        "title": "WoW Vanilla Character Planner",
+                        "type": "object",
+                        "properties": {
+                            "race": {
+                                "type": "string",
+                                "title": "Race",
+                                // "enum": ["dwarf", "gnome", "human", "nightelf", "orc", "tauren", "troll", "undead"],
+                                "enum": ["human"],
+                                "required": true,
+                            },
+                            "class": {
+                                "type": "string",
+                                "title": "Class",
+                                // "enum": ["druid", "hunter", "mage", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"],
+                                "enum": ["warrior"],
+                                "required": true,
+                            },
+                            "spec_druid": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["balance", "feral_combat", "restoration"],
+                                "required": true,
+                            },
+                            "spec_hunter": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["beast_mastery", "marksmanship", "survival"],
+                                "required": true,
+                            },
+                            "spec_mage": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["arcane", "fire", "frost"],
+                                "required": true,
+                            },
+                            "spec_paladin": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["holy", "protection", "retribution"],
+                                "required": true,
+                            },
+                            "spec_priest": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["discipline", "holy", "shadow"],
+                                "required": true,
+                            },
+                            "spec_rogue": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["assassination", "combat", "subtlety"],
+                                "required": true,
+                            },
+                            "spec_shaman": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["elemental", "enhancement", "restoration"],
+                                "required": true,
+                            },
+                            "spec_warlock": {
+                                "type": "string",
+                                "title": "Spec",
+                                "enum": ["affliction", "demonology", "destruction"],
+                                "required": true,
+                            },
+                            "spec_warrior": {
+                                "type": "string",
+                                "title": "Spec",
+                                // "enum": ["arms", "fury", "protection"],
+                                "enum": ["fury"],
+                                "required": true,
+                            },
+
+                            "item_head": {
+                                "type": "string",
+                                "title": "Head",
+                            },
+                            "item_neck": {
+                                "type": "string",
+                                "title": "Neck",
+                            },
+                            "item_shoulder": {
+                                "type": "string",
+                                "title": "Shoulder",
+                            },
+                            "item_back": {
+                                "type": "string",
+                                "title": "Back",
+                            },
+                            "item_chest": {
+                                "type": "string",
+                                "title": "Chest",
+                            },
+                            "item_wrist": {
+                                "type": "string",
+                                "title": "Wrist",
+                            },
+                            "item_hands": {
+                                "type": "string",
+                                "title": "Hands",
+                            },
+                            "item_waist": {
+                                "type": "string",
+                                "title": "Waist",
+                            },
+                            "item_legs": {
+                                "type": "string",
+                                "title": "Legs",
+                            },
+                            "item_feet": {
+                                "type": "string",
+                                "title": "Feet",
+                            },
+                            "item_ring_1": {
+                                "type": "string",
+                                "title": "Ring 1",
+                            },
+                            "item_ring_2": {
+                                "type": "string",
+                                "title": "Ring 2",
+                            },
+                            "item_trinket_1": {
+                                "type": "string",
+                                "title": "Trinket 1",
+                            },
+                            "item_trinket_2": {
+                                "type": "string",
+                                "title": "Trinket 2",
+                            },
+                            "item_main_hand": {
+                                "type": "string",
+                                "title": "Main Hand",
+                            },
+                            "item_off_hand": {
+                                "type": "string",
+                                "title": "Off Hand",
+                            },
+                            "item_ranged": {
+                                "type": "string",
+                                "title": "Ranged",
+                            },
+                        },
+
+                        "dependencies": {
+                            "spec_druid": ["class"],
+                            "spec_hunter": ["class"],
+                            "spec_mage": ["class"],
+                            "spec_paladin": ["class"],
+                            "spec_priest": ["class"],
+                            "spec_rogue": ["class"],
+                            "spec_shaman": ["class"],
+                            "spec_warlock": ["class"],
+                            "spec_warrior": ["class"],
+                        },
+                    },
+
+                    "options": {
+                        "form":{
+                            "buttons": {
+                                "submit": {
+                                    "click": function() {
+                                        fetch("/", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                            },
+                                            body: JSON.stringify(this.getValue()),
+                                        })
+                                        .then(response => response.json())
+                                        .then(function(stats_json) {
+                                            stats_types = ["base_stats", "primary_stats", "secondary_stats"];
+                                            stats_types.forEach(function(stats_type) {
+                                                fetch("/stats", {
+                                                    method: "POST",
+                                                    headers: {
+                                                        "Content-Type": "application/json",
+                                                    },
+                                                    body: JSON.stringify(stats_json[stats_type]),
+                                                })
+                                                .then(response => response.text())
+                                                .then(text => $("#" + stats_type).html(text));
+                                            });
+                                        });
+                                    },
+                                },
+                            }
+                        },
+                        "fields": {
+                            "race": {
+                                "type": "select",
+                                // "optionLabels": ["Dwarf", "Gnome", "Human", "Nightelf", "Orc", "Tauren", "Troll", "Undead"],
+                                "optionLabels": ["Human"],
+                            },
+                            "class": {
+                                "type": "select",
+                                // "optionLabels": ["Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"],
+                                "optionLabels": ["Warrior"],
+                            },
+                            "spec_druid": {
+                                "type": "select",
+                                "optionLabels": ["Balance", "Feral Combat", "Restoration"],
+                                "dependencies": {
+                                    "class": "druid",
+                                },
+                            },
+                            "spec_hunter": {
+                                "type": "select",
+                                "optionLabels": ["Beast Mastery", "Marksmanship", "Survival"],
+                                "dependencies": {
+                                    "class": "hunter",
+                                },
+                            },
+                            "spec_mage": {
+                                "type": "select",
+                                "optionLabels": ["Arcane", "Fire", "Frost"],
+                                "dependencies": {
+                                    "class": "mage",
+                                },
+                            },
+                            "spec_paladin": {
+                                "type": "select",
+                                "optionLabels": ["Holy", "Protection", "Retribution"],
+                                "dependencies": {
+                                    "class": "paladin",
+                                },
+                            },
+                            "spec_priest": {
+                                "type": "select",
+                                "optionLabels": ["Discipline", "Holy", "Shadow"],
+                                "dependencies": {
+                                    "class": "priest",
+                                },
+                            },
+                            "spec_rogue": {
+                                "type": "select",
+                                "optionLabels": ["Assassination", "Combat", "Subtlety"],
+                                "dependencies": {
+                                    "class": "rogue",
+                                },
+                            },
+                            "spec_shaman": {
+                                "type": "select",
+                                "optionLabels": ["Elemental", "Enhancement", "Restoration"],
+                                "dependencies": {
+                                    "class": "shaman",
+                                },
+                            },
+                            "spec_warlock": {
+                                "type": "select",
+                                "optionLabels": ["Affliction", "Demonology", "Destruction"],
+                                "dependencies": {
+                                    "class": "warlock",
+                                },
+                            },
+                            "spec_warrior": {
+                                "type": "select",
+                                // "optionLabels": ["Arms", "Fury", "Protection"],
+                                "optionLabels": ["Fury"],
+                                "dependencies": {
+                                    "class": "warrior",
+                                },
+                            },
+                        },
+                    },
+                });
+            });
+        </script>
+    </body>
+</html>
