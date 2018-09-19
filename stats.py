@@ -73,10 +73,22 @@ class Stats:
 
     def item_stats(self, item_ids):
         stats = defaultdict(int)
-        for item_id in item_ids:
-            item = self.scraper.scrape_item(item_id)
+        items = [self.scraper.scrape_item(item_id) for item_id in item_ids]
+        itemsets = dict()
+        for item in items:
             for stat_key, stat_value in item['stats'].items():
                 stats[stat_key] += stat_value
+            if item['set']['name'] is not None:
+                if item['set']['name'] not in itemsets:
+                    itemsets[item['set']['name']] = dict()
+                    itemsets[item['set']['name']]['count'] = 1
+                    itemsets[item['set']['name']]['bonuses'] = item['set']['bonuses']
+                else:
+                    itemsets[item['set']['name']]['count'] += 1
+        for name, itemset in itemsets.items():
+            for n_set_pieces_for_bonus, (stat_key, stat_value) in itemset['bonuses'].items():
+                if itemset['count'] >= n_set_pieces_for_bonus:
+                    stats[stat_key] += stat_value
 
         return stats
 

@@ -30,6 +30,7 @@ class Scraper:
             ('def', re.compile(r'\s*Increased Defense \+(?P<value>\d+)')),
         ]
         self.equip_regex = re.compile(r'\s*Equip:')
+        self.set_regex = re.compile(r'\s*\((?P<n_set_pieces_for_bonus>\d+)\) Set:')
 
     def scrape_item(self, item_id):
         path_to_item = os.path.join(self.path_to_cache, f'{item_id}.html')
@@ -52,6 +53,9 @@ class Scraper:
         item = dict()
         item['name'] = primary_stats_td.find('b').text
         item['stats'] = defaultdict(int)
+        item['set'] = dict()
+        item['set']['name'] = None
+        item['set']['bonuses'] = dict()
 
         for navigable_string in [el for el in primary_stats_td.children if isinstance(el, NavigableString)]:
             for attr, regex in self.primary_stats_attr_regex_tuples:
@@ -68,5 +72,26 @@ class Scraper:
                     if match is not None:
                         item['stats'][attr] = int(match.group('value'))
                         break
+            else:
+                a = span.find('a')
+                if a is not None and 'itemset' in a['href']:
+                    item['set']['name'] = a.text
+                else:
+                    span_child = span.find('span')
+                    if span_child is not None:
+                        span_grandchildren = span_child.find_all('span')
+                        if len(span_grandchildren) > 0:
+                            for span_grandchild in span_grandchildren:
+                                set_regex_match = self.set_regex.match(span_grandchild.text)
+                                if set_regex_match is not None:
+                                    a = span_grandchild.find('a')
+                                    for attr, regex in self.primary_stats_attr_regex_tuples + self.secondary_stats_attr_regex_tuples:
+                                        match = regex.match(a.text)
+                                        if match is not None:
+                                            item['set']['bonuses'][int(set_regex_match.group('n_set_pieces_for_bonus'))] = (attr, int(match.group('value')))
+                                            break
 
         return item
+
+
+print(Scraper().scrape_item('15062'))

@@ -1,4 +1,3 @@
-set bonus
 unit tests
 validation / error handling client-side and server-side. check if item id matches slot.
 save / load configuration
