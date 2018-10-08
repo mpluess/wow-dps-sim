@@ -3,16 +3,16 @@ validation / error handling client-side and server-side. check if item id matche
 save / load configuration
 improve layout: stats on the right side of the form, improve table layout
 
-fury warrior pre-raid bis:
+my fury warrior pre-raid ~bis:
 12640
 15411
 12927
 13340
-12757
+18530
 12936
-15063
+14551
 13959
-15062
+12963
 13210
 17713
 18500

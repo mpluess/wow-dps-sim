@@ -1,0 +1,42 @@
+- add dw, reck effects
+- add log entries
+- test
+- rename repo
+
+read up on simulation basics
+
+model base stats as in character planner + buffs / debuffs
+model procs (items, talents)
+talents allgemein checken
+model on-use effects (trinkets, ...)
+model boss buffs / debuffs
+event queue
+ability comes off cd = event, end of gcd = event
+model rage, on_rage_gained callback
+model ability priorities
+run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
+are floats an issue? if yes, how to get around floating point arithmetics?
+model debuffs only on boss after some time, cd stacking, ...
+outsource ability cost etc. config
+
+on_rage_gain checks:
+dw, gcd, bt, ww, hs, execute, bs, op
+
+abilities to model:
+prio 1:
+bt
+ww
+bloodrage
+death wish
+recklessness
+hs
+
+prio 2:
+execute
+battle shout
+op (less crit @ battle)
+
+tests / lookups:
+death wish gcd? reck gcd?
+bt, ww cds
+check calculated stats = stats in char window

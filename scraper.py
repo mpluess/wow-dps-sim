@@ -19,6 +19,11 @@ class Scraper:
             ('sta', re.compile(r'\s*\+(?P<value>\d+) Stamina')),
             ('str', re.compile(r'\s*\+(?P<value>\d+) Strength')),
         ]
+        self.weapon_stats_attr_regex_tuples = [
+            ('speed', re.compile(r'\s*Speed (?P<value>[\d.]+)')),
+            ('damage_range', re.compile(r'\s*(?P<value_min>\d+) - (?P<value_max>\d+)\s+Damage')),
+            ('weapon_type', re.compile(r'\s*(?P<value>Axe|Dagger|Fist Weapon|Mace|Sword)')),
+        ]
         self.secondary_stats_attr_regex_tuples = [
             ('ap', re.compile(r'\s*\+(?P<value>\d+) Attack Power')),
             ('crit', re.compile(r'\s*Improves your chance to get a critical strike by (?P<value>\d+)%')),
@@ -32,7 +37,7 @@ class Scraper:
         self.equip_regex = re.compile(r'\s*Equip:')
         self.set_regex = re.compile(r'\s*\((?P<n_set_pieces_for_bonus>\d+)\) Set:')
 
-    def scrape_item(self, item_id):
+    def scrape_item(self, item_slot, item_id):
         path_to_item = os.path.join(self.path_to_cache, f'{item_id}.html')
         if self.use_cache and os.path.isfile(path_to_item):
             with open(path_to_item, encoding='utf-8') as f:
@@ -64,6 +69,23 @@ class Scraper:
                     item['stats'][attr] = int(match.group('value'))
                     break
 
+        if item_slot == 'main_hand' or item_slot == 'off_hand':
+            for table in primary_stats_td.find_all('table', recursive=False):
+                for td_th in table.find_all(['td', 'th']):
+                    for attr, regex in self.weapon_stats_attr_regex_tuples:
+                        match = regex.match(td_th.text)
+                        if match is not None:
+                            attr_key = attr + '_' + item_slot
+                            if attr == 'speed':
+                                item['stats'][attr_key] = float(match.group('value'))
+                            elif attr == 'damage_range':
+                                item['stats'][attr_key] = (int(match.group('value_min')), int(match.group('value_max')))
+                            elif attr == 'weapon_type':
+                                item['stats'][attr_key] = match.group('value')
+                            else:
+                                raise ValueError(f'Unknown attr {attr}')
+                            break
+
         for span in secondary_stats_td.find_all('span', recursive=False):
             if self.equip_regex.match(span.text) is not None:
                 a = span.find('a')
@@ -94,4 +116,4 @@ class Scraper:
         return item
 
 
-print(Scraper().scrape_item('15062'))
+# print(Scraper().scrape_item('main_hand', '14555'))

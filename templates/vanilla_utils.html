@@ -7,7 +7,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
         <script type="text/javascript" src="//code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
 
-        <title>WoW Vanilla Character Planner</title>
+        <title>WoW Vanilla CharDev / Sim</title>
     </head>
     <body>
         <div id="form"></div>
@@ -98,70 +98,87 @@
                             "item_head": {
                                 "type": "string",
                                 "title": "Head",
+                                "default": "12640",
                             },
                             "item_neck": {
                                 "type": "string",
                                 "title": "Neck",
+                                "default": "15411",
                             },
                             "item_shoulder": {
                                 "type": "string",
                                 "title": "Shoulder",
+                                "default": "12927",
                             },
                             "item_back": {
                                 "type": "string",
                                 "title": "Back",
+                                "default": "13340",
                             },
                             "item_chest": {
                                 "type": "string",
                                 "title": "Chest",
+                                "default": "18530",
                             },
                             "item_wrist": {
                                 "type": "string",
                                 "title": "Wrist",
+                                "default": "12936",
                             },
                             "item_hands": {
                                 "type": "string",
                                 "title": "Hands",
+                                "default": "14551",
                             },
                             "item_waist": {
                                 "type": "string",
                                 "title": "Waist",
+                                "default": "13959",
                             },
                             "item_legs": {
                                 "type": "string",
                                 "title": "Legs",
+                                "default": "12963",
                             },
                             "item_feet": {
                                 "type": "string",
                                 "title": "Feet",
+                                "default": "13210",
                             },
                             "item_ring_1": {
                                 "type": "string",
                                 "title": "Ring 1",
+                                "default": "17713",
                             },
                             "item_ring_2": {
                                 "type": "string",
                                 "title": "Ring 2",
+                                "default": "18500",
                             },
                             "item_trinket_1": {
                                 "type": "string",
                                 "title": "Trinket 1",
+                                "default": "11815",
                             },
                             "item_trinket_2": {
                                 "type": "string",
                                 "title": "Trinket 2",
+                                "default": "13965",
                             },
                             "item_main_hand": {
                                 "type": "string",
                                 "title": "Main Hand",
+                                "default": "17705",
                             },
                             "item_off_hand": {
                                 "type": "string",
                                 "title": "Off Hand",
+                                "default": "15806",
                             },
                             "item_ranged": {
                                 "type": "string",
                                 "title": "Ranged",
+                                "default": "18323",
                             },
                         },
 
@@ -181,7 +198,8 @@
                     "options": {
                         "form":{
                             "buttons": {
-                                "submit": {
+                                "calc_stats": {
+                                    "title": "Calc stats",
                                     "click": function() {
                                         fetch("/", {
                                             method: "POST",
@@ -205,6 +223,18 @@
                                                 .then(text => $("#" + stats_type).html(text));
                                             });
                                         });
+                                    },
+                                },
+                                "sim": {
+                                    "title": "Simulate",
+                                    "click": function() {
+                                        fetch("/sim", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                            },
+                                            body: JSON.stringify(this.getValue()),
+                                        })
                                     },
                                 },
                             }
