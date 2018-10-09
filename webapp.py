@@ -22,31 +22,38 @@ def calc_stats():
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
     items = _scrape_items(request_data)
-    merged_stats = _calc_stats(race, class_, spec, items)
-    print(merged_stats)
+    unbuffed_stats = stats.calc_unbuffed_stats(race, class_, spec, items)
+
+    # faction = request_data['faction']
+    # buffed_stats = stats.finalize_buffed_stats(
+    #     faction, race, class_, spec,
+    #     stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+    # )
+
+    print(unbuffed_stats)
 
     stats_to_display = {
         'base_stats': [
             ('Items', ', '.join([item['name'] for item in items])),
-            ('Health', merged_stats['health']),
-            ('Armor', merged_stats['armor']),
+            ('Health', unbuffed_stats['health']),
+            ('Armor', unbuffed_stats['armor']),
         ],
         'primary_stats': [
-            ('Agility', merged_stats['agi']),
-            ('Intelligence', merged_stats['int']),
-            ('Spirit', merged_stats['spi']),
-            ('Stamina', merged_stats['sta']),
-            ('Strength', merged_stats['str']),
+            ('Agility', unbuffed_stats['agi']),
+            ('Intelligence', unbuffed_stats['int']),
+            ('Spirit', unbuffed_stats['spi']),
+            ('Stamina', unbuffed_stats['sta']),
+            ('Strength', unbuffed_stats['str']),
         ],
         'secondary_stats': [
-            ('Attack Power', merged_stats['ap']),
-            ('Crit', merged_stats['crit']),
-            ('Hit', merged_stats['hit']),
-            ('Haste', merged_stats['haste']),
-            ('Axes', merged_stats['axes']),
-            ('Daggers', merged_stats['daggers']),
-            ('Maces', merged_stats['maces']),
-            ('Swords', merged_stats['swords']),
+            ('Attack Power', unbuffed_stats['ap']),
+            ('Crit', unbuffed_stats['crit']),
+            ('Hit', unbuffed_stats['hit']),
+            ('Haste', unbuffed_stats['haste']),
+            ('Axes', unbuffed_stats['axes']),
+            ('Daggers', unbuffed_stats['daggers']),
+            ('Maces', unbuffed_stats['maces']),
+            ('Swords', unbuffed_stats['swords']),
         ],
     }
     print(stats_to_display)
@@ -57,13 +64,14 @@ def calc_stats():
 @app.route('/sim', methods=['POST'])
 def sim():
     request_data = request.json
+    faction = request_data['faction']
     race = request_data['race']
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
     items = _scrape_items(request_data)
-    merged_stats = _calc_stats(race, class_, spec, items)
+    partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
 
-    avg_dps, stat_weights = do_sim(merged_stats)
+    avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats)
     print(f'Average DPS: {avg_dps}')
     print(f'Stat weights: {stat_weights}')
 
@@ -79,27 +87,3 @@ def _scrape_items(request_data):
     items = [scraper.scrape_item(item_slot, item_id) for item_slot, item_id in item_slot_id_tuples]
 
     return items
-
-
-def _calc_stats(race, class_, spec, items):
-    merged_stats = stats.base_stats(race, class_)
-    for stat_key, stat_value in stats.spec_stats(class_, spec).items():
-        if stat_key in merged_stats:
-            merged_stats[stat_key] += stat_value
-        else:
-            merged_stats[stat_key] = stat_value
-    for stat_key, stat_value in stats.enchant_stats(class_, spec).items():
-        if stat_key in merged_stats:
-            merged_stats[stat_key] += stat_value
-        else:
-            merged_stats[stat_key] = stat_value
-
-    for stat_key, stat_value in stats.item_stats(items).items():
-        if stat_key in merged_stats:
-            merged_stats[stat_key] += stat_value
-        else:
-            merged_stats[stat_key] = stat_value
-    merged_stats = stats.apply_primary_stats_effects(race, class_, spec, merged_stats)
-    merged_stats = stats.add_tertiary_stats(race, class_, spec, merged_stats)
-
-    return merged_stats

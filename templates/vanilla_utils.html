@@ -25,6 +25,13 @@
                         "title": "WoW Vanilla Character Planner",
                         "type": "object",
                         "properties": {
+                            "faction": {
+                                "type": "string",
+                                "title": "Faction",
+                                // "enum": ["alliance", "horde"],
+                                "enum": ["alliance"],
+                                "required": true,
+                            },
                             "race": {
                                 "type": "string",
                                 "title": "Race",
@@ -240,6 +247,11 @@
                             }
                         },
                         "fields": {
+                            "faction": {
+                                "type": "select",
+                                // "optionLabels": ["Alliance", "Horde"],
+                                "optionLabels": ["Alliance"],
+                            },
                             "race": {
                                 "type": "select",
                                 // "optionLabels": ["Dwarf", "Gnome", "Human", "Nightelf", "Orc", "Tauren", "Troll", "Undead"],

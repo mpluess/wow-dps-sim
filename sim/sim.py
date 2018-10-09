@@ -5,6 +5,7 @@ import random
 from statistics import mean
 
 from .enums import AttackTable, AttackType, BossDebuffs, Event, Hand, PlayerBuffs
+from stats import finalize_buffed_stats
 
 
 class Boss:
@@ -14,8 +15,13 @@ class Boss:
 
 
 class Player:
-    def __init__(self, stats):
-        self.stats = stats
+    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats):
+        self.faction = faction
+        self.race = race
+        self.class_ = class_
+        self.spec = spec
+        self.items = items
+        self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         self.buffs = set()
 
@@ -163,7 +169,7 @@ class Calcs:
         self.boss = boss
         self.player = player
 
-        self.stats = {
+        self.statistics = {
             'attack_table': {
                 'white': defaultdict(int),
                 'yellow': defaultdict(int),
@@ -172,26 +178,38 @@ class Calcs:
 
     def current_speed(self, hand):
         assert isinstance(hand, Hand)
-        return self.player.stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')] * (1 - self.player.stats['haste']/100)
+        current_stats = self.current_stats()
+
+        return current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')] * (1 - current_stats['haste']/100)
+
+    def current_stats(self):
+        stats = self.player.partial_buffed_permanent_stats
+        stats = self._apply_temporary_buffs(stats)
+        stats = finalize_buffed_stats(self.player.faction, self.player.race, self.player.class_, self.player.spec, stats)
+
+        return stats
 
     def bloodthirst(self):
-        base_damage = 0.45 * self.player.stats['ap']
+        current_stats = self.current_stats()
+        base_damage = round(0.45 * current_stats['ap'])
 
         return self._calc_damage_and_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
     def whirlwind(self):
+        current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
-            self.player.stats['damage_range_main_hand'],
-            self.normalized_weapon_speed_lookup[self.player.stats['weapon_type_main_hand']]
+            current_stats['damage_range_main_hand'],
+            self.normalized_weapon_speed_lookup[current_stats['weapon_type_main_hand']]
         )
 
         return self._calc_damage_and_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
     def white_hit(self, hand):
         assert isinstance(hand, Hand)
+        current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
-            self.player.stats[('damage_range_off_hand' if hand == Hand.OFF else 'damage_range_main_hand')],
-            self.player.stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]
+            current_stats[('damage_range_off_hand' if hand == Hand.OFF else 'damage_range_main_hand')],
+            current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]
         )
 
         return self._calc_damage_and_rage(base_damage, AttackType.WHITE, hand)
@@ -209,6 +227,9 @@ class Calcs:
 
             if hand == Hand.OFF:
                 damage = round(damage * 0.625)
+
+            current_stats = self.current_stats()
+            damage = round(damage * current_stats['damage_multiplier'])
 
             # https://forum.elysium-project.org/topic/22647-rage-explained-by-blizzard/
             # TODO not sure if I understood this correctly
@@ -240,13 +261,37 @@ class Calcs:
 
         return round(damage * (1 - damage_reduction))
 
+    def _apply_temporary_buffs(self, stats):
+        stats = self._apply_temporary_buff_flat_stats(stats)
+        stats = self._apply_temporary_buff_percentage_effects(stats)
+
+        return stats
+
+    def _apply_temporary_buff_flat_stats(self, stats):
+        stats = copy.copy(stats)
+
+        if PlayerBuffs.RECKLESSNESS in self.player.buffs:
+            stats['crit'] += 100
+
+        return stats
+
+    def _apply_temporary_buff_percentage_effects(self, stats):
+        stats = copy.copy(stats)
+
+        if PlayerBuffs.DEATH_WISH in self.player.buffs:
+            stats['damage_multiplier'] *= 1.2
+
+        return stats
+
+    # TODO research the exact influence of weapon skill, implement
     def _attack_table_roll(self, attack_type):
         assert isinstance(attack_type, AttackType)
-        # TODO research the exact influence of weapon skill, implement
-        miss_chance = (0.09 if attack_type == AttackType.YELLOW else 0.28) - self.player.stats['hit']/100
+        current_stats = self.current_stats()
+
+        miss_chance = max(0.0, (0.09 if attack_type == AttackType.YELLOW else 0.28) - current_stats['hit']/100)
         dodge_chance = 0.065
         glancing_chance = (0.0 if attack_type == AttackType.YELLOW else 0.4)
-        crit_chance = self.player.stats['crit']/100
+        crit_chance = current_stats['crit'] / 100
 
         roll = random.random()
         if roll < miss_chance:
@@ -259,7 +304,7 @@ class Calcs:
             attack_result = AttackTable.CRIT
         else:
             attack_result = AttackTable.HIT
-        self.stats['attack_table']['yellow' if attack_type == AttackType.YELLOW else 'white'][attack_result] += 1
+        self.statistics['attack_table']['yellow' if attack_type == AttackType.YELLOW else 'white'][attack_result] += 1
 
         return attack_result
 
@@ -267,12 +312,16 @@ class Calcs:
         base_weapon_min, base_weapon_max = base_damage_range
         base_weapon_damage = random.randint(base_weapon_min, base_weapon_max)
 
-        weapon_damage = base_weapon_damage + round(self.player.stats['ap'] / 14 * speed)
+        current_stats = self.current_stats()
+        weapon_damage = base_weapon_damage + round(current_stats['ap'] / 14 * speed)
 
         return weapon_damage
 
     def _current_boss_armor(self):
-        return (
+        # TODO armor pen
+        return max(
+            0,
+
             self.boss.stats['armor']
             - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss.debuffs else 0)*450*5
             - (1 if BossDebuffs.FAERIE_FIRE in self.boss.debuffs else 0)*505
@@ -283,7 +332,7 @@ class Calcs:
         return 1 if random.random() < 0.4 else 0
 
 
-def do_sim(player_stats):
+def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats):
     boss = Boss(
         {
             'armor': 4691,
@@ -295,24 +344,24 @@ def do_sim(player_stats):
         'boss_fight_time_seconds': 180.0,
     }
 
-    result_list_baseline = do_n_runs(boss, player_stats, config)
+    result_list_baseline = do_n_runs(boss, config, faction, race, class_, spec, items, partial_buffed_permanent_stats)
     avg_dps_baseline = mean([t[1] for t in result_list_baseline])
     stat_weights = dict()
     # TODO currently only stats not affecting other stats are possible
     for stat, increase in []:  # [('hit', 1), ('crit', 1), ('ap', 30)]:
-        player_stats_copy = copy.copy(player_stats)
-        player_stats_copy[stat] += increase
-        result_list = do_n_runs(boss, player_stats_copy, config)
+        stats_copy = copy.copy(partial_buffed_permanent_stats)
+        stats_copy[stat] += increase
+        result_list = do_n_runs(boss, config, faction, race, class_, spec, items, stats_copy)
         avg_dps = mean([t[1] for t in result_list])
         stat_weights[stat] = (avg_dps - avg_dps_baseline) / increase
 
     return avg_dps_baseline, stat_weights
 
 
-def do_n_runs(boss, player_stats, config):
+def do_n_runs(boss, config, faction, race, class_, spec, items, partial_buffed_permanent_stats):
     result_list = []
     for _ in range(config['n_runs']):
-        player = Player(player_stats)
+        player = Player(faction, race, class_, spec, items, partial_buffed_permanent_stats)
         sim = Sim(boss, player)
         while sim.current_time_seconds < config['boss_fight_time_seconds']:
             event = sim.get_next_event()
@@ -323,6 +372,6 @@ def do_n_runs(boss, player_stats, config):
 
         # print(damage_done)
         # print(dps)
-        # print(sim.calcs.stats)
+        # print(sim.calcs.statistics)
 
     return result_list

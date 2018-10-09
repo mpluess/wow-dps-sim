@@ -1,2 +1,1 @@
-print(type(round(1.2)))
-print(round(1.2))
+print((2, 3) + (1, 2))

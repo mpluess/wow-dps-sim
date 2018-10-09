@@ -1,35 +1,34 @@
-- how to best model stats, their interconnections and temporary buffs?
-- add dw, reck effects
-- add log entries
-- test
+- add log entries, aim for complete transparency, e.g. damage reduction from boss armor etc.
+- test. stats unit tests.
 - rename repo
 
 read up on simulation basics
 
-model buffs
-model procs (items, talents)
+x model buffs (own, other classes, consumables)
+model procs (items, talents, enchants)
 talents allgemein checken
-model on-use effects (trinkets, ...)
+model on-use effects (items, heroism, consumables (mighty rage potion, juju flurry))
 model boss buffs / debuffs
-event queue
-ability comes off cd = event, end of gcd = event
-model rage, on_rage_gained callback
+x event queue
+x ability comes off cd = event, end of gcd = event
+x model rage, on_rage_gained callback
 model ability priorities
 run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
 are floats an issue? if yes, how to get around floating point arithmetics?
+rounding: when to round / floor / ceil?
 model debuffs only on boss after some time, cd stacking, ...
-outsource ability cost etc. config
+outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 
 on_rage_gain checks:
-dw, gcd, bt, ww, hs, execute, bs, op
+x dw, x gcd, x bt, x ww, hs, execute, bs, op
 
 abilities to model:
 prio 1:
-bt
-ww
-bloodrage
-death wish
-recklessness
+x bt
+x ww
+x bloodrage
+x death wish
+x recklessness
 hs
 
 prio 2:

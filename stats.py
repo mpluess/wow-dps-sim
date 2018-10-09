@@ -2,7 +2,51 @@ from collections import defaultdict
 import copy
 
 
-def base_stats(race, class_):
+def calc_unbuffed_stats(race, class_, spec, items):
+    stats = _base_stats(race, class_)
+    stats = _merge_stats(stats, _spec_stats(class_, spec))
+    stats = _merge_stats(stats, _item_stats(items))
+    stats = _merge_stats(stats, _enchant_stats(class_, spec))
+    stats = _apply_primary_stats_effects(race, class_, spec, stats)
+    stats = _add_tertiary_stats(race, class_, spec, stats)
+
+    return stats
+
+
+def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items):
+    stats = _base_stats(race, class_)
+    stats = _merge_stats(stats, _spec_stats(class_, spec))
+    stats = _merge_stats(stats, _item_stats(items))
+    stats = _merge_stats(stats, _enchant_stats(class_, spec))
+    stats = _merge_stats(stats, _permanent_buff_flat_stats(faction))
+    stats = _merge_stats(stats, _consumable_stats())
+
+    return stats
+
+
+def finalize_buffed_stats(faction, race, class_, spec, stats):
+    stats = _apply_permanent_buff_percentage_effects(faction, stats)
+    stats = _apply_primary_stats_effects(race, class_, spec, stats)
+    stats = _add_tertiary_stats(race, class_, spec, stats)
+
+    return stats
+
+
+def _merge_stats(stats_1, stats_2):
+    merged_stats = copy.copy(stats_1)
+    for stat_key, stat_value in stats_2.items():
+        if stat_key in merged_stats:
+            if isinstance(stat_value, tuple):
+                merged_stats[stat_key] = (merged_stats[stat_key][0] + stat_value[0], merged_stats[stat_key][1] + stat_value[1])
+            else:
+                merged_stats[stat_key] += stat_value
+        else:
+            merged_stats[stat_key] = stat_value
+
+    return merged_stats
+
+
+def _base_stats(race, class_):
     stats = defaultdict(int)
     if race == 'human' and class_ == 'warrior':
         # TODO are these really correct?
@@ -15,13 +59,14 @@ def base_stats(race, class_):
         stats['crit'] = 5
         stats['maces'] = 5
         stats['swords'] = 5
+        stats['damage_multiplier'] = 1.0
     else:
         raise NotImplementedError(f'Base stats for the combination race={race}, class={class_} are not implemented.')
 
     return stats
 
 
-def spec_stats(class_, spec):
+def _spec_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
         # Berserker Stance
@@ -35,7 +80,31 @@ def spec_stats(class_, spec):
     return stats
 
 
-def enchant_stats(class_, spec):
+def _item_stats(items):
+    stats = defaultdict(int)
+    itemsets = dict()
+    for item in items:
+        for stat_key, stat_value in item['stats'].items():
+            if stat_key in stats:
+                stats[stat_key] += stat_value
+            else:
+                stats[stat_key] = stat_value
+        if item['set']['name'] is not None:
+            if item['set']['name'] not in itemsets:
+                itemsets[item['set']['name']] = dict()
+                itemsets[item['set']['name']]['count'] = 1
+                itemsets[item['set']['name']]['bonuses'] = item['set']['bonuses']
+            else:
+                itemsets[item['set']['name']]['count'] += 1
+    for name, itemset in itemsets.items():
+        for n_set_pieces_for_bonus, (stat_key, stat_value) in itemset['bonuses'].items():
+            if itemset['count'] >= n_set_pieces_for_bonus:
+                stats[stat_key] += stat_value
+
+    return stats
+
+
+def _enchant_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
         # Head
@@ -63,37 +132,87 @@ def enchant_stats(class_, spec):
         # Off Hand
         stats['str'] += 15
     else:
-        raise NotImplementedError(
-            f'Enchant stats for class={class_}, spec={spec} are not implemented.')
+        raise NotImplementedError(f'Enchant stats for class={class_}, spec={spec} are not implemented.')
 
     return stats
 
 
-def item_stats(items):
+def _permanent_buff_flat_stats(faction):
+    """https://github.com/Sweeksprox/vanilla-wow-raid-buffs/blob/master/raidBuffs.js"""
+
     stats = defaultdict(int)
-    itemsets = dict()
-    for item in items:
-        for stat_key, stat_value in item['stats'].items():
-            if stat_key in stats:
-                stats[stat_key] += stat_value
-            else:
-                stats[stat_key] = stat_value
-        if item['set']['name'] is not None:
-            if item['set']['name'] not in itemsets:
-                itemsets[item['set']['name']] = dict()
-                itemsets[item['set']['name']]['count'] = 1
-                itemsets[item['set']['name']]['bonuses'] = item['set']['bonuses']
-            else:
-                itemsets[item['set']['name']]['count'] += 1
-    for name, itemset in itemsets.items():
-        for n_set_pieces_for_bonus, (stat_key, stat_value) in itemset['bonuses'].items():
-            if itemset['count'] >= n_set_pieces_for_bonus:
-                stats[stat_key] += stat_value
+    if faction == 'alliance':
+        # imp. battle shout 6
+        stats['ap'] += 231
+
+        # imp. blessing of might 6
+        stats['ap'] += 186
+
+        # imp. mark of the wild 7
+        stats['agi'] += 16
+        stats['int'] += 16
+        stats['spi'] += 16
+        stats['sta'] += 16
+        stats['str'] += 16
+
+        # leader of the pack
+        # stats['crit'] += 3
+
+        # trueshot aura
+        stats['ap'] += 100
+    else:
+        raise NotImplementedError(f'Buffs for faction {faction} not implemented')
 
     return stats
 
 
-def apply_primary_stats_effects(race, class_, spec, stats):
+def _consumable_stats():
+    """https://docs.google.com/spreadsheets/d/1MsDWgYDIcPE_5nX6pRbea-hW9JQjYikfCDWk16l5V-8/pubhtml#"""
+
+    stats = defaultdict(int)
+
+    # R.O.I.D.S.
+    stats['str'] += 25
+
+    # Elixir of the Mongoose
+    stats['agi'] += 25
+    stats['crit'] += 2
+
+    # Juju Power
+    stats['str'] += 30
+
+    # Juju Might
+    stats['ap'] += 40
+
+    # Blessed Sunfruit
+    stats['str'] += 10
+
+    # Dense Sharpening Stone / Weightstone
+    stats['damage_range_main_hand'] = (8, 8)
+
+    # Elemental Sharpening Stone
+    stats['crit'] += 2
+
+    return stats
+
+
+def _apply_permanent_buff_percentage_effects(faction, stats):
+    stats = copy.copy(stats)
+
+    if faction == 'alliance':
+        # blessing of kings
+        stats['agi'] = round(stats['agi'] * 1.1)
+        stats['int'] = round(stats['int'] * 1.1)
+        stats['spi'] = round(stats['spi'] * 1.1)
+        stats['sta'] = round(stats['sta'] * 1.1)
+        stats['str'] = round(stats['str'] * 1.1)
+    else:
+        raise NotImplementedError(f'Buffs for faction {faction} not implemented')
+
+    return stats
+
+
+def _apply_primary_stats_effects(race, class_, spec, stats):
     stats = copy.copy(stats)
 
     if class_ == 'warrior' and spec == 'fury':
@@ -107,7 +226,7 @@ def apply_primary_stats_effects(race, class_, spec, stats):
     return stats
 
 
-def add_tertiary_stats(race, class_, spec, stats):
+def _add_tertiary_stats(race, class_, spec, stats):
     stats = copy.copy(stats)
 
     if class_ == 'warrior' and spec == 'fury':
