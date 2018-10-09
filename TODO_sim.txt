@@ -1,3 +1,4 @@
+- how to best model stats, their interconnections and temporary buffs?
 - add dw, reck effects
 - add log entries
 - test
@@ -5,7 +6,7 @@
 
 read up on simulation basics
 
-model base stats as in character planner + buffs / debuffs
+model buffs
 model procs (items, talents)
 talents allgemein checken
 model on-use effects (trinkets, ...)
@@ -40,3 +41,4 @@ tests / lookups:
 death wish gcd? reck gcd?
 bt, ww cds
 check calculated stats = stats in char window
+which abilities cost how much rage when dodged, missed?

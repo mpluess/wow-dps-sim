@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 
 from scraper import Scraper
-from sim import do_sim
+from sim.sim import do_sim
 import stats
 
 app = Flask(__name__)
@@ -64,6 +64,8 @@ def sim():
     merged_stats = _calc_stats(race, class_, spec, items)
 
     avg_dps, stat_weights = do_sim(merged_stats)
+    print(f'Average DPS: {avg_dps}')
+    print(f'Stat weights: {stat_weights}')
 
 
 @app.route('/stats', methods=['POST'])
