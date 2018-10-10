@@ -184,7 +184,7 @@ class Sim:
             pass
 
     def _log_entry_beginning(self, ability=None):
-        log_entry = f'[{self.current_time_seconds}]'
+        log_entry = f'[{self.current_time_seconds:.2f}]'
         if ability is not None:
             log_entry += f' {self.ability_names_lookup[ability]}'
 
@@ -298,8 +298,8 @@ class Calcs:
         assert base_damage >= 0
         damage = base_damage
 
-        attack_result = self._attack_table_roll(attack_type)
-        damage = self._apply_attack_table_roll(damage, attack_result)
+        attack_result = self._attack_table_roll(attack_type, hand)
+        damage = self._apply_attack_table_roll(damage, attack_result, hand)
         rage = 0
         if damage > 0:
             damage = self._apply_boss_armor(damage)
@@ -318,12 +318,14 @@ class Calcs:
 
         return attack_result, damage, rage
 
-    def _apply_attack_table_roll(self, damage, attack_result):
+    def _apply_attack_table_roll(self, damage, attack_result, hand):
         if attack_result == AttackTable.MISS or attack_result == AttackTable.DODGE:
             return 0
         elif attack_result == AttackTable.GLANCING:
-            # TODO weapon skill
-            return round(damage * 0.7)
+            current_stats = self.current_stats()
+            weapon_skill_bonus = current_stats[('weapon_skill_bonus_off_hand' if hand == Hand.OFF else 'weapon_skill_bonus_main_hand')]
+            glancing_factor = (0.7 + min(10, weapon_skill_bonus)*0.03)
+            return round(damage * glancing_factor)
         elif attack_result == AttackTable.CRIT:
             return round(damage * 2.2)
         elif attack_result == AttackTable.HIT:
@@ -362,15 +364,46 @@ class Calcs:
 
         return stats
 
-    # TODO research the exact influence of weapon skill, implement
-    def _attack_table_roll(self, attack_type):
-        assert isinstance(attack_type, AttackType)
-        current_stats = self.current_stats()
+    def _attack_table_roll(self, attack_type, hand):
+        """
+        https://web.archive.org/web/20061115223930/http://forums.wow-europe.com/thread.html?topicId=14381707&sid=1
 
-        miss_chance = max(0.0, (0.09 if attack_type == AttackType.YELLOW else 0.28) - current_stats['hit']/100)
-        dodge_chance = 0.065
+        miss:
+        300: 8.6
+        ...
+        315: 8.0
+
+        dodge:
+        300: 5.6%
+        ...
+        315: 5.0
+
+        crit:
+        300: 4.4
+        ...
+        315: 5
+
+        glancing:
+        300: *0.7
+        301: *0.73
+        ...
+        310: *1.0
+        """
+
+        assert isinstance(attack_type, AttackType)
+        assert isinstance(hand, Hand)
+        current_stats = self.current_stats()
+        weapon_skill_bonus = current_stats[('weapon_skill_bonus_off_hand' if hand == Hand.OFF else 'weapon_skill_bonus_main_hand')]
+
+        miss_chance = max(
+            0.0,
+            (self.boss.stats['base_miss'] if attack_type == AttackType.YELLOW else self.boss.stats['base_miss'] + 0.19)
+            - current_stats['hit']/100
+            - weapon_skill_bonus*0.0004
+        )
+        dodge_chance = self.boss.stats['base_dodge'] - weapon_skill_bonus*0.0004
         glancing_chance = (0.0 if attack_type == AttackType.YELLOW else 0.4)
-        crit_chance = current_stats['crit'] / 100
+        crit_chance = current_stats['crit']/100 - max(0, 15 - weapon_skill_bonus)*0.0004
 
         roll = random.random()
         if roll < miss_chance:
@@ -415,12 +448,14 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats):
     boss = Boss(
         {
             'armor': 4691,
+            'base_miss': 0.086,
+            'base_dodge': 0.056,
         },
         {BossDebuffs.SUNDER_ARMOR_X5, BossDebuffs.FAERIE_FIRE, BossDebuffs.CURSE_OF_RECKLESSNESS},
     )
     config = {
-        'n_runs': 1,
-        'logging': True,
+        'n_runs': 1000,
+        'logging': False,
         'boss_fight_time_seconds': 180.0,
     }
 

@@ -47,10 +47,10 @@ def calc_stats():
             ('Crit', unbuffed_stats['crit']),
             ('Hit', unbuffed_stats['hit']),
             ('Haste', unbuffed_stats['haste']),
-            ('Axes', unbuffed_stats['axes']),
-            ('Daggers', unbuffed_stats['daggers']),
-            ('Maces', unbuffed_stats['maces']),
-            ('Swords', unbuffed_stats['swords']),
+            ('Axes', unbuffed_stats['Axe']),
+            ('Daggers', unbuffed_stats['Dagger']),
+            ('Maces', unbuffed_stats['Mace']),
+            ('Swords', unbuffed_stats['Sword']),
         ],
     }
 

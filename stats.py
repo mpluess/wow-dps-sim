@@ -57,8 +57,8 @@ def _base_stats(race, class_):
         stats['sta'] = 110
         stats['str'] = 120
         stats['crit'] = 5
-        stats['maces'] = 5
-        stats['swords'] = 5
+        stats['Mace'] = 5
+        stats['Sword'] = 5
         stats['damage_multiplier'] = 1.0
     else:
         raise NotImplementedError(f'Base stats for the combination race={race}, class={class_} are not implemented.')
@@ -96,6 +96,7 @@ def _item_stats(items):
                 itemsets[item['set']['name']]['bonuses'] = item['set']['bonuses']
             else:
                 itemsets[item['set']['name']]['count'] += 1
+
     for name, itemset in itemsets.items():
         for n_set_pieces_for_bonus, (stat_key, stat_value) in itemset['bonuses'].items():
             if itemset['count'] >= n_set_pieces_for_bonus:
@@ -231,6 +232,11 @@ def _add_tertiary_stats(race, class_, spec, stats):
 
     if class_ == 'warrior' and spec == 'fury':
         stats['health'] = 1509 + min(stats['sta'], 20) * 1 + max(stats['sta'] - 20, 0) * 10
+
+        weapon_type_main_hand = stats['weapon_type_main_hand']
+        stats['weapon_skill_bonus_main_hand'] = stats[weapon_type_main_hand] if weapon_type_main_hand in stats else 0
+        weapon_type_off_hand = stats['weapon_type_off_hand']
+        stats['weapon_skill_bonus_off_hand'] = stats[weapon_type_off_hand] if weapon_type_off_hand in stats else 0
     else:
         raise NotImplementedError(
             f'Primary stats effects for class={class_}, spec={spec} are not implemented.')

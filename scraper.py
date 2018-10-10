@@ -29,9 +29,10 @@ class Scraper:
             ('crit', re.compile(r'\s*Improves your chance to get a critical strike by (?P<value>\d+)%')),
             ('hit', re.compile(r'\s*Improves your chance to hit by (?P<value>\d+)%')),
             ('dodge', re.compile(r'\s*Increases your chance to dodge an attack by (?P<value>\d+)%')),
-            ('axes', re.compile(r'\s*Increased Axes \+(?P<value>\d+)')),
-            ('daggers', re.compile(r'\s*Increased Daggers \+(?P<value>\d+)')),
-            ('swords', re.compile(r'\s*Increased Swords \+(?P<value>\d+)')),
+            ('Axe', re.compile(r'\s*Increased Axes \+(?P<value>\d+)')),
+            ('Dagger', re.compile(r'\s*Increased Daggers \+(?P<value>\d+)')),
+            ('Mace', re.compile(r'\s*Increased Maces \+(?P<value>\d+)')),
+            ('Sword', re.compile(r'\s*Increased Swords \+(?P<value>\d+)')),
             ('def', re.compile(r'\s*Increased Defense \+(?P<value>\d+)')),
         ]
         self.equip_regex = re.compile(r'\s*Equip:')

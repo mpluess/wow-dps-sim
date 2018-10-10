@@ -3,7 +3,8 @@
 - improve log entries, aim for complete transparency:
   - damage reduction from boss armor
   - average hits / crits / glances of each ability
-- weapon skill, flurry, item procs
+  - attack table (chances)
+- flurry, item procs
 
 read up on simulation basics
 
@@ -22,6 +23,8 @@ rounding: when to round / floor / ceil?
 refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
+fight duration: draw randomly around configured duration
+performance improvements: cache all calculations with fixed result
 
 on_rage_gain checks:
 x dw, x gcd, x bt, x ww, hs, execute, bs, op
