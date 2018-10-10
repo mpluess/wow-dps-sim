@@ -1,6 +1,9 @@
-- add log entries, aim for complete transparency, e.g. damage reduction from boss armor etc.
 - test. stats unit tests.
 - rename repo
+- improve log entries, aim for complete transparency:
+  - damage reduction from boss armor
+  - average hits / crits / glances of each ability
+- weapon skill, flurry, item procs
 
 read up on simulation basics
 
@@ -16,6 +19,7 @@ model ability priorities
 run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
 are floats an issue? if yes, how to get around floating point arithmetics?
 rounding: when to round / floor / ceil?
+refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 
@@ -41,3 +45,4 @@ death wish gcd? reck gcd?
 bt, ww cds
 check calculated stats = stats in char window
 which abilities cost how much rage when dodged, missed?
+5% base crit double-check

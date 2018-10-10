@@ -16,7 +16,6 @@ def show_form():
 @app.route('/', methods=['POST'])
 def calc_stats():
     request_data = request.json
-    print(request_data)
 
     race = request_data['race']
     class_ = request_data['class']
@@ -29,8 +28,6 @@ def calc_stats():
     #     faction, race, class_, spec,
     #     stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
     # )
-
-    print(unbuffed_stats)
 
     stats_to_display = {
         'base_stats': [
@@ -56,7 +53,6 @@ def calc_stats():
             ('Swords', unbuffed_stats['swords']),
         ],
     }
-    print(stats_to_display)
 
     return jsonify(stats_to_display)
 
