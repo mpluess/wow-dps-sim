@@ -109,7 +109,8 @@ def _enchant_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
         # Head
-        stats['haste'] += 1
+        # stats['haste'] += 1
+        stats['str'] += 8
 
         # Back
         stats['agi'] += 3
@@ -125,10 +126,12 @@ def _enchant_stats(class_, spec):
         stats['str'] += 9
 
         # Hands
-        stats['haste'] += 1
+        # stats['haste'] += 1
+        stats['str'] += 7
 
         # Legs
-        stats['haste'] += 1
+        # stats['haste'] += 1
+        stats['str'] += 8
 
         # Off Hand
         stats['str'] += 15

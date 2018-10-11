@@ -1,18 +1,21 @@
-- test. stats unit tests.
+- log averages, display on website
+- make private functions only used within one other functions sub-functions of that function
+- item procs
+- test. stats unit tests. flurry, e.g. candidate sorting.
 - rename repo
 - improve log entries, aim for complete transparency:
   - damage reduction from boss armor
   - average hits / crits / glances of each ability
   - attack table (chances)
-- flurry, item procs
+  - flurry uptime
 
 read up on simulation basics
 
 x model buffs (own, other classes, consumables)
 model procs (items, talents, enchants)
-talents allgemein checken
+talents: deep wounds, flurry, imp. berserker rage
 model on-use effects (items, heroism, consumables (mighty rage potion, juju flurry))
-model boss buffs / debuffs
+x model boss buffs / debuffs
 x event queue
 x ability comes off cd = event, end of gcd = event
 x model rage, on_rage_gained callback
@@ -49,3 +52,5 @@ bt, ww cds
 check calculated stats = stats in char window
 which abilities cost how much rage when dodged, missed?
 5% base crit double-check
+white hit weapon damage actually randomly drawn in dmg range or just the average?
+what about ww?

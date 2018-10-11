@@ -20,7 +20,7 @@ class BossDebuffs(Enum):
     CURSE_OF_RECKLESSNESS = auto()
 
 
-class Event(Enum):
+class EventType(Enum):
     WHITE_HIT_MAIN = auto()
     WHITE_HIT_OFF = auto()
 

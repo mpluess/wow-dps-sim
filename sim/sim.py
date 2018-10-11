@@ -6,7 +6,7 @@ import random
 from statistics import mean
 import time
 
-from .enums import AttackTable, AttackType, BossDebuffs, Event, Hand, PlayerBuffs
+from .enums import AttackTable, AttackType, BossDebuffs, EventType, Hand, PlayerBuffs
 from stats import finalize_buffed_stats
 
 
@@ -26,6 +26,36 @@ class Player:
         self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         self.buffs = set()
+
+
+class Event:
+    def __init__(self, time_, count, event_type):
+        self.time = time_
+        self.count = count
+        self.event_type = event_type
+
+    def __lt__(self, other):
+        # Comparing float equality here is not really optimal, but the actual game code probably does the same.
+        # Best option would probably be to discretize time and use ints.
+        if self.time != other.time:
+            return self.time < other.time
+        elif self.count != other.count:
+            return self.count < other.count
+        else:
+            raise ValueError(f'__lt__: compared objects have the same time and count')
+
+    def __repr__(self):
+        return f'time={self.time}, count={self.count}, event_type={self.event_type}'
+
+
+class WhiteHitEvent(Event):
+    def __init__(self, time_, count, event_type):
+        super().__init__(time_, count, event_type)
+
+        self.has_flurry = False
+
+    def __repr__(self):
+        return super().__repr__() + f', has_flurry={self.has_flurry}'
 
 
 class Sim:
@@ -58,13 +88,14 @@ class Sim:
             'bloodthirst_available': True,
             'whirlwind_available': True,
             'death_wish_available': True,
+            'flurry_charges': 0,
         }
 
-        self._add_event(0.0, Event.BLOODRAGE_CD_END)
-        self._add_event(0.0, Event.DEATH_WISH_CD_END)
-        self._add_event(0.0, Event.RECKLESSNESS_CD_END)
-        self.next_white_hit_main = self._add_event(0.0, Event.WHITE_HIT_MAIN)
-        self.next_white_hit_off = self._add_event(0.0, Event.WHITE_HIT_OFF)
+        self._add_event(0.0, EventType.BLOODRAGE_CD_END)
+        self._add_event(0.0, EventType.DEATH_WISH_CD_END)
+        self._add_event(0.0, EventType.RECKLESSNESS_CD_END)
+        self.next_white_hit_main = self._add_event(0.0, EventType.WHITE_HIT_MAIN)
+        self.next_white_hit_off = self._add_event(0.0, EventType.WHITE_HIT_OFF)
 
     def __enter__(self):
         if self.logging:
@@ -79,55 +110,53 @@ class Sim:
             self.log_handle.close()
 
     def get_next_event(self):
-        time_, _, event = heapq.heappop(self.event_queue)
-        self.current_time_seconds = time_
+        event = heapq.heappop(self.event_queue)
+        self.current_time_seconds = event.time
 
         return event
 
     def handle_event(self, event):
-        if event == Event.BLOODRAGE_CD_END:
+        # self.log(f"{self._log_entry_beginning()} flurry_charges={self.state['flurry_charges']}\n")
+        event_type = event.event_type
+        if event_type == EventType.BLOODRAGE_CD_END:
             self._add_rage('bloodrage', 10)
             for i in range(10):
-                self._add_event(i + 1, Event.BLOODRAGE_ADD_RAGE_OVER_TIME)
-            self._add_event(60, Event.BLOODRAGE_CD_END)
-        elif event == Event.BLOODRAGE_ADD_RAGE_OVER_TIME:
+                self._add_event(i + 1, EventType.BLOODRAGE_ADD_RAGE_OVER_TIME)
+            self._add_event(60.0, EventType.BLOODRAGE_CD_END)
+        elif event_type == EventType.BLOODRAGE_ADD_RAGE_OVER_TIME:
             self._add_rage('bloodrage', 1)
-        elif event == Event.DEATH_WISH_END:
+        elif event_type == EventType.DEATH_WISH_END:
             self.player.buffs.remove(PlayerBuffs.DEATH_WISH)
             self.log(f"{self._log_entry_beginning('death_wish')} fades\n")
-        elif event == Event.DEATH_WISH_CD_END:
+        elif event_type == EventType.DEATH_WISH_CD_END:
             self.state['death_wish_available'] = True
             self._use_death_wish()
-        elif event == Event.RECKLESSNESS_END:
+        elif event_type == EventType.RECKLESSNESS_END:
             self.player.buffs.remove(PlayerBuffs.RECKLESSNESS)
             self.log(f"{self._log_entry_beginning('recklessness')} fades\n")
-        elif event == Event.RECKLESSNESS_CD_END:
+        elif event_type == EventType.RECKLESSNESS_CD_END:
             self.player.buffs.add(PlayerBuffs.RECKLESSNESS)
-            self._add_event(15, Event.RECKLESSNESS_END)
-            self._add_event(1800, Event.RECKLESSNESS_CD_END)
+            self._add_event(15.0, EventType.RECKLESSNESS_END)
+            self._add_event(1800.0, EventType.RECKLESSNESS_CD_END)
             self.log(f"{self._log_entry_beginning('recklessness')} activated\n")
-        elif event == Event.BLOODTHIRST_CD_END:
+        elif event_type == EventType.BLOODTHIRST_CD_END:
             self.state['bloodthirst_available'] = True
             self._use_bloodthirst()
-        elif event == Event.WHIRLWIND_CD_END:
+        elif event_type == EventType.WHIRLWIND_CD_END:
             self.state['whirlwind_available'] = True
             self._use_whirlwind()
-        elif event == Event.GCD_END:
+        elif event_type == EventType.GCD_END:
             self.state['on_gcd'] = False
             self._do_rota()
-        elif event == Event.WHITE_HIT_MAIN:
+        elif event_type == EventType.WHITE_HIT_MAIN:
             ability = 'white_main'
-            attack_result, damage, rage = self.calcs.white_hit(Hand.MAIN)
-            self._apply_damage(ability, damage, attack_result)
-            self._add_rage(ability, rage)
-            self.next_white_hit_main = self._add_event(self.calcs.current_speed(Hand.MAIN), Event.WHITE_HIT_MAIN)
-        elif event == Event.WHITE_HIT_OFF:
+            self.next_white_hit_main = self._add_event(self.calcs.current_speed(Hand.MAIN), EventType.WHITE_HIT_MAIN)
+            self._apply_melee_attack_effects(ability, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE)
+        elif event_type == EventType.WHITE_HIT_OFF:
             ability = 'white_off'
-            attack_result, damage, rage = self.calcs.white_hit(Hand.OFF)
-            self._apply_damage(ability, damage, attack_result)
-            self._add_rage(ability, rage)
-            self.next_white_hit_off = self._add_event(self.calcs.current_speed(Hand.OFF), Event.WHITE_HIT_OFF)
-        elif event == Event.RAGE_GAINED:
+            self.next_white_hit_off = self._add_event(self.calcs.current_speed(Hand.OFF), EventType.WHITE_HIT_OFF)
+            self._apply_melee_attack_effects(ability, self.calcs.white_hit(Hand.OFF), False, AttackType.WHITE)
+        elif event_type == EventType.RAGE_GAINED:
             if self.state['death_wish_available']:
                 self._use_death_wish()
             self._do_rota()
@@ -136,18 +165,23 @@ class Sim:
         if self.logging:
             self.log_handle.write(message)
 
-    def _add_event(self, time_delta, event):
-        event_tuple = (self.current_time_seconds + time_delta, self.event_count, event)
-        heapq.heappush(self.event_queue, event_tuple)
+    def _add_event(self, time_delta, event_type):
+        assert time_delta >= 0.0
+
+        if event_type == EventType.WHITE_HIT_MAIN or event_type == EventType.WHITE_HIT_OFF:
+            event = WhiteHitEvent(self.current_time_seconds + time_delta, self.event_count, event_type)
+        else:
+            event = Event(self.current_time_seconds + time_delta, self.event_count, event_type)
+        heapq.heappush(self.event_queue, event)
         self.event_count += 1
 
-        return event_tuple
+        return event
 
     def _add_rage(self, ability, rage):
         assert rage >= 0
         if rage > 0:
             self.state['rage'] = min(100, self.state['rage'] + rage)
-            self._add_event(0, Event.RAGE_GAINED)
+            self._add_event(0.0, EventType.RAGE_GAINED)
             self.log(f'{self._log_entry_beginning(ability)} generates {rage} rage\n')
             self.log(f"{self._log_entry_beginning()} Rage={self.state['rage']}\n")
 
@@ -169,6 +203,54 @@ class Sim:
             self.log(f'{self._log_entry_beginning(ability)} hits for {damage}\n')
         else:
             raise NotImplementedError()
+
+    def _apply_melee_attack_effects(self, ability, attack_result_damage_rage_tuple, triggers_gcd, attack_type):
+        # TODO edge case: don't apply flurry to white hit hitting in less than epsilon seconds
+        # (should I really implement this? how often is this the case? how is it implemented in the game?)
+        def apply_flurry():
+            def apply_flurry_to_event(event):
+                event_str_before = str(event)
+                event.time = self.current_time_seconds + (event.time - self.current_time_seconds)*0.7
+                event.has_flurry = True
+                self.log(f'{self._log_entry_beginning()} Applying flurry, before={{{event_str_before}}}, after={{{event}}}\n')
+
+            resort_events = False
+
+            # New flurry proc
+            candidates = [self.next_white_hit_main, self.next_white_hit_off]
+            candidates = [event for event in candidates if not event.has_flurry]
+            if attack_result == AttackTable.CRIT:
+                self.log(f'{self._log_entry_beginning()} Flurry proc\n')
+                self.state['flurry_charges'] = 3
+                for event in candidates:
+                    apply_flurry_to_event(event)
+                    resort_events = True
+                self.state['flurry_charges'] = 1
+            # Existing flurry charge
+            elif self.state['flurry_charges'] > 0:
+                if len(candidates) > 0:
+                    # Secondary sort key: main hand before off hand
+                    candidates_sorted = sorted(candidates, key=lambda e: (0 if e.event_type == EventType.WHITE_HIT_MAIN else 1))
+                    # Primary sort key: next swing
+                    candidates_sorted = sorted(candidates_sorted, key=lambda e: e.time)
+                    apply_flurry_to_event(candidates_sorted[0])
+                    resort_events = True
+                    self.state['flurry_charges'] -= 1
+
+            if resort_events:
+                self.event_queue.sort()
+
+        attack_result, damage, rage = attack_result_damage_rage_tuple
+        self._apply_damage(ability, damage, attack_result)
+        self._add_rage(ability, rage)
+
+        # TODO HS
+        if attack_type == AttackType.WHITE:
+            apply_flurry()
+
+        if triggers_gcd:
+            self.state['on_gcd'] = True
+            self._add_event(1.5, EventType.GCD_END)
 
     def _consume_rage(self, ability, rage):
         assert rage > 0
@@ -195,12 +277,8 @@ class Sim:
             ability = 'bloodthirst'
             self.state['bloodthirst_available'] = False
             self._consume_rage(ability, 30)
-            attack_result, damage, rage = self.calcs.bloodthirst()
-            self._apply_damage(ability, damage, attack_result)
-            self._add_rage(ability, rage)
-            self._add_event(6, Event.BLOODTHIRST_CD_END)
-            self.state['on_gcd'] = True
-            self._add_event(1.5, Event.GCD_END)
+            self._apply_melee_attack_effects(ability, self.calcs.bloodthirst(), True, AttackType.YELLOW)
+            self._add_event(6.0, EventType.BLOODTHIRST_CD_END)
 
             return True
         else:
@@ -211,8 +289,8 @@ class Sim:
             self.state['death_wish_available'] = False
             self._consume_rage('death_wish', 10)
             self.player.buffs.add(PlayerBuffs.DEATH_WISH)
-            self._add_event(30, Event.DEATH_WISH_END)
-            self._add_event(180, Event.DEATH_WISH_CD_END)
+            self._add_event(30.0, EventType.DEATH_WISH_END)
+            self._add_event(180.0, EventType.DEATH_WISH_CD_END)
             self.log(f"{self._log_entry_beginning('death_wish')} activated\n")
 
             return True
@@ -220,16 +298,14 @@ class Sim:
             return False
 
     def _use_whirlwind(self):
+        # When between 25 and 29 rage and both BT + WW are available, both my intuition and this sim tell us
+        # it's slightly better to delay WW and wait until 30 rage are available to use BT instead.
         if not self.state['on_gcd'] and not self.state['bloodthirst_available'] and self.state['whirlwind_available'] and self.state['rage'] >= 25:
             ability = 'whirlwind'
             self.state['whirlwind_available'] = False
             self._consume_rage(ability, 25)
-            attack_result, damage, rage = self.calcs.whirlwind()
-            self._apply_damage(ability, damage, attack_result)
-            self._add_rage(ability, rage)
-            self._add_event(10, Event.WHIRLWIND_CD_END)
-            self.state['on_gcd'] = True
-            self._add_event(1.5, Event.GCD_END)
+            self._apply_melee_attack_effects(ability, self.calcs.whirlwind(), True, AttackType.YELLOW)
+            self._add_event(10.0, EventType.WHIRLWIND_CD_END)
 
             return True
         else:
@@ -305,7 +381,7 @@ class Calcs:
             damage = self._apply_boss_armor(damage)
 
             if hand == Hand.OFF:
-                damage = round(damage * 0.625)
+                damage = round(damage * 0.75)
 
             current_stats = self.current_stats()
             damage = round(damage * current_stats['damage_multiplier'])
@@ -314,7 +390,9 @@ class Calcs:
             # TODO not sure if I understood this correctly
             if attack_type == AttackType.WHITE:
                 rage += round(damage / 230.6 * 7.5)
-            rage += self._unbridled_wrath()
+
+                # TODO HS
+                rage += self._unbridled_wrath()
 
         return attack_result, damage, rage
 
@@ -401,9 +479,9 @@ class Calcs:
             - current_stats['hit']/100
             - weapon_skill_bonus*0.0004
         )
-        dodge_chance = self.boss.stats['base_dodge'] - weapon_skill_bonus*0.0004
+        dodge_chance = max(0.0, self.boss.stats['base_dodge'] - weapon_skill_bonus*0.0004)
         glancing_chance = (0.0 if attack_type == AttackType.YELLOW else 0.4)
-        crit_chance = current_stats['crit']/100 - max(0, 15 - weapon_skill_bonus)*0.0004
+        crit_chance = max(0.0, current_stats['crit']/100 - (15 - weapon_skill_bonus)*0.0004)
 
         roll = random.random()
         if roll < miss_chance:
@@ -462,7 +540,7 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats):
     result_list_baseline = do_n_runs(boss, config, faction, race, class_, spec, items, partial_buffed_permanent_stats)
     avg_dps_baseline = mean([t[1] for t in result_list_baseline])
     stat_weights = dict()
-    for stat, increase in []:  # [('hit', 1), ('crit', 1), ('ap', 30)]:
+    for stat, increase in []:  # [('hit', 1), ('crit', 1), ('agi', 20), ('ap', 30), ('str', 15), ('haste', 1), ('Sword', 1)]:
         stats_copy = copy.copy(partial_buffed_permanent_stats)
         stats_copy[stat] += increase
         result_list = do_n_runs(boss, config, faction, race, class_, spec, items, stats_copy)
