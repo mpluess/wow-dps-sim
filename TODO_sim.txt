@@ -8,6 +8,7 @@
   - average hits / crits / glances of each ability
   - attack table (chances)
   - flurry uptime
+- simulate slow vs. fast oh when all abilities are modeled
 
 read up on simulation basics
 
