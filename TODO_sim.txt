@@ -1,5 +1,4 @@
 - log averages, display on website
-- make private functions only used within one other functions sub-functions of that function
 - item procs
 - test. stats unit tests. flurry, e.g. candidate sorting.
 - rename repo
@@ -28,7 +27,12 @@ refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 fight duration: draw randomly around configured duration
-performance improvements: cache all calculations with fixed result
+performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
+- cache all calculations with fixed result
+- current_stats: reduce calls to a minimum
+- reduce copy to a minimum
+- make sure logging doesn't use any cpu time when disabled
+- parallelize do_n_runs
 
 on_rage_gain checks:
 x dw, x gcd, x bt, x ww, hs, execute, bs, op

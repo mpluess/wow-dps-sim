@@ -1,4 +1,6 @@
+import cProfile
 from collections import defaultdict
+import time
 
 from sim.sim import do_sim
 
@@ -31,6 +33,14 @@ partial_buffed_permanent_stats = defaultdict(int, {
     'weapon_type_main_hand': 'Sword', 'damage_range_main_hand': (74, 132), 'speed_main_hand': 2.7, 'weapon_type_off_hand': 'Sword', 'damage_range_off_hand': (57, 87), 'speed_off_hand': 1.8
 })
 
-avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats)
+start = time.time()
+avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, config={
+    'n_runs': 1000,
+    'logging': False,
+    'boss_fight_time_seconds': 180.0,
+})
+print(f'Runtime: {time.time() - start} s')
 print(f'Average DPS: {avg_dps}')
 print(f'Stat weights: {stat_weights}')
+
+# cProfile.run("do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, config={'n_runs': 100, 'logging': False, 'boss_fight_time_seconds': 180.0,})")
