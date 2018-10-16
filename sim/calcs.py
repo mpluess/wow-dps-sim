@@ -66,6 +66,17 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
+    def heroic_strike(self):
+        current_stats = self.current_stats()
+        base_damage = self._calc_weapon_damage(
+            current_stats['damage_range_main_hand'],
+            current_stats['speed_main_hand']
+        )
+        # Rank 8
+        base_damage += 138
+
+        return self._calc_attack_result_damage_rage(base_damage, AttackType.HEROIC_STRIKE, Hand.MAIN)
+
     def whirlwind(self):
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
@@ -154,12 +165,12 @@ class Calcs:
 
             miss_chance = max(
                 0.0,
-                (self.boss.stats['base_miss'] if attack_type == AttackType.YELLOW else self.boss.stats['base_miss'] + 0.19)
+                (self.boss.stats['base_miss'] if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss.stats['base_miss'] + 0.19)
                 - current_stats['hit'] / 100
                 - weapon_skill_bonus * 0.0004
             )
             dodge_chance = max(0.0, self.boss.stats['base_dodge'] - weapon_skill_bonus * 0.0004)
-            glancing_chance = (0.0 if attack_type == AttackType.YELLOW else 0.4)
+            glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
             crit_chance = max(0.0, current_stats['crit'] / 100 - (15 - weapon_skill_bonus) * 0.0004)
 
             roll = random.random()
@@ -173,8 +184,7 @@ class Calcs:
                 attack_result = AttackTable.CRIT
             else:
                 attack_result = AttackTable.HIT
-            self.statistics['attack_table']['yellow' if attack_type == AttackType.YELLOW else 'white'][
-                attack_result] += 1
+            self.statistics['attack_table']['yellow' if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 'white'][attack_result] += 1
 
             return attack_result
 
@@ -192,7 +202,7 @@ class Calcs:
             damage = apply_boss_armor(damage)
 
             if hand == Hand.OFF:
-                damage = round(damage * 0.75)
+                damage = round(damage * 0.625)
 
             current_stats = self.current_stats()
             damage = round(damage * current_stats['damage_multiplier'])
@@ -202,7 +212,7 @@ class Calcs:
             if attack_type == AttackType.WHITE:
                 rage += round(damage / 230.6 * 7.5)
 
-                # TODO HS
+            if attack_type == AttackType.WHITE or attack_type == AttackType.HEROIC_STRIKE:
                 rage += unbridled_wrath()
 
         return attack_result, damage, rage

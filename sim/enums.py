@@ -12,6 +12,7 @@ class AttackTable(Enum):
 class AttackType(Enum):
     WHITE = auto()
     YELLOW = auto()
+    HEROIC_STRIKE = auto()
 
 
 class BossDebuffs(Enum):
@@ -23,6 +24,7 @@ class BossDebuffs(Enum):
 class EventType(Enum):
     WHITE_HIT_MAIN = auto()
     WHITE_HIT_OFF = auto()
+    HEROIC_STRIKE_LANDED = auto()
 
     BLOODTHIRST_CD_END = auto()
     WHIRLWIND_CD_END = auto()

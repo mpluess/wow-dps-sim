@@ -1,4 +1,3 @@
-import cProfile
 from collections import defaultdict
 import time
 
@@ -38,9 +37,11 @@ avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffe
     'n_runs': 1000,
     'logging': False,
     'boss_fight_time_seconds': 180.0,
+    'stat_increase_tuples': [],
 })
 print(f'Runtime: {time.time() - start} s')
 print(f'Average DPS: {avg_dps}')
 print(f'Stat weights: {stat_weights}')
 
+# import cProfile
 # cProfile.run("do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, config={'n_runs': 100, 'logging': False, 'boss_fight_time_seconds': 180.0,})")

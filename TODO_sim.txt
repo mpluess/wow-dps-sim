@@ -1,6 +1,6 @@
 - log averages, display on website
 - item procs
-- test. stats unit tests. flurry, e.g. candidate sorting.
+- test. stats unit tests.
 - rename repo
 - improve log entries, aim for complete transparency:
   - damage reduction from boss armor
@@ -9,11 +9,10 @@
   - flurry uptime
 - simulate slow vs. fast oh when all abilities are modeled
 
-read up on simulation basics
 
 x model buffs (own, other classes, consumables)
 model procs (items, talents, enchants)
-talents: deep wounds, flurry, imp. berserker rage
+talents: deep wounds
 model on-use effects (items, heroism, consumables (mighty rage potion, juju flurry))
 x model boss buffs / debuffs
 x event queue
@@ -27,6 +26,7 @@ refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 fight duration: draw randomly around configured duration
+
 performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
 - cache all calculations with fixed result
 - current_stats: reduce calls to a minimum
@@ -35,7 +35,7 @@ performance improvements (expecting a 2x speedup from optimizations times a 4x s
 - parallelize do_n_runs
 
 on_rage_gain checks:
-x dw, x gcd, x bt, x ww, hs, execute, bs, op
+x dw, x gcd, x bt, x ww, x hs, execute, bs, op
 
 abilities to model:
 prio 1:
@@ -44,7 +44,7 @@ x ww
 x bloodrage
 x death wish
 x recklessness
-hs
+x hs
 
 prio 2:
 execute
