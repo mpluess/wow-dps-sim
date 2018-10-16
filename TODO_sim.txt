@@ -1,6 +1,4 @@
 - log averages, display on website
-- item procs
-- test. stats unit tests.
 - rename repo
 - improve log entries, aim for complete transparency:
   - damage reduction from boss armor
@@ -8,6 +6,7 @@
   - attack table (chances)
   - flurry uptime
 - simulate slow vs. fast oh when all abilities are modeled
+- optimize hs threshold when fight duration is random
 
 
 x model buffs (own, other classes, consumables)
@@ -25,7 +24,7 @@ rounding: when to round / floor / ceil?
 refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
-fight duration: draw randomly around configured duration
+fight duration: draw randomly around configured duration (from normal distribution? fixed min / max?)
 
 performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
 - cache all calculations with fixed result
@@ -55,7 +54,6 @@ tests / lookups:
 death wish gcd? reck gcd?
 bt, ww cds
 check calculated stats = stats in char window
-which abilities cost how much rage when dodged, missed?
 5% base crit double-check
 white hit weapon damage actually randomly drawn in dmg range or just the average?
 what about ww?

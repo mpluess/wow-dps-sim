@@ -1,7 +1,7 @@
 from enum import auto, Enum
 
 
-class AttackTable(Enum):
+class AttackResult(Enum):
     MISS = auto()
     DODGE = auto()
     GLANCING = auto()

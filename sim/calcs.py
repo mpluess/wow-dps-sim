@@ -2,7 +2,7 @@ from collections import defaultdict
 import copy
 import random
 
-from .enums import AttackTable, AttackType, BossDebuffs, Hand, PlayerBuffs
+from .enums import AttackResult, AttackType, BossDebuffs, Hand, PlayerBuffs
 from stats import finalize_buffed_stats
 
 
@@ -98,16 +98,16 @@ class Calcs:
 
     def _calc_attack_result_damage_rage(self, base_damage, attack_type, hand):
         def apply_attack_table_roll(damage, attack_result, hand):
-            if attack_result == AttackTable.MISS or attack_result == AttackTable.DODGE:
+            if attack_result == AttackResult.MISS or attack_result == AttackResult.DODGE:
                 return 0
-            elif attack_result == AttackTable.GLANCING:
+            elif attack_result == AttackResult.GLANCING:
                 current_stats = self.current_stats()
                 weapon_skill_bonus = current_stats[('weapon_skill_bonus_off_hand' if hand == Hand.OFF else 'weapon_skill_bonus_main_hand')]
                 glancing_factor = (0.7 + min(10, weapon_skill_bonus) * 0.03)
                 return round(damage * glancing_factor)
-            elif attack_result == AttackTable.CRIT:
+            elif attack_result == AttackResult.CRIT:
                 return round(damage * 2.2)
-            elif attack_result == AttackTable.HIT:
+            elif attack_result == AttackResult.HIT:
                 return damage
             else:
                 raise ValueError(attack_result)
@@ -175,15 +175,15 @@ class Calcs:
 
             roll = random.random()
             if roll < miss_chance:
-                attack_result = AttackTable.MISS
+                attack_result = AttackResult.MISS
             elif roll < miss_chance + dodge_chance:
-                attack_result = AttackTable.DODGE
+                attack_result = AttackResult.DODGE
             elif roll < miss_chance + dodge_chance + glancing_chance:
-                attack_result = AttackTable.GLANCING
+                attack_result = AttackResult.GLANCING
             elif roll < miss_chance + dodge_chance + glancing_chance + crit_chance:
-                attack_result = AttackTable.CRIT
+                attack_result = AttackResult.CRIT
             else:
-                attack_result = AttackTable.HIT
+                attack_result = AttackResult.HIT
             self.statistics['attack_table']['yellow' if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 'white'][attack_result] += 1
 
             return attack_result
