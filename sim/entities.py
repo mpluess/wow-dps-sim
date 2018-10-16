@@ -1,19 +1,24 @@
+from .enums import BossDebuffs
+
+
 class Boss:
-    def __init__(self, stats, debuffs):
-        self.stats = stats
-        self.debuffs = debuffs
+    def __init__(self, armor=4691, base_miss=0.086, base_dodge=0.056, debuffs=None):
+        self.armor = armor
+        self.base_miss = base_miss
+        self.base_dodge = base_dodge
+        self.debuffs = debuffs if debuffs is not None else {BossDebuffs.SUNDER_ARMOR_X5, BossDebuffs.FAERIE_FIRE, BossDebuffs.CURSE_OF_RECKLESSNESS}
 
 
-class Player:
-    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats):
-        self.faction = faction
-        self.race = race
-        self.class_ = class_
-        self.spec = spec
-        self.items = items
-        self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
+class Config:
+    def __init__(self, n_runs=1, logging=True, fight_duration_seconds_mu=180.0, fight_duration_seconds_sigma=20.0,
+                 stat_increase_tuples=None):
+        self.n_runs = n_runs
+        self.logging = logging
+        self.fight_duration_seconds_mu = fight_duration_seconds_mu
+        self.fight_duration_seconds_sigma = fight_duration_seconds_sigma
 
-        self.buffs = set()
+        # [('hit', 1), ('crit', 1), ('agi', 20), ('ap', 30), ('str', 15), ('haste', 1), ('Sword', 1)]
+        self.stat_increase_tuples = stat_increase_tuples if stat_increase_tuples is not None else []
 
 
 class Event:
@@ -44,3 +49,15 @@ class WhiteHitEvent(Event):
 
     def __repr__(self):
         return super().__repr__() + f', has_flurry={self.has_flurry}'
+
+
+class Player:
+    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats):
+        self.faction = faction
+        self.race = race
+        self.class_ = class_
+        self.spec = spec
+        self.items = items
+        self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
+
+        self.buffs = set()

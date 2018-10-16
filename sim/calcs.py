@@ -118,7 +118,7 @@ class Calcs:
                 return max(
                     0,
 
-                    self.boss.stats['armor']
+                    self.boss.armor
                     - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss.debuffs else 0) * 450 * 5
                     - (1 if BossDebuffs.FAERIE_FIRE in self.boss.debuffs else 0) * 505
                     - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss.debuffs else 0) * 640
@@ -165,11 +165,11 @@ class Calcs:
 
             miss_chance = max(
                 0.0,
-                (self.boss.stats['base_miss'] if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss.stats['base_miss'] + 0.19)
+                (self.boss.base_miss if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss.base_miss + 0.19)
                 - current_stats['hit'] / 100
                 - weapon_skill_bonus * 0.0004
             )
-            dodge_chance = max(0.0, self.boss.stats['base_dodge'] - weapon_skill_bonus * 0.0004)
+            dodge_chance = max(0.0, self.boss.base_dodge - weapon_skill_bonus * 0.0004)
             glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
             crit_chance = max(0.0, current_stats['crit'] / 100 - (15 - weapon_skill_bonus) * 0.0004)
 

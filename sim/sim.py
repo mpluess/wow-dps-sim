@@ -7,8 +7,8 @@ from statistics import mean
 import time
 
 from .calcs import Calcs
-from .entities import Boss, Event, Player, WhiteHitEvent
-from .enums import AttackResult, AttackType, BossDebuffs, EventType, Hand, PlayerBuffs
+from .entities import Event, Player, WhiteHitEvent
+from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs
 
 
 class Sim:
@@ -281,18 +281,31 @@ class Sim:
         return log_entry
 
 
-def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss=None, config=None):
+def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config):
     def do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config):
+        def sample_fight_duration(mu, sigma):
+            """Normal distribution truncated at +/- 3*sigma"""
+            f = random.gauss(mu, sigma)
+            max_ = mu + 3 * sigma
+            min_ = mu - 3 * sigma
+            if f > max_:
+                f = max_
+            elif f < min_:
+                f = min_
+
+            return f
+
         result_list = []
-        for run_nr in range(config['n_runs']):
+        for run_nr in range(config.n_runs):
             player = Player(faction, race, class_, spec, items, partial_buffed_permanent_stats)
-            with Sim(boss, player, config['logging'], run_nr) as sim:
-                while sim.current_time_seconds < config['boss_fight_time_seconds']:
+            fight_duration = sample_fight_duration(config.fight_duration_seconds_mu, config.fight_duration_seconds_sigma)
+            with Sim(boss, player, config.logging, run_nr) as sim:
+                while sim.current_time_seconds < fight_duration:
                     event = sim.get_next_event()
                     sim.handle_event(event)
                 damage_done = sim.damage_done
                 dps = sum(damage_done.values()) / sim.current_time_seconds
-                result_list.append((damage_done, dps))
+                result_list.append((damage_done, dps, fight_duration))
 
                 sim.log(f'DPS: {dps}\n')
                 sim.log(f'{damage_done}\n')
@@ -300,28 +313,10 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
 
         return result_list
 
-    if boss is None:
-        boss = Boss(
-            {
-                'armor': 4691,
-                'base_miss': 0.086,
-                'base_dodge': 0.056,
-            },
-            {BossDebuffs.SUNDER_ARMOR_X5, BossDebuffs.FAERIE_FIRE, BossDebuffs.CURSE_OF_RECKLESSNESS},
-        )
-    if config is None:
-        config = {
-            'n_runs': 1,
-            'logging': True,
-            'boss_fight_time_seconds': 180.0,
-            'stat_increase_tuples': [],
-            # 'stat_increase_tuples': [('hit', 1), ('crit', 1), ('agi', 20), ('ap', 30), ('str', 15), ('haste', 1), ('Sword', 1)],
-        }
-
     result_list_baseline = do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config)
     avg_dps_baseline = mean([t[1] for t in result_list_baseline])
     stat_weights = dict()
-    for stat, increase in config['stat_increase_tuples']:
+    for stat, increase in config.stat_increase_tuples:
         stats_copy = copy.copy(partial_buffed_permanent_stats)
         stats_copy[stat] += increase
         result_list = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)

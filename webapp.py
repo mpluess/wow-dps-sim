@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request
 
 from scraper import Scraper
+from sim.entities import Boss, Config
 from sim.sim import do_sim
 import stats
 
@@ -67,7 +68,7 @@ def sim():
     items = _scrape_items(request_data)
     partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
 
-    avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats)
+    avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss=Boss(), config=Config())
     print(f'Average DPS: {avg_dps}')
     print(f'Stat weights: {stat_weights}')
 

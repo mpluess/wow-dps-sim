@@ -1,6 +1,7 @@
 from collections import defaultdict
 import time
 
+from sim.entities import Boss, Config
 from sim.sim import do_sim
 
 faction = 'alliance'
@@ -33,12 +34,12 @@ partial_buffed_permanent_stats = defaultdict(int, {
 })
 
 start = time.time()
-avg_dps, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, config={
-    'n_runs': 1000,
-    'logging': False,
-    'boss_fight_time_seconds': 180.0,
-    'stat_increase_tuples': [],
-})
+avg_dps, stat_weights = do_sim(
+    faction, race, class_, spec, items, partial_buffed_permanent_stats,
+    boss=Boss(),
+    config=Config(n_runs=1000, logging=False)
+    # config=Config(n_runs=1, logging=True)
+)
 print(f'Runtime: {time.time() - start} s')
 print(f'Average DPS: {avg_dps}')
 print(f'Stat weights: {stat_weights}')
