@@ -72,6 +72,9 @@ def sim():
     items = _scrape_items(request_data)
     partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
 
+    # print(items)
+    # print(partial_buffed_permanent_stats)
+
     result, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss=Boss(), config=Config())
 
     return f'{result}\nStat weights: {stat_weights}\n'

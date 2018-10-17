@@ -1,4 +1,11 @@
-- rename repo
+- op (less crit @ battle)
+- deep wounds
+- procs
+- on use
+- execute weapon set
+- scraper: make scraping from classicdb possible to get access to naxx items
+
+
 - improve log entries, aim for complete transparency:
   - flurry uptime
   - bt / ww: how many of the theoretically possible ones are done during a fight due to rage?
@@ -48,6 +55,8 @@ x hs
 prio 2:
 execute
 op (less crit @ battle)
+
+prio 3:
 battle shout
 
 tests / lookups:

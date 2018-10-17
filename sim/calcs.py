@@ -58,6 +58,11 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
+    def execute(self, rage):
+        base_damage = 600 + (rage - 10)*15
+
+        return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
+
     def heroic_strike(self):
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(

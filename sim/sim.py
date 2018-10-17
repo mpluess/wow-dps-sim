@@ -11,10 +11,12 @@ from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs
 
 
 class Sim:
-    def __init__(self, boss, player, logging=False, run_nr=None):
+    def __init__(self, boss, player, fight_duration, logging=False, run_nr=None):
         self.boss = boss
         self.player = player
         self.calcs = Calcs(boss, player)
+        self.fight_duration = fight_duration
+        self.execute_phase_start_time = fight_duration * 0.8
         self.logging = logging
         self.run_nr = run_nr
         self.log_handle = None
@@ -33,6 +35,7 @@ class Sim:
             'death_wish_available': True,
             'flurry_charges': 0,
             'heroic_strike_toggled': False,
+            'execute_phase': False,
         }
 
         self._add_event(0.0, EventType.BLOODRAGE_CD_END)
@@ -56,15 +59,20 @@ class Sim:
     def get_next_event(self):
         event = heapq.heappop(self.event_queue)
         self.current_time_seconds = event.time
+        if not self.state['execute_phase'] and self.current_time_seconds >= self.execute_phase_start_time:
+            self.state['execute_phase'] = True
 
         return event
 
     def handle_event(self, event):
         def do_rota():
-            if use_bloodthirst():
-                pass
-            elif use_whirlwind():
-                pass
+            if self.state['execute_phase']:
+                use_execute()
+            else:
+                if use_bloodthirst():
+                    pass
+                elif use_whirlwind():
+                    pass
 
         def use_bloodthirst():
             if not self.state['on_gcd'] and self.state['bloodthirst_available'] and self.state['rage'] >= 30:
@@ -90,9 +98,18 @@ class Sim:
             else:
                 return False
 
+        def use_execute():
+            if not self.state['on_gcd'] and self.state['rage'] >= 10:
+                ability = 'execute'
+                self._apply_melee_attack_effects(ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW, rage_cost=self.state['rage'])
+
+                return True
+            else:
+                return False
+
         def use_heroic_strike():
             # BT 30 + WW 25 + HS 13
-            if self.state['rage'] >= 68:
+            if not self.state['execute_phase'] and self.state['rage'] >= 68:
                 self.state['heroic_strike_toggled'] = True
 
         def use_whirlwind():
@@ -133,10 +150,10 @@ class Sim:
             self.log(f"{self._log_entry_beginning('recklessness')} activated\n")
         elif event_type == EventType.BLOODTHIRST_CD_END:
             self.state['bloodthirst_available'] = True
-            use_bloodthirst()
+            do_rota()
         elif event_type == EventType.WHIRLWIND_CD_END:
             self.state['whirlwind_available'] = True
-            use_whirlwind()
+            do_rota()
         elif event_type == EventType.GCD_END:
             self.state['on_gcd'] = False
             do_rota()
@@ -290,7 +307,7 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
         for run_nr in range(config.n_runs):
             player = Player(faction, race, class_, spec, items, partial_buffed_permanent_stats)
             fight_duration = sample_fight_duration(config.fight_duration_seconds_mu, config.fight_duration_seconds_sigma)
-            with Sim(boss, player, config.logging, run_nr) as sim:
+            with Sim(boss, player, fight_duration, logging=config.logging, run_nr=run_nr) as sim:
                 while sim.current_time_seconds < fight_duration:
                     event = sim.get_next_event()
                     sim.handle_event(event)

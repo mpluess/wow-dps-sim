@@ -1,6 +1,7 @@
 class Constants:
     ability_mapping = {
         'bloodthirst': 'bloodthirst',
+        'execute': 'execute',
         'heroic_strike': 'heroic_strike',
         'whirlwind': 'whirlwind',
         'white_main': 'white',
@@ -11,6 +12,7 @@ class Constants:
         'bloodrage': 'Bloodrage',
         'bloodthirst': 'Bloodthirst',
         'death_wish': 'Death Wish',
+        'execute': 'Execute',
         'heroic_strike': 'Heroic Strike',
         'recklessness': 'Recklessness',
         'whirlwind': 'Whirlwind',
