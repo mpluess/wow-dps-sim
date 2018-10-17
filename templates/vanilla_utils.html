@@ -11,13 +11,8 @@
     </head>
     <body>
         <div id="form"></div>
-        <div id="stats">
-            <div id="base_stats"></div>
-            <br />
-            <div id="primary_stats"></div>
-            <br />
-            <div id="secondary_stats"></div>
-        </div>
+        <div id="stats"></div>
+        <div id="sim_results"></div>
         <script type="text/javascript">
             $(document).ready(function() {
                 $("#form").alpaca({
@@ -135,7 +130,7 @@
                             "item_hands": {
                                 "type": "string",
                                 "title": "Hands",
-                                "default": "14551",
+                                "default": "15063",
                             },
                             "item_waist": {
                                 "type": "string",
@@ -145,7 +140,7 @@
                             "item_legs": {
                                 "type": "string",
                                 "title": "Legs",
-                                "default": "12963",
+                                "default": "15062",
                             },
                             "item_feet": {
                                 "type": "string",
@@ -215,21 +210,8 @@
                                             },
                                             body: JSON.stringify(this.getValue()),
                                         })
-                                        .then(response => response.json())
-                                        .then(function(stats_json) {
-                                            stats_types = ["base_stats", "primary_stats", "secondary_stats"];
-                                            stats_types.forEach(function(stats_type) {
-                                                fetch("/stats", {
-                                                    method: "POST",
-                                                    headers: {
-                                                        "Content-Type": "application/json",
-                                                    },
-                                                    body: JSON.stringify(stats_json[stats_type]),
-                                                })
-                                                .then(response => response.text())
-                                                .then(text => $("#" + stats_type).html(text));
-                                            });
-                                        });
+                                        .then(response => response.text())
+                                        .then(text => $("#stats").html(text));
                                     },
                                 },
                                 "sim": {
@@ -242,6 +224,8 @@
                                             },
                                             body: JSON.stringify(this.getValue()),
                                         })
+                                        .then(response => response.text())
+                                        .then(text => $("#sim_results").html(text));
                                     },
                                 },
                             }

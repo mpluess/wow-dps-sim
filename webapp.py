@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template, request
 
 from scraper import Scraper
 from sim.entities import Boss, Config
@@ -22,40 +22,44 @@ def calc_stats():
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
     items = _scrape_items(request_data)
+
     unbuffed_stats = stats.calc_unbuffed_stats(race, class_, spec, items)
+    unbuffed_base_stats = [
+        ('Items', ', '.join([item['name'] for item in items])),
+        ('Health', unbuffed_stats['health']),
+        ('Armor', unbuffed_stats['armor']),
+    ]
+    unbuffed_primary_stats = [
+        ('Agility', unbuffed_stats['agi']),
+        ('Intelligence', unbuffed_stats['int']),
+        ('Spirit', unbuffed_stats['spi']),
+        ('Stamina', unbuffed_stats['sta']),
+        ('Strength', unbuffed_stats['str']),
+    ]
+    unbuffed_secondary_stats = [
+        ('Attack Power', unbuffed_stats['ap']),
+        ('Crit', unbuffed_stats['crit']),
+        ('Hit', unbuffed_stats['hit']),
+        ('Haste', unbuffed_stats['haste']),
+        ('Axes', unbuffed_stats['Axe']),
+        ('Daggers', unbuffed_stats['Dagger']),
+        ('Maces', unbuffed_stats['Mace']),
+        ('Swords', unbuffed_stats['Sword']),
+    ]
 
-    # faction = request_data['faction']
-    # buffed_stats = stats.finalize_buffed_stats(
-    #     faction, race, class_, spec,
-    #     stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
-    # )
+    faction = request_data['faction']
+    buffed_stats = stats.finalize_buffed_stats(
+        faction, race, class_, spec,
+        stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+    )
 
-    stats_to_display = {
-        'base_stats': [
-            ('Items', ', '.join([item['name'] for item in items])),
-            ('Health', unbuffed_stats['health']),
-            ('Armor', unbuffed_stats['armor']),
-        ],
-        'primary_stats': [
-            ('Agility', unbuffed_stats['agi']),
-            ('Intelligence', unbuffed_stats['int']),
-            ('Spirit', unbuffed_stats['spi']),
-            ('Stamina', unbuffed_stats['sta']),
-            ('Strength', unbuffed_stats['str']),
-        ],
-        'secondary_stats': [
-            ('Attack Power', unbuffed_stats['ap']),
-            ('Crit', unbuffed_stats['crit']),
-            ('Hit', unbuffed_stats['hit']),
-            ('Haste', unbuffed_stats['haste']),
-            ('Axes', unbuffed_stats['Axe']),
-            ('Daggers', unbuffed_stats['Dagger']),
-            ('Maces', unbuffed_stats['Mace']),
-            ('Swords', unbuffed_stats['Sword']),
-        ],
-    }
-
-    return jsonify(stats_to_display)
+    return render_template(
+        'stats.html',
+        unbuffed_base_stats=unbuffed_base_stats,
+        unbuffed_primary_stats=unbuffed_primary_stats,
+        unbuffed_secondary_stats=unbuffed_secondary_stats,
+        buffed_stats=str(buffed_stats),
+    )
 
 
 @app.route('/sim', methods=['POST'])
@@ -70,10 +74,7 @@ def sim():
 
     result, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss=Boss(), config=Config())
 
-
-@app.route('/stats', methods=['POST'])
-def show_stats():
-    return render_template('stats_stub.html', stats_label_value_tuples=request.json)
+    return f'{result}\nStat weights: {stat_weights}\n'
 
 
 def _scrape_items(request_data):

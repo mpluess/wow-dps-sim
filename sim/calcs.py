@@ -95,7 +95,7 @@ class Calcs:
             elif attack_result == AttackResult.GLANCING:
                 current_stats = self.current_stats()
                 weapon_skill_bonus = current_stats[('weapon_skill_bonus_off_hand' if hand == Hand.OFF else 'weapon_skill_bonus_main_hand')]
-                glancing_factor = (0.7 + min(10, weapon_skill_bonus) * 0.03)
+                glancing_factor = 0.7 + min(10, weapon_skill_bonus)*0.03
                 return round(damage * glancing_factor)
             elif attack_result == AttackResult.CRIT:
                 return round(damage * 2.2)
@@ -158,12 +158,12 @@ class Calcs:
             miss_chance = max(
                 0.0,
                 (self.boss.base_miss if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss.base_miss + 0.19)
-                - current_stats['hit'] / 100
-                - weapon_skill_bonus * 0.0004
+                - current_stats['hit']/100
+                - weapon_skill_bonus*0.0004
             )
-            dodge_chance = max(0.0, self.boss.base_dodge - weapon_skill_bonus * 0.0004)
+            dodge_chance = max(0.0, self.boss.base_dodge - weapon_skill_bonus*0.0004)
             glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
-            crit_chance = max(0.0, current_stats['crit'] / 100 - (15 - weapon_skill_bonus) * 0.0004)
+            crit_chance = max(0.0, current_stats['crit']/100 - (15 - weapon_skill_bonus)*0.0004)
 
             roll = random.random()
             if roll < miss_chance:

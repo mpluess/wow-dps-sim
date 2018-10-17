@@ -1,0 +1,21 @@
+{% macro build_stats_table(stats_label_value_tuples) %}
+<table>
+    {% for label, value in stats_label_value_tuples %}
+        <tr>
+            <td>{{label}}</td>
+            <td>{{value}}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endmacro %}
+
+<h3>Unbuffed</h3>
+<div id="base_stats">{{ build_stats_table(unbuffed_base_stats) }}</div>
+<br />
+<div id="primary_stats">{{ build_stats_table(unbuffed_primary_stats)  }}</div>
+<br />
+<div id="secondary_stats">{{ build_stats_table(unbuffed_secondary_stats) }}</div>
+<br />
+
+<h3>Buffed</h3>
+<p>{{buffed_stats}}</p>

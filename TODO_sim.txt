@@ -1,4 +1,3 @@
-- log averages, display on website
 - rename repo
 - improve log entries, aim for complete transparency:
   - flurry uptime

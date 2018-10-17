@@ -21,7 +21,7 @@ class Boss:
 
 
 class Config:
-    def __init__(self, n_runs=1, logging=True, fight_duration_seconds_mu=180.0, fight_duration_seconds_sigma=20.0,
+    def __init__(self, n_runs=1000, logging=False, fight_duration_seconds_mu=180.0, fight_duration_seconds_sigma=20.0,
                  stat_increase_tuples=None):
         self.n_runs = n_runs
         self.logging = logging
