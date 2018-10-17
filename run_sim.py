@@ -34,14 +34,14 @@ partial_buffed_permanent_stats = defaultdict(int, {
 })
 
 start = time.time()
-avg_dps, stat_weights = do_sim(
+result, stat_weights = do_sim(
     faction, race, class_, spec, items, partial_buffed_permanent_stats,
     boss=Boss(),
     config=Config(n_runs=1000, logging=False)
     # config=Config(n_runs=1, logging=True)
 )
 print(f'Runtime: {time.time() - start} s')
-print(f'Average DPS: {avg_dps}')
+print(str(result))
 print(f'Stat weights: {stat_weights}')
 
 # import cProfile

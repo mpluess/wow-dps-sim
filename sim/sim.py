@@ -1,28 +1,16 @@
-from collections import defaultdict
 import copy
 import heapq
 import os
 import random
-from statistics import mean
 import time
 
 from .calcs import Calcs
-from .entities import Event, Player, WhiteHitEvent
+from .constants import Constants
+from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
 from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs
 
 
 class Sim:
-    ability_names_lookup = {
-        'bloodrage': 'Bloodrage',
-        'bloodthirst': 'Bloodthirst',
-        'death_wish': 'Death Wish',
-        'heroic_strike': 'Heroic Strike',
-        'recklessness': 'Recklessness',
-        'whirlwind': 'Whirlwind',
-        'white_main': 'White Hit Main',
-        'white_off': 'White Hit Off',
-    }
-
     def __init__(self, boss, player, logging=False, run_nr=None):
         self.boss = boss
         self.player = player
@@ -34,7 +22,8 @@ class Sim:
         self.event_queue = []
         self.event_count = 0
         self.current_time_seconds = 0.0
-        self.damage_done = defaultdict(int)
+        self.damage_done = 0
+        self.ability_log = []
 
         self.state = {
             'rage': 0,
@@ -202,7 +191,7 @@ class Sim:
             assert damage >= 0
 
             if damage > 0:
-                self.damage_done[ability] += damage
+                self.damage_done += damage
 
             if attack_result == AttackResult.MISS:
                 self.log(f'{self._log_entry_beginning(ability)} missed\n')
@@ -264,6 +253,8 @@ class Sim:
             self.state['on_gcd'] = True
             self._add_event(1.5, EventType.GCD_END)
 
+        self.ability_log.append(AbilityLogEntry(ability, attack_result, damage))
+
     def _consume_rage(self, ability, rage, attack_result):
         assert rage > 0
         assert self.state['rage'] >= rage
@@ -276,7 +267,7 @@ class Sim:
     def _log_entry_beginning(self, ability=None):
         log_entry = f'[{self.current_time_seconds:.2f}]'
         if ability is not None:
-            log_entry += f' {self.ability_names_lookup[ability]}'
+            log_entry += f' {Constants.ability_names_lookup[ability]}'
 
         return log_entry
 
@@ -303,24 +294,20 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
                 while sim.current_time_seconds < fight_duration:
                     event = sim.get_next_event()
                     sim.handle_event(event)
-                damage_done = sim.damage_done
-                dps = sum(damage_done.values()) / sim.current_time_seconds
-                result_list.append((damage_done, dps, fight_duration))
+                dps = sim.damage_done / sim.current_time_seconds
+                result = Result.from_ability_log(dps, sim.ability_log)
+                result_list.append(result)
+                sim.log('\n')
+                sim.log(str(result))
 
-                sim.log(f'DPS: {dps}\n')
-                sim.log(f'{damage_done}\n')
-                sim.log(f'{sim.calcs.statistics}\n')
+        return Result.get_merged_result(result_list)
 
-        return result_list
-
-    result_list_baseline = do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config)
-    avg_dps_baseline = mean([t[1] for t in result_list_baseline])
+    result_baseline = do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config)
     stat_weights = dict()
     for stat, increase in config.stat_increase_tuples:
         stats_copy = copy.copy(partial_buffed_permanent_stats)
         stats_copy[stat] += increase
-        result_list = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)
-        avg_dps = mean([t[1] for t in result_list])
-        stat_weights[stat] = (avg_dps - avg_dps_baseline) / increase
+        result = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)
+        stat_weights[stat] = (result.dps - result_baseline.dps) / increase
 
-    return avg_dps_baseline, stat_weights
+    return result_baseline, stat_weights

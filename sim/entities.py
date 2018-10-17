@@ -1,4 +1,15 @@
+from collections import defaultdict
+from statistics import mean
+
+from .constants import Constants
 from .enums import BossDebuffs
+
+
+class AbilityLogEntry:
+    def __init__(self, ability, attack_result, damage):
+        self.ability = ability
+        self.attack_result = attack_result
+        self.damage = damage
 
 
 class Boss:
@@ -61,3 +72,58 @@ class Player:
         self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         self.buffs = set()
+
+
+class Result:
+    def __init__(self, dps, statistics):
+        self.dps = dps
+        self.statistics = statistics
+
+    @classmethod
+    def from_ability_log(cls, dps, ability_log):
+        statistics = Result._create_statistics()
+        for log_entry in ability_log:
+            ability = Constants.ability_mapping[log_entry.ability]
+            statistics[ability]['damage'].append(log_entry.damage)
+            statistics[ability]['attack_result'][log_entry.attack_result] += 1
+
+        return cls(dps, statistics)
+
+    @staticmethod
+    def get_merged_result(result_list):
+        def merge_statistics(result_list):
+            statistics = Result._create_statistics()
+            for result in result_list:
+                for ability in result.statistics.keys():
+                    statistics[ability]['damage'].extend(result.statistics[ability]['damage'])
+                    for attack_result, count in result.statistics[ability]['attack_result'].items():
+                        statistics[ability]['attack_result'][attack_result] += count
+
+            return statistics
+
+        dps = mean([result.dps for result in result_list])
+        statistics = merge_statistics(result_list)
+
+        return Result(dps, statistics)
+
+    @staticmethod
+    def _create_statistics():
+        return defaultdict(lambda: {'damage': [], 'attack_result': defaultdict(int)})
+
+    def __repr__(self):
+        total_damage = sum([sum(d['damage']) for d in self.statistics.values()])
+        output = f'DPS: {self.dps}\n\n'
+        for ability, ability_statistics in sorted(self.statistics.items(), key=lambda t: sum(t[1]['damage']), reverse=True):
+            damage_sum = sum(ability_statistics['damage'])
+            non_zero_damage_values = [damage for damage in ability_statistics['damage'] if damage > 0]
+            output += f"{Constants.ability_names_lookup[ability]} {damage_sum} {(damage_sum / total_damage * 100):.2f}"
+            output += f" min={min(non_zero_damage_values)} max={max(non_zero_damage_values)} mean={mean(non_zero_damage_values)}\n"
+        output += '\n'
+        for ability, ability_statistics in sorted(self.statistics.items(), key=lambda t: sum(t[1]['damage']), reverse=True):
+            total_count = sum(ability_statistics['attack_result'].values())
+            output += Constants.ability_names_lookup[ability]
+            for attack_result, count in sorted(ability_statistics['attack_result'].items(), key=lambda t: t[1], reverse=True):
+                output += f' {attack_result} {count} {(count / total_count * 100):.2f}'
+            output += '\n'
+
+        return output

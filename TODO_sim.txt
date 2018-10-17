@@ -1,11 +1,12 @@
 - log averages, display on website
 - rename repo
 - improve log entries, aim for complete transparency:
-  - damage reduction from boss armor
-  - average hits / crits / glances of each ability
-  - attack table (chances)
   - flurry uptime
+  - bt / ww: how many of the theoretically possible ones are done during a fight due to rage?
+
+
 - simulate slow vs. fast oh when all abilities are modeled
+- difference 2x fast vs. slow / fast vs. slow / slow @ execute phase
 - optimize hs threshold when fight duration is random
 
 
@@ -17,14 +18,14 @@ x model boss buffs / debuffs
 x event queue
 x ability comes off cd = event, end of gcd = event
 x model rage, on_rage_gained callback
-model ability priorities
+x model ability priorities
 run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
 are floats an issue? if yes, how to get around floating point arithmetics?
 rounding: when to round / floor / ceil?
 refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
-fight duration: draw randomly around configured duration (from normal distribution? fixed min / max?)
+x fight duration: draw randomly around configured duration (from normal distribution? fixed min / max?)
 
 performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
 - cache all calculations with fixed result
@@ -47,8 +48,8 @@ x hs
 
 prio 2:
 execute
-battle shout
 op (less crit @ battle)
+battle shout
 
 tests / lookups:
 death wish gcd? reck gcd?

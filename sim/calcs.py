@@ -1,4 +1,3 @@
-from collections import defaultdict
 import copy
 import random
 
@@ -18,13 +17,6 @@ class Calcs:
     def __init__(self, boss, player):
         self.boss = boss
         self.player = player
-
-        self.statistics = {
-            'attack_table': {
-                'white': defaultdict(int),
-                'yellow': defaultdict(int),
-            }
-        }
 
     def current_speed(self, hand):
         assert isinstance(hand, Hand)
@@ -184,7 +176,6 @@ class Calcs:
                 attack_result = AttackResult.CRIT
             else:
                 attack_result = AttackResult.HIT
-            self.statistics['attack_table']['yellow' if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 'white'][attack_result] += 1
 
             return attack_result
 
