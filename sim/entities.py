@@ -2,7 +2,7 @@ from collections import defaultdict
 from statistics import mean
 
 from .constants import Constants
-from .enums import BossDebuffs
+from .enums import BossDebuffs, Stance
 
 
 class AbilityLogEntry:
@@ -72,6 +72,7 @@ class Player:
         self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         self.buffs = set()
+        self.stance = Stance.BERSERKER
 
 
 class Result:

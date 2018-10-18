@@ -1,8 +1,8 @@
 import copy
 import random
 
-from .enums import AttackResult, AttackType, BossDebuffs, Hand, PlayerBuffs
-from stats import finalize_buffed_stats
+from .enums import AttackResult, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
+from stats import apply_berserker_stance_effects, finalize_buffed_stats
 
 
 class Calcs:
@@ -25,24 +25,15 @@ class Calcs:
 
     def current_stats(self):
         def apply_temporary_buffs(stats):
-            def apply_temporary_buff_flat_stats(stats):
-                stats = copy.copy(stats)
+            stats = copy.copy(stats)
 
-                if PlayerBuffs.RECKLESSNESS in self.player.buffs:
-                    stats['crit'] += 100
+            if self.player.stance == Stance.BERSERKER:
+                stats = apply_berserker_stance_effects(stats)
+            if PlayerBuffs.RECKLESSNESS in self.player.buffs:
+                stats['crit'] += 100
 
-                return stats
-
-            def apply_temporary_buff_percentage_effects(stats):
-                stats = copy.copy(stats)
-
-                if PlayerBuffs.DEATH_WISH in self.player.buffs:
-                    stats['damage_multiplier'] *= 1.2
-
-                return stats
-
-            stats = apply_temporary_buff_flat_stats(stats)
-            stats = apply_temporary_buff_percentage_effects(stats)
+            if PlayerBuffs.DEATH_WISH in self.player.buffs:
+                stats['damage_multiplier'] *= 1.2
 
             return stats
 

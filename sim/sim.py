@@ -294,8 +294,8 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
         def sample_fight_duration(mu, sigma):
             """Normal distribution truncated at +/- 3*sigma"""
             f = random.gauss(mu, sigma)
-            max_ = mu + 3 * sigma
-            min_ = mu - 3 * sigma
+            max_ = mu + 3*sigma
+            min_ = mu - 3*sigma
             if f > max_:
                 f = max_
             elif f < min_:

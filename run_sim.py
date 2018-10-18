@@ -54,10 +54,9 @@ items = [
     {'name': "Satyr's Bow", 'stats': defaultdict(int, {'agi': 7, 'hit': 1}), 'set': {'name': None, 'bonuses': {}}}
 ]
 partial_buffed_permanent_stats = defaultdict(
-    int,
-    {
+    int, {
         'agi': 194, 'int': 58, 'spi': 70, 'sta': 193, 'str': 302,
-        'crit': 27, 'Mace': 5, 'Sword': 5, 'damage_multiplier': 1.0, 'armor': 2111, 'hit': 10, 'ap': 781,
+        'crit': 24, 'Mace': 5, 'Sword': 5, 'damage_multiplier': 1.0, 'armor': 2111, 'hit': 10, 'ap': 781,
         'weapon_type_main_hand': 'Sword', 'damage_range_main_hand': (74, 132), 'speed_main_hand': 2.7,
         'weapon_type_off_hand': 'Sword', 'damage_range_off_hand': (57, 87), 'speed_off_hand': 1.8
     }
@@ -67,8 +66,8 @@ start = time.time()
 result, stat_weights = do_sim(
     faction, race, class_, spec, items, partial_buffed_permanent_stats,
     boss=Boss(),
-    # config=Config(n_runs=1000, logging=False)
-    config=Config(n_runs=1, logging=True)
+    config=Config(n_runs=1000, logging=False)
+    # config=Config(n_runs=1, logging=True)
 )
 print(f'Runtime: {time.time() - start} s')
 print(str(result))

@@ -7,7 +7,7 @@ import stats
 
 app = Flask(__name__)
 scraper = Scraper('https://vanillawowdb.com/?item=')
-# scraper = Scraper('https://classicdb.ch/?item=')
+# scraper = Scraper('https://classicdb.ch/?item=', use_cache=False)
 
 
 @app.route('/', methods=['GET'])
@@ -25,6 +25,7 @@ def calc_stats():
     items = _scrape_items(request_data)
 
     unbuffed_stats = stats.calc_unbuffed_stats(race, class_, spec, items)
+    unbuffed_stats = stats.apply_berserker_stance_effects(unbuffed_stats)
     unbuffed_base_stats = [
         ('Items', ', '.join([item['name'] for item in items])),
         ('Health', unbuffed_stats['health']),
@@ -49,10 +50,9 @@ def calc_stats():
     ]
 
     faction = request_data['faction']
-    buffed_stats = stats.finalize_buffed_stats(
-        faction, race, class_, spec,
-        stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
-    )
+    buffed_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+    buffed_stats = stats.apply_berserker_stance_effects(buffed_stats)
+    buffed_stats = stats.finalize_buffed_stats(faction, race, class_, spec, buffed_stats)
 
     return render_template(
         'stats.html',

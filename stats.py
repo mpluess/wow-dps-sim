@@ -24,6 +24,14 @@ def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items):
     return stats
 
 
+def apply_berserker_stance_effects(stats):
+    stats = copy.copy(stats)
+
+    stats['crit'] += 3
+
+    return stats
+
+
 def finalize_buffed_stats(faction, race, class_, spec, stats):
     stats = _apply_permanent_buff_percentage_effects(faction, stats)
     stats = _apply_primary_stats_effects(race, class_, spec, stats)
@@ -69,9 +77,6 @@ def _base_stats(race, class_):
 def _spec_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
-        # Berserker Stance
-        stats['crit'] += 3
-
         # Talents
         stats['crit'] += 5
     else:

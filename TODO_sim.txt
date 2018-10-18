@@ -1,6 +1,6 @@
 - op (less crit @ battle)
 - deep wounds
-- procs
+- procs (hoj, thrash blade, crusader)
 - on use
 - execute weapon set
 

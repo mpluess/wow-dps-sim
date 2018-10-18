@@ -49,3 +49,8 @@ class Hand(Enum):
 class PlayerBuffs(Enum):
     DEATH_WISH = auto()
     RECKLESSNESS = auto()
+
+
+class Stance(Enum):
+    BATTLE = auto()
+    BERSERKER = auto()
