@@ -6,7 +6,8 @@ from sim.sim import do_sim
 import stats
 
 app = Flask(__name__)
-scraper = Scraper()
+scraper = Scraper('https://vanillawowdb.com/?item=')
+# scraper = Scraper('https://classicdb.ch/?item=')
 
 
 @app.route('/', methods=['GET'])

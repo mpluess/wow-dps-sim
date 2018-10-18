@@ -2,3 +2,23 @@ unit tests
 validation / error handling client-side and server-side. check if item id matches slot.
 save / load configuration
 improve layout: stats on the right side of the form, improve table layout
+
+
+naxx ~bis:
+12640
+19377
+21330
+23045
+23000
+22936
+21581
+23219
+23068
+19387
+19384
+17063
+23041
+22954
+23054
+23577
+22812

@@ -3,7 +3,6 @@
 - procs
 - on use
 - execute weapon set
-- scraper: make scraping from classicdb possible to get access to naxx items
 
 
 - improve log entries, aim for complete transparency:
@@ -32,6 +31,7 @@ refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
 outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 x fight duration: draw randomly around configured duration (from normal distribution? fixed min / max?)
+save / load item sets
 
 performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
 - cache all calculations with fixed result

@@ -7,7 +7,8 @@ import requests
 
 
 class Scraper:
-    def __init__(self, use_cache=True, path_to_cache='cache/items'):
+    def __init__(self, url_prefix, use_cache=True, path_to_cache='cache/items'):
+        self.url_prefix = url_prefix
         self.use_cache = use_cache
         self.path_to_cache = path_to_cache
 
@@ -44,7 +45,7 @@ class Scraper:
             with open(path_to_item, encoding='utf-8') as f:
                 text = f.read()
         else:
-            response = requests.get(f'https://vanillawowdb.com/?item={item_id}')
+            response = requests.get(f'{self.url_prefix}{item_id}')
             text = response.text
             with open(path_to_item, 'w', encoding='utf-8') as f:
                 f.write(text)
@@ -117,4 +118,10 @@ class Scraper:
         return item
 
 
-# print(Scraper().scrape_item('main_hand', '14555'))
+# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
+# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('head', '12640'))
+# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('legs', '15062'))
+
+# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('main_hand', '14555'))
+# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('head', '12640'))
+# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('legs', '15062'))
