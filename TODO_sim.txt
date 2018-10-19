@@ -1,4 +1,5 @@
 - op (less crit @ battle)
+- check stance on ww, op, reck (make sure it would get triggered after switching back to berserker if hit when in battle)
 - deep wounds
 - procs (hoj, thrash blade, crusader)
 - on use

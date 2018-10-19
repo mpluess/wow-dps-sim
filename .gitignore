@@ -1,4 +1,4 @@
-cache/items/*.html
+cache/items/**/*.html
 __pycache__/
 .idea/
 logs/*.txt

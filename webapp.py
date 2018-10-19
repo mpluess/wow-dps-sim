@@ -6,8 +6,12 @@ from sim.sim import do_sim
 import stats
 
 app = Flask(__name__)
-scraper = Scraper('https://vanillawowdb.com/?item=')
-# scraper = Scraper('https://classicdb.ch/?item=', use_cache=False)
+
+# Northdale (Light's Hope) database
+scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
+
+# 1.12 database
+# scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
 
 
 @app.route('/', methods=['GET'])

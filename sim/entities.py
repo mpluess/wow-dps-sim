@@ -113,12 +113,12 @@ class Result:
 
     def __repr__(self):
         total_damage = sum([sum(d['damage']) for d in self.statistics.values()])
-        output = f'DPS: {self.dps}\n\n'
+        output = f'DPS: {self.dps:.2f}\n\n'
         for ability, ability_statistics in sorted(self.statistics.items(), key=lambda t: sum(t[1]['damage']), reverse=True):
             damage_sum = sum(ability_statistics['damage'])
             non_zero_damage_values = [damage for damage in ability_statistics['damage'] if damage > 0]
             output += f"{Constants.ability_names_lookup[ability]} {damage_sum} {(damage_sum / total_damage * 100):.2f}"
-            output += f" min={min(non_zero_damage_values)} max={max(non_zero_damage_values)} mean={mean(non_zero_damage_values)}\n"
+            output += f" min={min(non_zero_damage_values)} max={max(non_zero_damage_values)} mean={round(mean(non_zero_damage_values))}\n"
         output += '\n'
         for ability, ability_statistics in sorted(self.statistics.items(), key=lambda t: sum(t[1]['damage']), reverse=True):
             total_count = sum(ability_statistics['attack_result'].values())

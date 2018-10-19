@@ -69,7 +69,7 @@ result, stat_weights = do_sim(
     config=Config(n_runs=1000, logging=False)
     # config=Config(n_runs=1, logging=True)
 )
-print(f'Runtime: {time.time() - start} s')
+print(f'Runtime: {(time.time() - start):.2f} s')
 print(str(result))
 print(f'Stat weights: {stat_weights}')
 

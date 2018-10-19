@@ -47,8 +47,9 @@ class Scraper:
         else:
             response = requests.get(f'{self.url_prefix}{item_id}')
             text = response.text
-            with open(path_to_item, 'w', encoding='utf-8') as f:
-                f.write(text)
+            if self.use_cache:
+                with open(path_to_item, 'w', encoding='utf-8') as f:
+                    f.write(text)
 
         document = BeautifulSoup(text, 'html.parser')
         tooltip = document.find('div', class_='tooltip')
