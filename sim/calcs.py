@@ -1,7 +1,7 @@
 import copy
 import random
 
-from .enums import AttackResult, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
+from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
 from stats import apply_berserker_stance_effects, finalize_buffed_stats
 
 
@@ -65,6 +65,16 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.HEROIC_STRIKE, Hand.MAIN)
 
+    def overpower(self):
+        current_stats = self.current_stats()
+        base_damage = self._calc_weapon_damage(
+            current_stats['damage_range_main_hand'],
+            self.normalized_weapon_speed_lookup[current_stats['weapon_type_main_hand']]
+        )
+        base_damage += 35
+
+        return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN, AttackTableModification.OVERPOWER)
+
     def whirlwind(self):
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
@@ -84,7 +94,7 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.WHITE, hand)
 
-    def _calc_attack_result_damage_rage(self, base_damage, attack_type, hand):
+    def _calc_attack_result_damage_rage(self, base_damage, attack_type, hand, attack_table_modification=None):
         def apply_attack_table_roll(damage, attack_result, hand):
             if attack_result == AttackResult.MISS or attack_result == AttackResult.DODGE:
                 return 0
@@ -120,7 +130,7 @@ class Calcs:
 
             return round(damage * (1 - damage_reduction))
 
-        def attack_table_roll(attack_type, hand):
+        def attack_table_roll(attack_type, hand, attack_table_modification):
             """
             https://web.archive.org/web/20061115223930/http://forums.wow-europe.com/thread.html?topicId=14381707&sid=1
 
@@ -161,6 +171,12 @@ class Calcs:
             glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
             crit_chance = max(0.0, current_stats['crit']/100 - (15 - weapon_skill_bonus)*0.0004)
 
+            if attack_table_modification is None:
+                pass
+            elif attack_table_modification == AttackTableModification.OVERPOWER:
+                dodge_chance = 0.0
+                crit_chance += 0.5
+
             roll = random.random()
             if roll < miss_chance:
                 attack_result = AttackResult.MISS
@@ -182,7 +198,7 @@ class Calcs:
         assert base_damage >= 0
         damage = base_damage
 
-        attack_result = attack_table_roll(attack_type, hand)
+        attack_result = attack_table_roll(attack_type, hand, attack_table_modification)
         damage = apply_attack_table_roll(damage, attack_result, hand)
         rage = 0
         if damage > 0:

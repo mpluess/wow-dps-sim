@@ -9,6 +9,10 @@ class AttackResult(Enum):
     HIT = auto()
 
 
+class AttackTableModification(Enum):
+    OVERPOWER = auto()
+
+
 class AttackType(Enum):
     WHITE = auto()
     YELLOW = auto()
@@ -28,6 +32,8 @@ class EventType(Enum):
 
     BLOODTHIRST_CD_END = auto()
     WHIRLWIND_CD_END = auto()
+    OVERPOWER_CD_END = auto()
+    ATTACK_DODGED = auto()
 
     BLOODRAGE_CD_END = auto()
     DEATH_WISH_END = auto()
@@ -36,6 +42,7 @@ class EventType(Enum):
     RECKLESSNESS_CD_END = auto()
 
     GCD_END = auto()
+    STANCE_CD_END = auto()
     RAGE_GAINED = auto()
 
     BLOODRAGE_ADD_RAGE_OVER_TIME = auto()

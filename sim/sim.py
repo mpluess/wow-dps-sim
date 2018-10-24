@@ -7,10 +7,12 @@ import time
 from .calcs import Calcs
 from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
-from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs
+from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
 
 
 class Sim:
+    epsilon = 1e-7
+
     def __init__(self, boss, player, fight_duration, logging=False, run_nr=None):
         self.boss = boss
         self.player = player
@@ -30,8 +32,13 @@ class Sim:
         self.state = {
             'rage': 0,
             'on_gcd': False,
+            'on_stance_cd': False,
             'bloodthirst_available': True,
+            'next_bloodthirst_available_at': 0.0,
             'whirlwind_available': True,
+            'next_whirlwind_available_at': 0.0,
+            'overpower_not_on_cd': True,
+            'overpower_available_till': 0.0,
             'death_wish_available': True,
             'flurry_charges': 0,
             'heroic_strike_toggled': False,
@@ -73,13 +80,32 @@ class Sim:
                     pass
                 elif use_whirlwind():
                     pass
+                # OP vs. no OP: 586 vs. 573 DPS @ pre-raid BIS
+                elif use_overpower():
+                    pass
+
+        def switch_stance(stance):
+            assert self.player.stance != stance
+
+            if not self.state['on_stance_cd']:
+                self.player.stance = stance
+                self.state['on_stance_cd'] = True
+                self._add_event(1.5, EventType.STANCE_CD_END)
+                self.log(f'{self._log_entry_beginning()} Switching stance to {stance}\n')
+                self.state['rage'] = min(25, self.state['rage'])
+                self.log(f"{self._log_entry_beginning()} Rage={self.state['rage']}\n")
+
+                return True
+            else:
+                return False
 
         def use_bloodthirst():
             if not self.state['on_gcd'] and self.state['bloodthirst_available'] and self.state['rage'] >= 30:
                 ability = 'bloodthirst'
                 self.state['bloodthirst_available'] = False
                 self._apply_melee_attack_effects(ability, self.calcs.bloodthirst(), True, AttackType.YELLOW, rage_cost=30)
-                self._add_event(6.0, EventType.BLOODTHIRST_CD_END)
+                added_event = self._add_event(6.0, EventType.BLOODTHIRST_CD_END)
+                self.state['next_bloodthirst_available_at'] = added_event.time
 
                 return True
             else:
@@ -112,14 +138,43 @@ class Sim:
             if not self.state['execute_phase'] and self.state['rage'] >= 68:
                 self.state['heroic_strike_toggled'] = True
 
+        def use_overpower():
+            if (
+                not self.state['on_gcd']
+                and self.state['overpower_not_on_cd'] and (self.state['overpower_available_till'] - self.current_time_seconds) > self.epsilon
+                # Only OP on rage <= 45 vs. rage <= 65 vs. OP regardless of rage: doesn't matter too much.
+                # OP regardless of rage is about 1 DPS better than on rage <= 45.
+                and self.state['rage'] >= 5  # and self.state['rage'] <= 45
+                and (self.state['next_bloodthirst_available_at'] - self.current_time_seconds) > 1.5
+                and (self.state['next_whirlwind_available_at'] - self.current_time_seconds) > 1.5
+            ):
+                assert self.player.stance == Stance.BERSERKER
+                assert not self.state['bloodthirst_available']
+                assert not self.state['whirlwind_available']
+
+                if switch_stance(Stance.BATTLE):
+                    ability = 'overpower'
+                    self.state['overpower_not_on_cd'] = False
+                    self.state['overpower_available_till'] = self.current_time_seconds
+                    self._apply_melee_attack_effects(ability, self.calcs.overpower(), True, AttackType.YELLOW, rage_cost=5)
+                    self._add_event(5.0, EventType.OVERPOWER_CD_END)
+
+                    return True
+
+            return False
+
         def use_whirlwind():
             # When between 25 and 29 rage and both BT + WW are available, both my intuition and this sim tell us
             # it's slightly better to delay WW and wait until 30 rage are available to use BT instead.
-            if not self.state['on_gcd'] and not self.state['bloodthirst_available'] and self.state['whirlwind_available'] and self.state['rage'] >= 25:
+            if (
+                not self.state['on_gcd'] and not self.state['bloodthirst_available']
+                and self.state['whirlwind_available'] and self.player.stance == Stance.BERSERKER and self.state['rage'] >= 25
+            ):
                 ability = 'whirlwind'
                 self.state['whirlwind_available'] = False
                 self._apply_melee_attack_effects(ability, self.calcs.whirlwind(), True, AttackType.YELLOW, rage_cost=25)
-                self._add_event(10.0, EventType.WHIRLWIND_CD_END)
+                added_event = self._add_event(10.0, EventType.WHIRLWIND_CD_END)
+                self.state['next_whirlwind_available_at'] = added_event.time
 
                 return True
             else:
@@ -143,6 +198,7 @@ class Sim:
         elif event_type == EventType.RECKLESSNESS_END:
             self.player.buffs.remove(PlayerBuffs.RECKLESSNESS)
             self.log(f"{self._log_entry_beginning('recklessness')} fades\n")
+        # TODO Check if in berserker stance. Make sure it gets triggered as soon as possible if currently not in berserker stance.
         elif event_type == EventType.RECKLESSNESS_CD_END:
             self.player.buffs.add(PlayerBuffs.RECKLESSNESS)
             self._add_event(15.0, EventType.RECKLESSNESS_END)
@@ -154,8 +210,19 @@ class Sim:
         elif event_type == EventType.WHIRLWIND_CD_END:
             self.state['whirlwind_available'] = True
             do_rota()
+        elif event_type == EventType.OVERPOWER_CD_END:
+            self.state['overpower_not_on_cd'] = True
+            do_rota()
+        elif event_type == EventType.ATTACK_DODGED:
+            do_rota()
         elif event_type == EventType.GCD_END:
             self.state['on_gcd'] = False
+            do_rota()
+        elif event_type == EventType.STANCE_CD_END:
+            self.state['on_stance_cd'] = False
+            # TODO (?) Edge case: @ Battle Stance after OP, BT available / available very very soon, rage >= 30: use BT before switching
+            if self.player.stance != Stance.BERSERKER:
+                switch_stance(Stance.BERSERKER)
             do_rota()
         elif event_type == EventType.WHITE_HIT_MAIN:
             self.next_white_hit_main = self._add_event(self.calcs.current_speed(Hand.MAIN), EventType.WHITE_HIT_MAIN)
@@ -260,6 +327,9 @@ class Sim:
             self._consume_rage(ability, rage_cost, attack_result)
         apply_damage(ability, damage, attack_result)
         self._add_rage(ability, rage_gained)
+        if attack_result == AttackResult.DODGE:
+            self.state['overpower_available_till'] = self.current_time_seconds + 4.0
+            self._add_event(0.0, EventType.ATTACK_DODGED)
 
         if attack_type == AttackType.WHITE:
             apply_flurry(hand_current_white_hit)

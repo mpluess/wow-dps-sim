@@ -1,8 +1,7 @@
-- op (less crit @ battle)
-- check stance on ww, op, reck (make sure it would get triggered after switching back to berserker if hit when in battle)
-- deep wounds
+- bloodrage on cd vs. when no rage available for ability
 - procs (hoj, thrash blade, crusader)
 - on use
+- deep wounds
 - execute weapon set
 
 
@@ -11,7 +10,6 @@
   - bt / ww: how many of the theoretically possible ones are done during a fight due to rage?
 
 
-- simulate slow vs. fast oh when all abilities are modeled
 - difference 2x fast vs. slow / fast vs. slow / slow @ execute phase
 - optimize hs threshold when fight duration is random
 
@@ -25,8 +23,9 @@ x event queue
 x ability comes off cd = event, end of gcd = event
 x model rage, on_rage_gained callback
 x model ability priorities
-run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
+x run sim n times (use confidence interval to define n) on boss x, output dps, dps per ability, stat weights
 are floats an issue? if yes, how to get around floating point arithmetics?
+do i need to use epsilon anywhere else?
 rounding: when to round / floor / ceil?
 refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
@@ -36,13 +35,10 @@ save / load item sets
 
 performance improvements (expecting a 2x speedup from optimizations times a 4x speedup on 4 logical cores):
 - cache all calculations with fixed result
-- current_stats: reduce calls to a minimum
+- current_stats: reduce calls to a minimum / calculate only in handle_event (?)
 - reduce copy to a minimum
 - make sure logging doesn't use any cpu time when disabled
 - parallelize do_n_runs
-
-on_rage_gain checks:
-x dw, x gcd, x bt, x ww, x hs, execute, bs, op
 
 abilities to model:
 prio 1:
@@ -54,8 +50,8 @@ x recklessness
 x hs
 
 prio 2:
-execute
-op (less crit @ battle)
+x execute
+x op (less crit @ battle)
 
 prio 3:
 battle shout
