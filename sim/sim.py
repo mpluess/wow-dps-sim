@@ -80,7 +80,9 @@ class Sim:
                     pass
                 elif use_whirlwind():
                     pass
-                # OP vs. no OP: 586 vs. 573 DPS @ pre-raid BIS
+                # OP vs. no OP:
+                # 586 vs. 573 DPS @ pre-raid BIS
+                # 886 vs. 862 DPS @ Naxx BIS
                 elif use_overpower():
                     pass
 
@@ -127,7 +129,10 @@ class Sim:
         def use_execute():
             if not self.state['on_gcd'] and self.state['rage'] >= 10:
                 ability = 'execute'
-                self._apply_melee_attack_effects(ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW, rage_cost=self.state['rage'])
+                self._apply_melee_attack_effects(
+                    ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW,
+                    rage_cost=self.state['rage'], base_rage_cost=10
+                )
 
                 return True
             else:
@@ -142,8 +147,9 @@ class Sim:
             if (
                 not self.state['on_gcd']
                 and self.state['overpower_not_on_cd'] and (self.state['overpower_available_till'] - self.current_time_seconds) > self.epsilon
-                # Only OP on rage <= 45 vs. rage <= 65 vs. OP regardless of rage: doesn't matter too much.
-                # OP regardless of rage is about 1 DPS better than on rage <= 45.
+                # Only OP on rage <= 45 vs. OP regardless of rage:
+                # @ pre-raid BIS, OP regardless of rage is about 1 DPS better than on rage <= 45.
+                # @ Naxx BIS, OP regardless of rage is about 13 DPS better than on rage <= 45.
                 and self.state['rage'] >= 5  # and self.state['rage'] <= 45
                 and (self.state['next_bloodthirst_available_at'] - self.current_time_seconds) > 1.5
                 and (self.state['next_whirlwind_available_at'] - self.current_time_seconds) > 1.5
@@ -268,7 +274,7 @@ class Sim:
             self.log(f"{self._log_entry_beginning()} Rage={self.state['rage']}\n")
 
     def _apply_melee_attack_effects(self, ability, attack_result_damage_rage_tuple, triggers_gcd, attack_type,
-                                    hand_current_white_hit=None, rage_cost=None):
+                                    hand_current_white_hit=None, rage_cost=None, base_rage_cost=None):
         assert (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) or (attack_type == AttackType.WHITE and isinstance(hand_current_white_hit, Hand))
 
         def apply_damage(ability, damage, attack_result):
@@ -324,7 +330,7 @@ class Sim:
 
         attack_result, damage, rage_gained = attack_result_damage_rage_tuple
         if rage_cost is not None:
-            self._consume_rage(ability, rage_cost, attack_result)
+            self._consume_rage(ability, rage_cost, attack_result, base_rage_cost=base_rage_cost)
         apply_damage(ability, damage, attack_result)
         self._add_rage(ability, rage_gained)
         if attack_result == AttackResult.DODGE:
@@ -342,11 +348,14 @@ class Sim:
 
         self.ability_log.append(AbilityLogEntry(ability, attack_result, damage))
 
-    def _consume_rage(self, ability, rage, attack_result):
+    def _consume_rage(self, ability, rage, attack_result, base_rage_cost=None):
         assert rage > 0
         assert self.state['rage'] >= rage
         # Dodged and parried abilities don't cost rage: https://forum.nostalrius.org/viewtopic.php?f=36&t=2670&start=20
         if attack_result is None or attack_result != AttackResult.DODGE:
+            # Execute miss only costs base rage cost, not all rage available
+            if attack_result is not None and attack_result == AttackResult.MISS and base_rage_cost is not None:
+                rage = base_rage_cost
             self.state['rage'] -= rage
             self.log(f'{self._log_entry_beginning(ability)} consumes {rage} rage\n')
             self.log(f"{self._log_entry_beginning()} Rage={self.state['rage']}\n")

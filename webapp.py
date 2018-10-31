@@ -29,7 +29,6 @@ def calc_stats():
     items = _scrape_items(request_data)
 
     unbuffed_stats = stats.calc_unbuffed_stats(race, class_, spec, items)
-    unbuffed_stats = stats.apply_berserker_stance_effects(unbuffed_stats)
     unbuffed_base_stats = [
         ('Items', ', '.join([item['name'] for item in items])),
         ('Health', unbuffed_stats['health']),

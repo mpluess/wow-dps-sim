@@ -95,7 +95,7 @@ class Calcs:
         return self._calc_attack_result_damage_rage(base_damage, AttackType.WHITE, hand)
 
     def _calc_attack_result_damage_rage(self, base_damage, attack_type, hand, attack_table_modification=None):
-        def apply_attack_table_roll(damage, attack_result, hand):
+        def apply_attack_table_roll(damage, attack_result, hand, attack_type):
             if attack_result == AttackResult.MISS or attack_result == AttackResult.DODGE:
                 return 0
             elif attack_result == AttackResult.GLANCING:
@@ -104,7 +104,12 @@ class Calcs:
                 glancing_factor = 0.7 + min(10, weapon_skill_bonus)*0.03
                 return round(damage * glancing_factor)
             elif attack_result == AttackResult.CRIT:
-                return round(damage * 2.2)
+                # Impale only works on abilities, not auto attacks
+                if attack_type == AttackType.WHITE:
+                    modifier = 2.0
+                else:
+                    modifier = 2.2
+                return round(damage * modifier)
             elif attack_result == AttackResult.HIT:
                 return damage
             else:
@@ -199,7 +204,7 @@ class Calcs:
         damage = base_damage
 
         attack_result = attack_table_roll(attack_type, hand, attack_table_modification)
-        damage = apply_attack_table_roll(damage, attack_result, hand)
+        damage = apply_attack_table_roll(damage, attack_result, hand, attack_type)
         rage = 0
         if damage > 0:
             damage = apply_boss_armor(damage)

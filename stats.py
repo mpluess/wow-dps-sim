@@ -7,6 +7,7 @@ def calc_unbuffed_stats(race, class_, spec, items):
     stats = _merge_stats(stats, _spec_stats(class_, spec))
     stats = _merge_stats(stats, _item_stats(items))
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
+    stats = apply_berserker_stance_effects(stats)
     stats = _apply_primary_stats_effects(race, class_, spec, stats)
     stats = _add_tertiary_stats(race, class_, spec, stats)
 

@@ -1,7 +1,13 @@
-- bloodrage on cd vs. when no rage available for ability
-- procs (hoj, thrash blade, crusader)
+- procs
+  - hoj (2%, probably can't proc off itself with 1.12 mechanics, https://forum.elysium-project.org/topic/43830-hand-of-justice-no-longer-has-an-internal-cooldown-on-procs/)
+  - evtl. thrash blade (does it duplicate the attack it procced from or trigger a white attack?)
+    1.2 ppm = 5% proc chance, https://forum.elysium-project.org/topic/43586-thrash-blade-or-krol-blade/
+  - crusader (1 ppm, same hand reproc refreshes, other hand proc stacks), https://rogerkarlsson.com/blogs/wow/crusader/
 - on use
-- deep wounds
+- bloodrage on cd vs. when no rage available for ability
+- evtl. deep wounds
+  - https://www.wowhead.com/forums&topic=144974
+  - gets overwritten pretty soon: https://forum.nostalrius.org/viewtopic.php?f=36&t=19499
 - execute weapon set
 
 
@@ -17,7 +23,7 @@
 x model buffs (own, other classes, consumables)
 model procs (items, talents, enchants)
 talents: deep wounds
-model on-use effects (items, heroism, consumables (mighty rage potion, juju flurry))
+model on-use effects (items, consumables (mighty rage potion, juju flurry))
 x model boss buffs / debuffs
 x event queue
 x ability comes off cd = event, end of gcd = event
