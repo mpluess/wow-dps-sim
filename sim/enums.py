@@ -27,6 +27,9 @@ class BossDebuffs(Enum):
 
 class EventType(Enum):
     WHITE_HIT_MAIN = auto()
+    HAND_OF_JUSTICE_PROC = auto()
+    THRASH_BLADE_PROC = auto()
+    IRONFOE_PROC = auto()
     WHITE_HIT_OFF = auto()
     HEROIC_STRIKE_LANDED = auto()
 

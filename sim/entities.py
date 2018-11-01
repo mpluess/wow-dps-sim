@@ -3,6 +3,7 @@ from statistics import mean
 
 from .constants import Constants
 from .enums import BossDebuffs, Stance
+import stats
 
 
 class AbilityLogEntry:
@@ -63,16 +64,36 @@ class WhiteHitEvent(Event):
 
 
 class Player:
-    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats):
+    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats=None, procs=None):
         self.faction = faction
         self.race = race
         self.class_ = class_
         self.spec = spec
         self.items = items
-        self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
+
+        if partial_buffed_permanent_stats is None:
+            self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+        else:
+            self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
+
+        if procs is None:
+            self.procs = self._create_proc_set(items)
+        else:
+            self.procs = procs
 
         self.buffs = set()
         self.stance = Stance.BERSERKER
+
+    @classmethod
+    def from_player(cls, player):
+        return cls(
+            player.faction, player.race, player.class_, player.spec, player.items,
+            player.partial_buffed_permanent_stats, player.procs
+        )
+
+    @classmethod
+    def _create_proc_set(cls, items):
+        return set.union(*[item['procs'] for item in items])
 
 
 class Result:
@@ -84,7 +105,7 @@ class Result:
     def from_ability_log(cls, dps, ability_log):
         statistics = Result._create_statistics()
         for log_entry in ability_log:
-            ability = Constants.ability_mapping[log_entry.ability]
+            ability = Constants.statistics_ability_mapping[log_entry.ability]
             statistics[ability]['damage'].append(log_entry.damage)
             statistics[ability]['attack_result'][log_entry.attack_result] += 1
 
@@ -118,7 +139,8 @@ class Result:
             damage_sum = sum(ability_statistics['damage'])
             non_zero_damage_values = [damage for damage in ability_statistics['damage'] if damage > 0]
             output += f"{Constants.ability_names_lookup[ability]} {damage_sum} {(damage_sum / total_damage * 100):.2f}"
-            output += f" min={min(non_zero_damage_values)} max={max(non_zero_damage_values)} mean={round(mean(non_zero_damage_values))}\n"
+            if len(non_zero_damage_values) > 0:
+                output += f" min={min(non_zero_damage_values)} max={max(non_zero_damage_values)} mean={round(mean(non_zero_damage_values))}\n"
         output += '\n'
         for ability, ability_statistics in sorted(self.statistics.items(), key=lambda t: sum(t[1]['damage']), reverse=True):
             total_count = sum(ability_statistics['attack_result'].values())

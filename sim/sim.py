@@ -1,9 +1,9 @@
-import copy
 import heapq
 import os
 import random
 import time
 
+from enums import Proc
 from .calcs import Calcs
 from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
@@ -105,7 +105,7 @@ class Sim:
             if not self.state['on_gcd'] and self.state['bloodthirst_available'] and self.state['rage'] >= 30:
                 ability = 'bloodthirst'
                 self.state['bloodthirst_available'] = False
-                self._apply_melee_attack_effects(ability, self.calcs.bloodthirst(), True, AttackType.YELLOW, rage_cost=30)
+                self._apply_melee_attack_effects(ability, self.calcs.bloodthirst(), True, AttackType.YELLOW, Hand.MAIN, rage_cost=30)
                 added_event = self._add_event(6.0, EventType.BLOODTHIRST_CD_END)
                 self.state['next_bloodthirst_available_at'] = added_event.time
 
@@ -130,7 +130,7 @@ class Sim:
             if not self.state['on_gcd'] and self.state['rage'] >= 10:
                 ability = 'execute'
                 self._apply_melee_attack_effects(
-                    ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW,
+                    ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW, Hand.MAIN,
                     rage_cost=self.state['rage'], base_rage_cost=10
                 )
 
@@ -162,7 +162,7 @@ class Sim:
                     ability = 'overpower'
                     self.state['overpower_not_on_cd'] = False
                     self.state['overpower_available_till'] = self.current_time_seconds
-                    self._apply_melee_attack_effects(ability, self.calcs.overpower(), True, AttackType.YELLOW, rage_cost=5)
+                    self._apply_melee_attack_effects(ability, self.calcs.overpower(), True, AttackType.YELLOW, Hand.MAIN, rage_cost=5)
                     self._add_event(5.0, EventType.OVERPOWER_CD_END)
 
                     return True
@@ -178,7 +178,7 @@ class Sim:
             ):
                 ability = 'whirlwind'
                 self.state['whirlwind_available'] = False
-                self._apply_melee_attack_effects(ability, self.calcs.whirlwind(), True, AttackType.YELLOW, rage_cost=25)
+                self._apply_melee_attack_effects(ability, self.calcs.whirlwind(), True, AttackType.YELLOW, Hand.MAIN, rage_cost=25)
                 added_event = self._add_event(10.0, EventType.WHIRLWIND_CD_END)
                 self.state['next_whirlwind_available_at'] = added_event.time
 
@@ -233,14 +233,21 @@ class Sim:
         elif event_type == EventType.WHITE_HIT_MAIN:
             self.next_white_hit_main = self._add_event(self.calcs.current_speed(Hand.MAIN), EventType.WHITE_HIT_MAIN)
             if self.state['heroic_strike_toggled'] and self.state['rage'] >= 13:
-                self._apply_melee_attack_effects('heroic_strike', self.calcs.heroic_strike(), False, AttackType.HEROIC_STRIKE, rage_cost=13)
+                self._apply_melee_attack_effects('heroic_strike', self.calcs.heroic_strike(), False, AttackType.HEROIC_STRIKE, Hand.MAIN, rage_cost=13)
                 self._add_event(0.0, EventType.HEROIC_STRIKE_LANDED)
             else:
-                self._apply_melee_attack_effects('white_main', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, hand_current_white_hit=Hand.MAIN)
+                self._apply_melee_attack_effects('white_main', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN)
             self.state['heroic_strike_toggled'] = False
         elif event_type == EventType.WHITE_HIT_OFF:
             self.next_white_hit_off = self._add_event(self.calcs.current_speed(Hand.OFF), EventType.WHITE_HIT_OFF)
-            self._apply_melee_attack_effects('white_off', self.calcs.white_hit(Hand.OFF), False, AttackType.WHITE, hand_current_white_hit=Hand.OFF)
+            self._apply_melee_attack_effects('white_off', self.calcs.white_hit(Hand.OFF), False, AttackType.WHITE, Hand.OFF)
+        elif event_type == EventType.HAND_OF_JUSTICE_PROC:
+            self._apply_melee_attack_effects('hand_of_justice_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+        elif event_type == EventType.THRASH_BLADE_PROC:
+            self._apply_melee_attack_effects('thrash_blade_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+        elif event_type == EventType.IRONFOE_PROC:
+            self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+            self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
         elif event_type == EventType.RAGE_GAINED:
             if self.state['death_wish_available']:
                 use_death_wish()
@@ -273,10 +280,8 @@ class Sim:
             self.log(f'{self._log_entry_beginning(ability)} generates {rage} rage\n')
             self.log(f"{self._log_entry_beginning()} Rage={self.state['rage']}\n")
 
-    def _apply_melee_attack_effects(self, ability, attack_result_damage_rage_tuple, triggers_gcd, attack_type,
-                                    hand_current_white_hit=None, rage_cost=None, base_rage_cost=None):
-        assert (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) or (attack_type == AttackType.WHITE and isinstance(hand_current_white_hit, Hand))
-
+    def _apply_melee_attack_effects(self, ability, attack_result_damage_rage_tuple, triggers_gcd, attack_type, hand,
+                                    rage_cost=None, base_rage_cost=None, is_white_proc=False):
         def apply_damage(ability, damage, attack_result):
             assert damage >= 0
 
@@ -328,6 +333,23 @@ class Sim:
             if resort_events:
                 self.event_queue.sort()
 
+        def handle_procs(hand):
+            if Proc.HAND_OF_JUSTICE in self.player.procs:
+                if random.random() < 0.02:
+                    self._add_event(0.0, EventType.HAND_OF_JUSTICE_PROC)
+            # Not implemented on-next-swing for simplicity, difference should be negligible
+            if Proc.THRASH_BLADE_MAIN in self.player.procs:
+                # ~1.2 PPM =~ 5% PPH
+                if hand == Hand.MAIN and random.random() < 0.05:
+                    self._add_event(0.0, EventType.THRASH_BLADE_PROC)
+            if Proc.THRASH_BLADE_OFF in self.player.procs:
+                # ~1.2 PPM =~ 5% PPH
+                if hand == hand.OFF and random.random() < 0.05:
+                    self._add_event(0.0, EventType.THRASH_BLADE_PROC)
+            if Proc.IRONFOE in self.player.procs:
+                if hand == Hand.MAIN and random.random() < 0.05:
+                    self._add_event(0.0, EventType.IRONFOE_PROC)
+
         attack_result, damage, rage_gained = attack_result_damage_rage_tuple
         if rage_cost is not None:
             self._consume_rage(ability, rage_cost, attack_result, base_rage_cost=base_rage_cost)
@@ -337,14 +359,14 @@ class Sim:
             self.state['overpower_available_till'] = self.current_time_seconds + 4.0
             self._add_event(0.0, EventType.ATTACK_DODGED)
 
-        if attack_type == AttackType.WHITE:
-            apply_flurry(hand_current_white_hit)
-        elif attack_type == AttackType.HEROIC_STRIKE:
-            apply_flurry(Hand.MAIN)
+        if (attack_type == AttackType.WHITE and not is_white_proc) or attack_type == AttackType.HEROIC_STRIKE:
+            apply_flurry(hand)
 
         if triggers_gcd:
             self.state['on_gcd'] = True
             self._add_event(1.5, EventType.GCD_END)
+
+        handle_procs(hand)
 
         self.ability_log.append(AbilityLogEntry(ability, attack_result, damage))
 
@@ -368,8 +390,8 @@ class Sim:
         return log_entry
 
 
-def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config):
-    def do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config):
+def do_sim(player, boss, config):
+    def do_n_runs(player, boss, config):
         def sample_fight_duration(mu, sigma):
             """Normal distribution truncated at +/- 3*sigma"""
             f = random.gauss(mu, sigma)
@@ -384,7 +406,8 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
 
         result_list = []
         for run_nr in range(config.n_runs):
-            player = Player(faction, race, class_, spec, items, partial_buffed_permanent_stats)
+            # Call copy constructor to start with a fresh state
+            player = Player.from_player(player)
             fight_duration = sample_fight_duration(config.fight_duration_seconds_mu, config.fight_duration_seconds_sigma)
             with Sim(boss, player, fight_duration, logging=config.logging, run_nr=run_nr) as sim:
                 while sim.current_time_seconds < fight_duration:
@@ -398,12 +421,12 @@ def do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, b
 
         return Result.get_merged_result(result_list)
 
-    result_baseline = do_n_runs(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss, config)
+    result_baseline = do_n_runs(player, boss, config)
     stat_weights = dict()
-    for stat, increase in config.stat_increase_tuples:
-        stats_copy = copy.copy(partial_buffed_permanent_stats)
-        stats_copy[stat] += increase
-        result = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)
-        stat_weights[stat] = (result.dps - result_baseline.dps) / increase
+    # for stat, increase in config.stat_increase_tuples:
+    #     stats_copy = copy.copy(partial_buffed_permanent_stats)
+    #     stats_copy[stat] += increase
+    #     result = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)
+    #     stat_weights[stat] = (result.dps - result_baseline.dps) / increase
 
     return result_baseline, stat_weights

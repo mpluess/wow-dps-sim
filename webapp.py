@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 
 from scraper import Scraper
-from sim.entities import Boss, Config
+from sim.entities import Boss, Config, Player
 from sim.sim import do_sim
 import stats
 
@@ -74,14 +74,15 @@ def sim():
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
     items = _scrape_items(request_data)
-    partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
 
-    # print(items)
-    # print(partial_buffed_permanent_stats)
+    player = Player(faction, race, class_, spec, items)
+    # print(player.items)
+    # print(player.partial_buffed_permanent_stats)
+    # print(player.procs)
+    result, stat_weights = do_sim(player, Boss(), Config())
 
-    result, stat_weights = do_sim(faction, race, class_, spec, items, partial_buffed_permanent_stats, boss=Boss(), config=Config())
-
-    return f'{result}\nStat weights: {stat_weights}\n'
+    return str(result)
+    # return f'{result}\nStat weights: {stat_weights}\n'
 
 
 def _scrape_items(request_data):

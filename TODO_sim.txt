@@ -1,7 +1,4 @@
 - procs
-  - hoj (2%, probably can't proc off itself with 1.12 mechanics, https://forum.elysium-project.org/topic/43830-hand-of-justice-no-longer-has-an-internal-cooldown-on-procs/)
-  - evtl. thrash blade (does it duplicate the attack it procced from or trigger a white attack?)
-    1.2 ppm = 5% proc chance, https://forum.elysium-project.org/topic/43586-thrash-blade-or-krol-blade/
   - crusader (1 ppm, same hand reproc refreshes, other hand proc stacks), https://rogerkarlsson.com/blogs/wow/crusader/
 - on use
 - bloodrage on cd vs. when no rage available for ability
@@ -69,3 +66,10 @@ check calculated stats = stats in char window
 5% base crit double-check
 white hit weapon damage actually randomly drawn in dmg range or just the average?
 what about ww?
+
+hoj, thrash blade mechanics.
+can they really proc off everything (probably not, there was some kind of chain proc fix in 1.9)?
+https://vanilla-twinhead.twinstar.cz/?issue=8131
+works by resetting swing timer -> current implementation is too much damage for sure.
+what happens to flurry charge on resetting? probably lost and not applied to the new swing.
+bt not able to proc it since it doesn't require a weapon?
