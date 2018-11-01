@@ -1,5 +1,3 @@
-- procs
-  - crusader (1 ppm, same hand reproc refreshes, other hand proc stacks), https://rogerkarlsson.com/blogs/wow/crusader/
 - on use
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds
@@ -18,7 +16,7 @@
 
 
 x model buffs (own, other classes, consumables)
-model procs (items, talents, enchants)
+x model procs (items, talents, enchants)
 talents: deep wounds
 model on-use effects (items, consumables (mighty rage potion, juju flurry))
 x model boss buffs / debuffs

@@ -35,6 +35,11 @@ class Calcs:
             if PlayerBuffs.DEATH_WISH in self.player.buffs:
                 stats['damage_multiplier'] *= 1.2
 
+            if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
+                stats['str'] += 100
+            if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
+                stats['str'] += 100
+
             return stats
 
         stats = self.player.partial_buffed_permanent_stats

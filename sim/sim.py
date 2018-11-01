@@ -50,6 +50,8 @@ class Sim:
         self._add_event(0.0, EventType.RECKLESSNESS_CD_END)
         self.next_white_hit_main = self._add_event(0.0, EventType.WHITE_HIT_MAIN)
         self.next_white_hit_off = self._add_event(0.0, EventType.WHITE_HIT_OFF)
+        self.crusader_main_proc_end_event = None
+        self.crusader_off_proc_end_event = None
 
     def __enter__(self):
         if self.logging:
@@ -255,6 +257,32 @@ class Sim:
             use_heroic_strike()
         elif event_type == EventType.HEROIC_STRIKE_LANDED:
             use_heroic_strike()
+        elif event_type == EventType.CRUSADER_MAIN_PROC:
+            if self.crusader_main_proc_end_event is None:
+                self.crusader_main_proc_end_event = self._add_event(15, EventType.CRUSADER_MAIN_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Crusader Main Hand Proc\n")
+            else:
+                self.crusader_main_proc_end_event.time = self.current_time_seconds + 15
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Crusader Main Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.CRUSADER_MAIN)
+        elif event_type == EventType.CRUSADER_MAIN_PROC_END:
+            self.crusader_main_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.CRUSADER_MAIN)
+            self.log(f"{self._log_entry_beginning()} Crusader Main Hand Proc fades\n")
+        elif event_type == EventType.CRUSADER_OFF_PROC:
+            if self.crusader_off_proc_end_event is None:
+                self.crusader_off_proc_end_event = self._add_event(15, EventType.CRUSADER_OFF_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Crusader Off Hand Proc\n")
+            else:
+                self.crusader_off_proc_end_event.time = self.current_time_seconds + 15
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Crusader Off Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.CRUSADER_OFF)
+        elif event_type == EventType.CRUSADER_OFF_PROC_END:
+            self.crusader_off_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.CRUSADER_OFF)
+            self.log(f"{self._log_entry_beginning()} Crusader Off Hand Proc fades\n")
 
     def log(self, message):
         if self.logging:
@@ -349,6 +377,13 @@ class Sim:
             if Proc.IRONFOE in self.player.procs:
                 if hand == Hand.MAIN and random.random() < 0.05:
                     self._add_event(0.0, EventType.IRONFOE_PROC)
+
+            # 1 PPM, converted to PPH in the interval [0, 1]
+            current_stats = self.calcs.current_stats()
+            if hand == Hand.MAIN and random.random() < (1.0 * current_stats['speed_main_hand'] / 60):
+                self._add_event(0.0, EventType.CRUSADER_MAIN_PROC)
+            if hand == Hand.OFF and random.random() < (1.0 * current_stats['speed_off_hand'] / 60):
+                self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
 
         attack_result, damage, rage_gained = attack_result_damage_rage_tuple
         if rage_cost is not None:

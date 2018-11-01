@@ -140,7 +140,7 @@ def _enchant_stats(class_, spec):
         stats['str'] += 8
 
         # Off Hand
-        stats['str'] += 15
+        # stats['str'] += 15
     else:
         raise NotImplementedError(f'Enchant stats for class={class_}, spec={spec} are not implemented.')
 

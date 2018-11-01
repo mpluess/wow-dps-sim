@@ -50,6 +50,11 @@ class EventType(Enum):
 
     BLOODRAGE_ADD_RAGE_OVER_TIME = auto()
 
+    CRUSADER_MAIN_PROC = auto()
+    CRUSADER_MAIN_PROC_END = auto()
+    CRUSADER_OFF_PROC = auto()
+    CRUSADER_OFF_PROC_END = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -59,6 +64,8 @@ class Hand(Enum):
 class PlayerBuffs(Enum):
     DEATH_WISH = auto()
     RECKLESSNESS = auto()
+    CRUSADER_MAIN = auto()
+    CRUSADER_OFF = auto()
 
 
 class Stance(Enum):
