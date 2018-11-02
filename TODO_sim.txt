@@ -1,3 +1,5 @@
+- outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
+
 - on use
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds
@@ -12,7 +14,6 @@
 
 
 - difference 2x fast vs. slow / fast vs. slow / slow @ execute phase
-- optimize hs threshold when fight duration is random
 
 
 x model buffs (own, other classes, consumables)
@@ -30,7 +31,6 @@ do i need to use epsilon anywhere else?
 rounding: when to round / floor / ceil?
 refactor debuffs (like buffs)
 model debuffs only on boss after some time, cd stacking, ...
-outsource ability cost etc. config. all knowledge if possible. support multiple expansions if possible.
 x fight duration: draw randomly around configured duration (from normal distribution? fixed min / max?)
 save / load item sets
 

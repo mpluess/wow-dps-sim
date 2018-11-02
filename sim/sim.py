@@ -141,8 +141,9 @@ class Sim:
                 return False
 
         def use_heroic_strike():
-            # BT 30 + WW 25 + HS 13
-            if not self.state['execute_phase'] and self.state['rage'] >= 68:
+            # BT 30 + WW 25 + HS 13 = 68
+            # With pre BIS gear, it seems optimal to use HS already at about 60 rage.
+            if not self.state['execute_phase'] and self.state['rage'] >= 60:
                 self.state['heroic_strike_toggled'] = True
 
         def use_overpower():
