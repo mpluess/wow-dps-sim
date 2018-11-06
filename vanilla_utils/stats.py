@@ -1,6 +1,8 @@
 from collections import defaultdict
 import copy
 
+import vanilla_utils.knowledge as knowledge
+
 
 def calc_unbuffed_stats(race, class_, spec, items):
     stats = _base_stats(race, class_)
@@ -28,7 +30,7 @@ def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items):
 def apply_berserker_stance_effects(stats):
     stats = copy.copy(stats)
 
-    stats['crit'] += 3
+    stats['crit'] += knowledge.BERSERKER_STANCE_ADDITIONAL_CRIT
 
     return stats
 
@@ -56,19 +58,8 @@ def _merge_stats(stats_1, stats_2):
 
 
 def _base_stats(race, class_):
-    stats = defaultdict(int)
-    if race == 'human' and class_ == 'warrior':
-        # TODO are these really correct?
-        # https://www.getmangos.eu/forums/topic/8703-level-60-stats/
-        stats['agi'] = 80
-        stats['int'] = 30
-        stats['spi'] = 50
-        stats['sta'] = 110
-        stats['str'] = 120
-        stats['crit'] = 5
-        stats['Mace'] = 5
-        stats['Sword'] = 5
-        stats['damage_multiplier'] = 1.0
+    if race in knowledge.BASE_STATS and class_ in knowledge.BASE_STATS[race]:
+        stats = knowledge.BASE_STATS[race][class_]
     else:
         raise NotImplementedError(f'Base stats for the combination race={race}, class={class_} are not implemented.')
 
@@ -78,8 +69,7 @@ def _base_stats(race, class_):
 def _spec_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
-        # Talents
-        stats['crit'] += 5
+        stats['crit'] += knowledge.CRUELTY_ADDITIONAL_CRIT
     else:
         raise NotImplementedError(f'Stats for class={class_}, spec={spec} are not implemented.')
 
@@ -115,32 +105,32 @@ def _enchant_stats(class_, spec):
     stats = defaultdict(int)
     if class_ == 'warrior' and spec == 'fury':
         # Head
-        # stats['haste'] += 1
-        stats['str'] += 8
+        # stats['haste'] += knowledge.ENCHANT_HEAD_HASTE
+        stats['str'] += knowledge.ENCHANT_HEAD_STRENGTH
 
         # Back
-        stats['agi'] += 3
+        stats['agi'] += knowledge.ENCHANT_BACK_AGILITY
 
         # Chest
-        stats['agi'] += 4
-        stats['int'] += 4
-        stats['spi'] += 4
-        stats['sta'] += 4
-        stats['str'] += 4
+        stats['agi'] += knowledge.ENCHANT_CHEST_STATS
+        stats['int'] += knowledge.ENCHANT_CHEST_STATS
+        stats['spi'] += knowledge.ENCHANT_CHEST_STATS
+        stats['sta'] += knowledge.ENCHANT_CHEST_STATS
+        stats['str'] += knowledge.ENCHANT_CHEST_STATS
 
         # Wrist
-        stats['str'] += 9
+        stats['str'] += knowledge.ENCHANT_WRIST_STRENGTH
 
         # Hands
-        # stats['haste'] += 1
-        stats['str'] += 7
+        # stats['haste'] += knowledge.ENCHANT_HANDS_HASTE
+        stats['str'] += knowledge.ENCHANT_HANDS_STRENGTH
 
         # Legs
-        # stats['haste'] += 1
-        stats['str'] += 8
+        # stats['haste'] += knowledge.ENCHANT_LEGS_HASTE
+        stats['str'] += knowledge.ENCHANT_LEGS_STRENGTH
 
         # Off Hand
-        # stats['str'] += 15
+        # stats['str'] += knowledge.ENCHANT_OFF_HAND_STRENGTH
     else:
         raise NotImplementedError(f'Enchant stats for class={class_}, spec={spec} are not implemented.')
 
@@ -152,24 +142,19 @@ def _permanent_buff_flat_stats(faction):
 
     stats = defaultdict(int)
     if faction == 'alliance':
-        # imp. battle shout 6
-        stats['ap'] += 231
+        stats['ap'] += knowledge.BATTLE_SHOUT_ADDITIONAL_AP
 
-        # imp. blessing of might 6
-        stats['ap'] += 186
+        stats['ap'] += knowledge.BLESSING_OF_MIGHT_ADDITIONAL_AP
 
-        # imp. mark of the wild 7
-        stats['agi'] += 16
-        stats['int'] += 16
-        stats['spi'] += 16
-        stats['sta'] += 16
-        stats['str'] += 16
+        stats['agi'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
+        stats['int'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
+        stats['spi'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
+        stats['sta'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
+        stats['str'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
 
-        # leader of the pack
-        # stats['crit'] += 3
+        # stats['crit'] += knowledge.LEADER_OF_THE_PACK_ADDITIONAL_CRIT
 
-        # trueshot aura
-        stats['ap'] += 100
+        stats['ap'] += knowledge.TRUESHOT_AURA_ADDITIONAL_AP
     else:
         raise NotImplementedError(f'Buffs for faction {faction} not implemented')
 
@@ -180,28 +165,14 @@ def _consumable_stats():
     """https://docs.google.com/spreadsheets/d/1MsDWgYDIcPE_5nX6pRbea-hW9JQjYikfCDWk16l5V-8/pubhtml#"""
 
     stats = defaultdict(int)
-
-    # R.O.I.D.S.
-    stats['str'] += 25
-
-    # Elixir of the Mongoose
-    stats['agi'] += 25
-    stats['crit'] += 2
-
-    # Juju Power
-    stats['str'] += 30
-
-    # Juju Might
-    stats['ap'] += 40
-
-    # Blessed Sunfruit
-    stats['str'] += 10
-
-    # Dense Sharpening Stone / Weightstone
-    stats['damage_range_main_hand'] = (8, 8)
-
-    # Elemental Sharpening Stone
-    stats['crit'] += 2
+    stats['str'] += knowledge.ROIDS_ADDITIONAL_STRENGTH
+    stats['agi'] += knowledge.ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_AGILITY
+    stats['crit'] += knowledge.ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_CRIT
+    stats['str'] += knowledge.JUJU_POWER_ADDITIONAL_STRENGTH
+    stats['ap'] += knowledge.JUJU_MIGHT_ADDITIONAL_AP
+    stats['str'] += knowledge.BLESSED_SUNFRUIT_ADDITIONAL_STRENGTH
+    stats['damage_range_main_hand'] = knowledge.DENSE_SHARPENING_STONE_ADDITIONAL_DAMAGE
+    stats['crit'] += knowledge.ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT
 
     return stats
 
@@ -210,12 +181,11 @@ def _apply_permanent_buff_percentage_effects(faction, stats):
     stats = copy.copy(stats)
 
     if faction == 'alliance':
-        # blessing of kings
-        stats['agi'] = round(stats['agi'] * 1.1)
-        stats['int'] = round(stats['int'] * 1.1)
-        stats['spi'] = round(stats['spi'] * 1.1)
-        stats['sta'] = round(stats['sta'] * 1.1)
-        stats['str'] = round(stats['str'] * 1.1)
+        stats['agi'] = round(stats['agi'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
+        stats['int'] = round(stats['int'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
+        stats['spi'] = round(stats['spi'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
+        stats['sta'] = round(stats['sta'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
+        stats['str'] = round(stats['str'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
     else:
         raise NotImplementedError(f'Buffs for faction {faction} not implemented')
 

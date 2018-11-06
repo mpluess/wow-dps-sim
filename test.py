@@ -68,3 +68,10 @@
 # print(heapq.heappop(event_queue))
 # print(heapq.heappop(event_queue))
 # print(heapq.heappop(event_queue))
+
+
+from collections import defaultdict
+
+stats = defaultdict(int, {'agi': 10})
+print(stats['agi'])
+print(stats['str'])

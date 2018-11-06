@@ -2,6 +2,7 @@ refactorings:
 - outsource ability cost etc. config. all knowledge if possible.
 - allow sims for different classes / specs. allow whole raid sim.
 
+- dw / reck: gcd
 - on use
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds

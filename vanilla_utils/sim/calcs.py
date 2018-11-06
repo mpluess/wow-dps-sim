@@ -2,18 +2,11 @@ import copy
 import random
 
 from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
+import vanilla_utils.knowledge as knowledge
 from vanilla_utils.stats import apply_berserker_stance_effects, finalize_buffed_stats
 
 
 class Calcs:
-    normalized_weapon_speed_lookup = {
-        'Dagger': 1.7,
-        'Axe': 2.4,
-        'Fist Weapon': 2.4,
-        'Mace': 2.4,
-        'Sword': 2.4,
-    }
-
     def __init__(self, boss, player):
         self.boss = boss
         self.player = player
@@ -30,15 +23,15 @@ class Calcs:
             if self.player.stance == Stance.BERSERKER:
                 stats = apply_berserker_stance_effects(stats)
             if PlayerBuffs.RECKLESSNESS in self.player.buffs:
-                stats['crit'] += 100
+                stats['crit'] += knowledge.RECKLESSNESS_ADDITIONAL_CRIT
 
             if PlayerBuffs.DEATH_WISH in self.player.buffs:
-                stats['damage_multiplier'] *= 1.2
+                stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
 
             if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
-                stats['str'] += 100
+                stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
             if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
-                stats['str'] += 100
+                stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
 
             return stats
 
@@ -50,12 +43,12 @@ class Calcs:
 
     def bloodthirst(self):
         current_stats = self.current_stats()
-        base_damage = round(0.45 * current_stats['ap'])
+        base_damage = round(knowledge.BLOODTHIRST_AP_FACTOR * current_stats['ap'])
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
     def execute(self, rage):
-        base_damage = 600 + (rage - 10)*15
+        base_damage = knowledge.EXECUTE_BASE_DAMAGE + (rage - knowledge.EXECUTE_BASE_RAGE_COST)*knowledge.EXECUTE_DAMAGE_PER_RAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
@@ -66,7 +59,7 @@ class Calcs:
             current_stats['speed_main_hand']
         )
         # Rank 8
-        base_damage += 138
+        base_damage += knowledge.HEROIC_STRIKE_ADDITIONAL_DAMAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.HEROIC_STRIKE, Hand.MAIN)
 
@@ -74,9 +67,9 @@ class Calcs:
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
             current_stats['damage_range_main_hand'],
-            self.normalized_weapon_speed_lookup[current_stats['weapon_type_main_hand']]
+            knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
         )
-        base_damage += 35
+        base_damage += knowledge.OVERPOWER_ADDITIONAL_DAMAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN, AttackTableModification.OVERPOWER)
 
@@ -84,7 +77,7 @@ class Calcs:
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
             current_stats['damage_range_main_hand'],
-            self.normalized_weapon_speed_lookup[current_stats['weapon_type_main_hand']]
+            knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
         )
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
@@ -111,9 +104,9 @@ class Calcs:
             elif attack_result == AttackResult.CRIT:
                 # Impale only works on abilities, not auto attacks
                 if attack_type == AttackType.WHITE:
-                    modifier = 2.0
+                    modifier = knowledge.CRIT_DAMAGE_MULTIPLIER
                 else:
-                    modifier = 2.2
+                    modifier = knowledge.CRIT_WITH_IMPALE_DAMAGE_MULTIPLIER
                 return round(damage * modifier)
             elif attack_result == AttackResult.HIT:
                 return damage
@@ -127,9 +120,9 @@ class Calcs:
                     0,
 
                     self.boss.armor
-                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss.debuffs else 0) * 450 * 5
-                    - (1 if BossDebuffs.FAERIE_FIRE in self.boss.debuffs else 0) * 505
-                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss.debuffs else 0) * 640
+                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss.debuffs else 0) * knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
+                    - (1 if BossDebuffs.FAERIE_FIRE in self.boss.debuffs else 0) * knowledge.FAERIE_FIRE_ARMOR_REDUCTION
+                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss.debuffs else 0) * knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
                 )
 
             boss_armor = current_boss_armor()
@@ -215,7 +208,7 @@ class Calcs:
             damage = apply_boss_armor(damage)
 
             if hand == Hand.OFF:
-                damage = round(damage * 0.625)
+                damage = round(damage * knowledge.OFF_HAND_FACTOR)
 
             current_stats = self.current_stats()
             damage = round(damage * current_stats['damage_multiplier'])
