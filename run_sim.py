@@ -1,9 +1,9 @@
 from collections import defaultdict
 import time
 
-from enums import Proc
-from sim.entities import Boss, Config, Player
-from sim.sim import do_sim
+from vanilla_utils.enums import Proc
+from vanilla_utils.sim.entities import Boss, Config, Player
+from vanilla_utils.sim.sim import do_sim
 
 faction = 'alliance'
 race = 'human'

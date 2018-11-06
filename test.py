@@ -68,13 +68,3 @@
 # print(heapq.heappop(event_queue))
 # print(heapq.heappop(event_queue))
 # print(heapq.heappop(event_queue))
-
-
-import random
-
-
-
-
-
-for _ in range(10000):
-    print(sample_fight_duration(180.0, 20.0))

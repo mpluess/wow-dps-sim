@@ -3,11 +3,11 @@ import os
 import random
 import time
 
-from enums import Proc
 from .calcs import Calcs
 from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
 from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
+from vanilla_utils.enums import Proc
 
 
 class Sim:

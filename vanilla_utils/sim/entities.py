@@ -3,7 +3,7 @@ from statistics import mean
 
 from .constants import Constants
 from .enums import BossDebuffs, Stance
-import stats
+import vanilla_utils.stats
 
 
 class AbilityLogEntry:
@@ -72,7 +72,7 @@ class Player:
         self.items = items
 
         if partial_buffed_permanent_stats is None:
-            self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+            self.partial_buffed_permanent_stats = vanilla_utils.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
         else:
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 

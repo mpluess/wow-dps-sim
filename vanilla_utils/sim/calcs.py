@@ -2,7 +2,7 @@ import copy
 import random
 
 from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
-from stats import apply_berserker_stance_effects, finalize_buffed_stats
+from vanilla_utils.stats import apply_berserker_stance_effects, finalize_buffed_stats
 
 
 class Calcs:
