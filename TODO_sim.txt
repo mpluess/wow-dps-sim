@@ -1,5 +1,4 @@
 refactorings:
-- outsource ability cost etc. config. all knowledge if possible.
 - allow sims for different classes / specs. allow whole raid sim.
 
 - dw / reck: gcd

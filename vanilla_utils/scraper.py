@@ -138,14 +138,3 @@ class Scraper:
             item['procs'].add(self.proc_mapping[item['name']])
 
         return item
-
-
-# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
-# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('head', '12640'))
-# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('legs', '15062'))
-
-# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('main_hand', '14555'))
-# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('head', '12640'))
-# print(Scraper('https://classicdb.ch/?item=', use_cache=False).scrape_item('legs', '15062'))
-
-# print(Scraper('https://vanillawowdb.com/?item=').scrape_item('main_hand', '17705'))

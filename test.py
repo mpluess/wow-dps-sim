@@ -70,8 +70,14 @@
 # print(heapq.heappop(event_queue))
 
 
-from collections import defaultdict
+# from collections import defaultdict
+#
+# stats = defaultdict(int, {'agi': 10})
+# print(stats['agi'])
+# print(stats['str'])
 
-stats = defaultdict(int, {'agi': 10})
-print(stats['agi'])
-print(stats['str'])
+
+from vanilla_utils.scraper import Scraper
+
+# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
+print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
