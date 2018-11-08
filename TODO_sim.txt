@@ -1,7 +1,6 @@
 refactorings:
 - allow sims for different classes / specs. allow whole raid sim.
 
-- dw / reck: gcd
 - on use
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds
@@ -60,10 +59,9 @@ prio 3:
 battle shout
 
 tests / lookups:
-death wish gcd? reck gcd?
+reck gcd?
 bt, ww cds
 check calculated stats = stats in char window
-5% base crit double-check
 white hit weapon damage actually randomly drawn in dmg range or just the average?
 what about ww?
 

@@ -42,14 +42,13 @@ class Sim:
             'overpower_not_on_cd': True,
             'overpower_available_till': 0.0,
             'death_wish_available': True,
+            'recklessness_available': True,
             'flurry_charges': 0,
             'heroic_strike_toggled': False,
             'execute_phase': False,
         }
 
         self._add_event(0.0, EventType.BLOODRAGE_CD_END)
-        self._add_event(0.0, EventType.DEATH_WISH_CD_END)
-        self._add_event(0.0, EventType.RECKLESSNESS_CD_END)
         self.next_white_hit_main = self._add_event(0.0, EventType.WHITE_HIT_MAIN)
         self.next_white_hit_off = self._add_event(0.0, EventType.WHITE_HIT_OFF)
         self.crusader_main_proc_end_event = None
@@ -78,7 +77,12 @@ class Sim:
     def handle_event(self, event):
         def do_rota():
             if self.state['execute_phase']:
-                use_execute()
+                if use_death_wish():
+                    pass
+                elif use_recklessness():
+                    pass
+                elif use_execute():
+                    pass
             else:
                 if use_bloodthirst():
                     pass
@@ -88,6 +92,10 @@ class Sim:
                 # 586 vs. 573 DPS @ pre-raid BIS
                 # 886 vs. 862 DPS @ Naxx BIS
                 elif use_overpower():
+                    pass
+                elif use_death_wish():
+                    pass
+                elif use_recklessness():
                     pass
 
         def switch_stance(stance):
@@ -118,10 +126,11 @@ class Sim:
                 return False
 
         def use_death_wish():
-            if self.state['rage'] >= knowledge.DEATH_WISH_RAGE_COST:
+            if not self.state['on_gcd'] and self.state['death_wish_available'] and self.state['rage'] >= knowledge.DEATH_WISH_RAGE_COST:
                 self.state['death_wish_available'] = False
                 self._consume_rage('death_wish', knowledge.DEATH_WISH_RAGE_COST, None)
                 self.player.buffs.add(PlayerBuffs.DEATH_WISH)
+                self._trigger_gcd()
                 self._add_event(knowledge.DEATH_WISH_DURATION, EventType.DEATH_WISH_END)
                 self._add_event(knowledge.DEATH_WISH_CD, EventType.DEATH_WISH_CD_END)
                 self.log(f"{self._log_entry_beginning('death_wish')} activated\n")
@@ -169,6 +178,19 @@ class Sim:
 
             return False
 
+        def use_recklessness():
+            if not self.state['on_gcd'] and self.state['recklessness_available'] and self.player.stance == Stance.BERSERKER:
+                self.state['recklessness_available'] = False
+                self.player.buffs.add(PlayerBuffs.RECKLESSNESS)
+                self._trigger_gcd()
+                self._add_event(knowledge.RECKLESSNESS_DURATION, EventType.RECKLESSNESS_END)
+                self._add_event(knowledge.RECKLESSNESS_CD, EventType.RECKLESSNESS_CD_END)
+                self.log(f"{self._log_entry_beginning('recklessness')} activated\n")
+
+                return True
+            else:
+                return False
+
         def use_whirlwind():
             # When between 25 and 29 rage and both BT + WW are available, both my intuition and this sim tell us
             # it's slightly better to delay WW and wait until 30 rage are available to use BT instead.
@@ -200,16 +222,13 @@ class Sim:
             self.log(f"{self._log_entry_beginning('death_wish')} fades\n")
         elif event_type == EventType.DEATH_WISH_CD_END:
             self.state['death_wish_available'] = True
-            use_death_wish()
+            do_rota()
         elif event_type == EventType.RECKLESSNESS_END:
             self.player.buffs.remove(PlayerBuffs.RECKLESSNESS)
             self.log(f"{self._log_entry_beginning('recklessness')} fades\n")
-        # TODO Check if in berserker stance. Make sure it gets triggered as soon as possible if currently not in berserker stance.
         elif event_type == EventType.RECKLESSNESS_CD_END:
-            self.player.buffs.add(PlayerBuffs.RECKLESSNESS)
-            self._add_event(knowledge.RECKLESSNESS_DURATION, EventType.RECKLESSNESS_END)
-            self._add_event(knowledge.RECKLESSNESS_CD, EventType.RECKLESSNESS_CD_END)
-            self.log(f"{self._log_entry_beginning('recklessness')} activated\n")
+            self.state['recklessness_available'] = True
+            do_rota()
         elif event_type == EventType.BLOODTHIRST_CD_END:
             self.state['bloodthirst_available'] = True
             do_rota()
@@ -249,8 +268,6 @@ class Sim:
             self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
             self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
         elif event_type == EventType.RAGE_GAINED:
-            if self.state['death_wish_available']:
-                use_death_wish()
             do_rota()
             use_heroic_strike()
         elif event_type == EventType.HEROIC_STRIKE_LANDED:
@@ -396,8 +413,7 @@ class Sim:
             apply_flurry(hand)
 
         if triggers_gcd:
-            self.state['on_gcd'] = True
-            self._add_event(knowledge.GCD_DURATION, EventType.GCD_END)
+            self._trigger_gcd()
 
         handle_procs(hand)
 
@@ -421,6 +437,10 @@ class Sim:
             log_entry += f' {Constants.ability_names_lookup[ability]}'
 
         return log_entry
+
+    def _trigger_gcd(self):
+        self.state['on_gcd'] = True
+        self._add_event(knowledge.GCD_DURATION, EventType.GCD_END)
 
 
 def do_sim(player, boss, config):

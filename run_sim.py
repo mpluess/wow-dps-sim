@@ -20,7 +20,7 @@ items = [
     {'name': 'Devilsaur Gauntlets', 'stats': defaultdict(int, {'armor': 103, 'sta': 9, 'ap': 28, 'crit': 1}), 'set': {'name': 'Devilsaur Armor', 'bonuses': {2: ('hit', 2)}}, 'procs': set()},
     {'name': "Omokk's Girth Restrainer", 'stats': defaultdict(int, {'armor': 353, 'str': 15, 'sta': 9, 'crit': 1}), 'set': {'name': None, 'bonuses': {}}, 'procs': set()},
     {'name': 'Devilsaur Leggings', 'stats': defaultdict(int, {'armor': 148, 'sta': 12, 'ap': 46, 'crit': 1}), 'set': {'name': 'Devilsaur Armor', 'bonuses': {2: ('hit', 2)}}, 'procs': set()},
-    {'name': 'Pads of the Dread Wolf', 'stats': defaultdict(int, {'armor': 116, 'sta': 14, 'ap': 40}), 'set': {'name': None, 'bonuses': {}}, 'procs': set()},
+    {'name': "Battlechaser's Greaves", 'stats': defaultdict(int, {'armor': 397, 'agi': 13, 'str': 14, 'sta': 8}), 'set': {'name': None, 'bonuses': {}}, 'procs': set()},
     {'name': 'Blackstone Ring', 'stats': defaultdict(int, {'sta': 6, 'ap': 20, 'hit': 1}), 'set': {'name': None, 'bonuses': {}}, 'procs': set()},
     {'name': 'Tarnished Elven Ring', 'stats': defaultdict(int, {'agi': 15, 'hit': 1}), 'set': {'name': None, 'bonuses': {}}, 'procs': set()},
     {'name': 'Hand of Justice', 'stats': defaultdict(int, {'ap': 20}), 'set': {'name': None, 'bonuses': {}}, 'procs': {Proc.HAND_OF_JUSTICE}},
