@@ -59,6 +59,11 @@ prio 3:
 battle shout
 
 tests / lookups:
+does flurry proc from all attacks or only white hit / hs? did it change with bc?
+http://wowwiki.wikia.com/wiki/Patch_1.11.0: Flurry: The tooltip for this talent has been adjusted to indicate it only works on normal melee swings.
+http://wowwiki.wikia.com/wiki/Patch_2.0.1: Fixed an issue where extra attacks from "Windfury Weapon" would not proc "Flurry" when they crit.
+http://wowwiki.wikia.com/wiki/Patch_2.4.0: Whirlwind: Critical strikes with the off-hand weapon from this ability can now trigger Flurry and Rampage.
+
 reck gcd?
 bt, ww cds
 check calculated stats = stats in char window

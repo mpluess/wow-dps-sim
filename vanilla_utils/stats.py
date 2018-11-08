@@ -171,7 +171,10 @@ def _consumable_stats():
     stats['str'] += knowledge.JUJU_POWER_ADDITIONAL_STRENGTH
     stats['ap'] += knowledge.JUJU_MIGHT_ADDITIONAL_AP
     stats['str'] += knowledge.BLESSED_SUNFRUIT_ADDITIONAL_STRENGTH
-    stats['damage_range_main_hand'] = knowledge.DENSE_SHARPENING_STONE_ADDITIONAL_DAMAGE
+
+    # stats['damage_range_main_hand'] = knowledge.DENSE_SHARPENING_STONE_ADDITIONAL_DAMAGE
+    stats['crit'] += knowledge.ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT
+
     stats['crit'] += knowledge.ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT
 
     return stats

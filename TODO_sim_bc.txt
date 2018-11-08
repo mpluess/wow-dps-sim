@@ -1,0 +1,28 @@
+imp hs 3 statt 2
+op (no op, anger management vs. op, no anger management, only keep 10 rage on stance switch)
+uw ppm
+no imp exe
+weapon mastery -2% dodge
+flurry 25% statt 30%
+precision +3% hit
+bt ap %? probably still 45% (http://wowwiki.wikia.com/wiki/Bloodthirst)
+ww -1 sec cd, hits with off hand too
+imp berserker +10% ap
+rampage
+
+knowledge.py
+rotation_config.py
+stats.py
+scraper: hit rating, crit rating, expertise, ...
+gems
+boss armor
+hit table
+weapon skill / expertise / glancings
+racials
+
+gcd on stance change?
+http://wowwiki.wikia.com/wiki/Patch_2.4.0:
+Stances: It is no longer possible to accidentally change into a stance you are already in via macros (resulting in a global cooldown and loss of rage).
+
+wf
+heroism
