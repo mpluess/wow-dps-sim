@@ -346,7 +346,7 @@ class Sim:
 
         # TODO edge case: don't apply flurry to white hit hitting in less than epsilon seconds
         # (should I really implement this? how often is this the case? how is it implemented in the game?)
-        def apply_flurry(hand_current_white_hit):
+        def handle_flurry(hand_current_white_hit):
             def apply_flurry_to_event(event):
                 if not event.has_flurry:
                     event_str_before = str(event)
@@ -359,7 +359,7 @@ class Sim:
                     return False
 
             resort_events = False
-            # New flurry proc, apply to both the current white hit proccing it and the existing white hit (other hand)
+            # New flurry proc, apply to swings of both hands
             if attack_result == AttackResult.CRIT:
                 self.log(f'{self._log_entry_beginning()} Flurry proc\n')
                 self.state['flurry_charges'] = 3
@@ -367,9 +367,15 @@ class Sim:
                 flurry_applied_off = apply_flurry_to_event(self.next_white_hit_off)
                 resort_events = flurry_applied_main or flurry_applied_off
                 self.state['flurry_charges'] = 1
-            # Existing flurry charge, only apply to the current white hit proccing it since the existing white hit (other hand)
+            # Existing flurry charge, only apply to the new swing of the hand that just landed a hit since the existing swing (other hand)
             # will already have flurry at this point.
-            elif self.state['flurry_charges'] > 0:
+            elif (
+                self.state['flurry_charges'] > 0
+                and (
+                    (attack_type == AttackType.WHITE and not is_white_proc)
+                    or attack_type == AttackType.HEROIC_STRIKE
+                )
+            ):
                 resort_events = apply_flurry_to_event(self.next_white_hit_off if hand_current_white_hit == Hand.OFF else self.next_white_hit_main)
                 self.state['flurry_charges'] -= 1
 
@@ -409,8 +415,7 @@ class Sim:
             self.state['overpower_available_till'] = self.current_time_seconds + knowledge.OVERPOWER_AVAILABILITY_DURATION
             self._add_event(0.0, EventType.ATTACK_DODGED)
 
-        if (attack_type == AttackType.WHITE and not is_white_proc) or attack_type == AttackType.HEROIC_STRIKE:
-            apply_flurry(hand)
+        handle_flurry(hand)
 
         if triggers_gcd:
             self._trigger_gcd()

@@ -1,20 +1,22 @@
-refactorings:
-- allow sims for different classes / specs. allow whole raid sim.
+enabled procs, on-use effects should be configurable
+on-use effects
+outsource stats methods with differences to configuration
 
-- on use
+
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds
   - https://www.wowhead.com/forums&topic=144974
   - gets overwritten pretty soon: https://forum.nostalrius.org/viewtopic.php?f=36&t=19499
+- difference 2x fast vs. slow / fast vs. slow / slow @ execute phase
 - execute weapon set
 
 
-- improve log entries, aim for complete transparency:
+- stats:
   - flurry uptime
   - bt / ww: how many of the theoretically possible ones are done during a fight due to rage?
 
 
-- difference 2x fast vs. slow / fast vs. slow / slow @ execute phase
+- allow sims for different classes / specs. allow whole raid sim.
 
 
 x model buffs (own, other classes, consumables)

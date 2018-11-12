@@ -1,3 +1,4 @@
+differences vanilla vs. bc:
 imp hs 3 statt 2
 op (no op, anger management vs. op, no anger management, only keep 10 rage on stance switch)
 uw ppm
@@ -26,3 +27,25 @@ Stances: It is no longer possible to accidentally change into a stance you are a
 
 wf
 heroism
+
+
+code:
+different:
+knowledge (möglichst viel hier abhandeln, möglichst viel sonstiges gleich halten)
+rotation_config
+stats _spec_stats, _enchant_stats, _permanent_buff_flat_stats, _consumable_stats, _apply_permanent_buff_percentage_effects, _apply_primary_stats_effects, _add_tertiary_stats
+sim.entities Boss, Player (partial_buffed_permanent_stats)
+sim.sim main difference: do_rota
+sim.calc current_speed, whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
+
+same:
+templates. user should be able to choose database to scrape from and patch / expansion level.
+run_sim, webapp basics. some additional code to differentiate between expansions.
+enums
+scraper
+stats everything else
+sim.constants
+sim.entities everything else
+sim.enums
+sim.sim everything else (?)
+sim.calc everything else (?)
