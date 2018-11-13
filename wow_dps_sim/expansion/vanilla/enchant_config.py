@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from vanilla_utils.enums import Proc
+from wow_dps_sim.enums import Proc
 
 
 _ENCHANT_BACK_AGILITY = 3

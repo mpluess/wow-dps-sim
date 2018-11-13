@@ -1,8 +1,8 @@
 from collections import defaultdict
 import copy
 
-from vanilla_utils.helpers import from_module_import_x
-from vanilla_utils.main_config import EXPANSION_MODULE
+from wow_dps_sim.helpers import from_module_import_x
+from wow_dps_sim.main_config import EXPANSION_MODULE
 buff_config = from_module_import_x(EXPANSION_MODULE, 'buff_config')
 consumable_config = from_module_import_x(EXPANSION_MODULE, 'consumable_config')
 enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')

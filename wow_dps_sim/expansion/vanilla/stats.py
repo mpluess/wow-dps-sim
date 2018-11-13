@@ -1,9 +1,9 @@
 import copy
 
-import vanilla_utils.expansion.stats
+import wow_dps_sim.expansion.stats
 
 
-class Stats(vanilla_utils.expansion.stats.Stats):
+class Stats(wow_dps_sim.expansion.stats.Stats):
     @staticmethod
     def apply_primary_stats_effects(race, class_, spec, stats):
         stats = copy.copy(stats)

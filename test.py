@@ -77,7 +77,7 @@
 # print(stats['str'])
 
 
-from vanilla_utils.scraper import Scraper
+from wow_dps_sim.scraper import Scraper
 
 # print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
 print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))

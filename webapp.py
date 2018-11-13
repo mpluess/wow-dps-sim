@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request
 
-from vanilla_utils.scraper import Scraper
-from vanilla_utils.sim.entities import Boss, Config, Player
-from vanilla_utils.sim.sim import do_sim
-import vanilla_utils.stats
+from wow_dps_sim.scraper import Scraper
+from wow_dps_sim.sim.entities import Boss, Config, Player
+from wow_dps_sim.sim.sim import do_sim
+import wow_dps_sim.stats
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/
 
 @app.route('/', methods=['GET'])
 def show_form():
-    return render_template('vanilla_utils.html')
+    return render_template('wow_dps_sim.html')
 
 
 @app.route('/', methods=['POST'])
@@ -28,7 +28,7 @@ def calc_stats():
     spec = request_data[f"spec_{request_data['class']}"]
     items = _scrape_items(request_data)
 
-    unbuffed_stats = vanilla_utils.stats.calc_unbuffed_stats(race, class_, spec, items)
+    unbuffed_stats = wow_dps_sim.stats.calc_unbuffed_stats(race, class_, spec, items)
     unbuffed_base_stats = [
         ('Items', ', '.join([item['name'] for item in items])),
         ('Health', unbuffed_stats['health']),
@@ -53,9 +53,9 @@ def calc_stats():
     ]
 
     faction = request_data['faction']
-    buffed_stats = vanilla_utils.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
-    buffed_stats = vanilla_utils.stats.apply_berserker_stance_effects(buffed_stats)
-    buffed_stats = vanilla_utils.stats.finalize_buffed_stats(faction, race, class_, spec, buffed_stats)
+    buffed_stats = wow_dps_sim.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+    buffed_stats = wow_dps_sim.stats.apply_berserker_stance_effects(buffed_stats)
+    buffed_stats = wow_dps_sim.stats.finalize_buffed_stats(faction, race, class_, spec, buffed_stats)
 
     return render_template(
         'stats.html',

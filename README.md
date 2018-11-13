@@ -1,5 +1,5 @@
-# vanilla-utils
-WoW Vanilla Utils
+# wow-dps-sim
+WoW DPS Sim
 
 Current functionality:
 - Fury Warrior Character Planner Webapp. Calculates stats from item ids.

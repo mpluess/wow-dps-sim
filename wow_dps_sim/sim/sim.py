@@ -7,10 +7,10 @@ from .calcs import Calcs
 from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
 from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
-from vanilla_utils.enums import Proc
+from wow_dps_sim.enums import Proc
 
-from vanilla_utils.helpers import from_module_import_x
-from vanilla_utils.main_config import EXPANSION_MODULE
+from wow_dps_sim.helpers import from_module_import_x
+from wow_dps_sim.main_config import EXPANSION_MODULE
 knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
 rotation_config = from_module_import_x(EXPANSION_MODULE, 'rotation_config')
 
