@@ -52,6 +52,8 @@ class Sim:
         }
 
         self._add_event(0.0, EventType.BLOODRAGE_CD_END)
+        for on_use_effect in self.player.on_use_effects:
+            self._add_event(0.0, Constants.on_use_effect_to_cd_end_event_type[on_use_effect])
         self.next_white_hit_main = self._add_event(0.0, EventType.WHITE_HIT_MAIN)
         self.next_white_hit_off = self._add_event(0.0, EventType.WHITE_HIT_OFF)
         self.crusader_main_proc_end_event = None
@@ -301,6 +303,22 @@ class Sim:
             self.crusader_off_proc_end_event = None
             self.player.buffs.remove(PlayerBuffs.CRUSADER_OFF)
             self.log(f"{self._log_entry_beginning()} Crusader Off Hand Proc fades\n")
+        elif event_type == EventType.KISS_OF_THE_SPIDER_CD_END:
+            self.player.buffs.add(PlayerBuffs.KISS_OF_THE_SPIDER)
+            self._add_event(knowledge.KISS_OF_THE_SPIDER_DURATION, EventType.KISS_OF_THE_SPIDER_END)
+            self._add_event(knowledge.KISS_OF_THE_SPIDER_CD, event_type)
+            self.log(f"{self._log_entry_beginning('kiss_of_the_spider')} activated\n")
+        elif event_type == EventType.KISS_OF_THE_SPIDER_END:
+            self.player.buffs.remove(PlayerBuffs.KISS_OF_THE_SPIDER)
+            self.log(f"{self._log_entry_beginning('kiss_of_the_spider')} fades\n")
+        elif event_type == EventType.SLAYERS_CREST_CD_END:
+            self.player.buffs.add(PlayerBuffs.SLAYERS_CREST)
+            self._add_event(knowledge.SLAYERS_CREST_DURATION, EventType.SLAYERS_CREST_END)
+            self._add_event(knowledge.SLAYERS_CREST_CD, event_type)
+            self.log(f"{self._log_entry_beginning('slayers_crest')} activated\n")
+        elif event_type == EventType.SLAYERS_CREST_END:
+            self.player.buffs.remove(PlayerBuffs.SLAYERS_CREST)
+            self.log(f"{self._log_entry_beginning('slayers_crest')} fades\n")
 
     def log(self, message):
         if self.logging:

@@ -72,6 +72,14 @@ HAND_OF_JUSTICE_PROC_CHANCE = 0.02
 IRONFOE_PROC_CHANCE = 0.05
 THRASH_BLADE_PROC_CHANCE = 0.05
 
+KISS_OF_THE_SPIDER_CD = 120.0
+KISS_OF_THE_SPIDER_DURATION = 15.0
+KISS_OF_THE_SPIDER_SPEED_MULTIPLIER = 0.8
+
+SLAYERS_CREST_CD = 120.0
+SLAYERS_CREST_DURATION = 20.0
+SLAYERS_CREST_ADDITIONAL_AP = 260
+
 # Enchants
 CRUSADER_ADDITIONAL_STRENGTH = 100
 CRUSADER_DURATION = 15.0
@@ -89,6 +97,7 @@ BASE_STATS = {
             'sta': 110,
             'str': 120,
             'damage_multiplier': 1.0,
+            'speed_multiplier': 1.0,
             'Mace': 5,
             'Sword': 5,
         }),

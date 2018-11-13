@@ -7,6 +7,7 @@ import wow_dps_sim.stats
 
 from wow_dps_sim.helpers import from_module_import_x
 from wow_dps_sim.main_config import EXPANSION_MODULE
+consumable_config = from_module_import_x(EXPANSION_MODULE, 'consumable_config')
 enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')
 
 
@@ -68,7 +69,7 @@ class WhiteHitEvent(Event):
 
 
 class Player:
-    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats=None, procs=None):
+    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
         self.faction = faction
         self.race = race
         self.class_ = class_
@@ -85,6 +86,11 @@ class Player:
         else:
             self.procs = procs
 
+        if on_use_effects is None:
+            self.on_use_effects = self._create_on_use_effect_set(items, consumable_config.CONSUMABLE_ON_USE_EFFECTS)
+        else:
+            self.on_use_effects = on_use_effects
+
         self.buffs = set()
         self.stance = Stance.BERSERKER
 
@@ -92,13 +98,18 @@ class Player:
     def from_player(cls, player):
         return cls(
             player.faction, player.race, player.class_, player.spec, player.items,
-            player.partial_buffed_permanent_stats, player.procs
+            player.partial_buffed_permanent_stats, player.procs, player.on_use_effects
         )
 
-    @classmethod
-    def _create_proc_set(cls, items, enchant_procs):
+    @staticmethod
+    def _create_proc_set(items, enchant_procs):
         list_of_proc_sets = [item['procs'] for item in items] + [enchant_procs]
         return set.union(*list_of_proc_sets)
+
+    @staticmethod
+    def _create_on_use_effect_set(items, consumable_on_use_effects):
+        list_of_on_use_effect_sets = [item['on_use_effects'] for item in items] + [consumable_on_use_effects]
+        return set.union(*list_of_on_use_effect_sets)
 
 
 class Result:

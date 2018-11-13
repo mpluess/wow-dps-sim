@@ -1,7 +1,3 @@
-enabled procs, on-use effects should be configurable
-on-use effects
-
-
 - bloodrage on cd vs. when no rage available for ability
 - evtl. deep wounds
   - https://www.wowhead.com/forums&topic=144974

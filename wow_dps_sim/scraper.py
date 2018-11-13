@@ -5,7 +5,7 @@ import os
 import re
 import requests
 
-from .enums import Proc
+from .enums import OnUseEffect, Proc
 
 
 class Scraper:
@@ -47,6 +47,10 @@ class Scraper:
         'Ironfoe': {
             'main_hand': Proc.IRONFOE
         },
+    }
+    on_use_effect_mapping = {
+        'Kiss of the Spider': OnUseEffect.KISS_OF_THE_SPIDER,
+        "Slayer's Crest": OnUseEffect.SLAYERS_CREST,
     }
 
     def __init__(self, url_prefix, use_cache=True, path_to_cache='cache/items'):
@@ -136,5 +140,9 @@ class Scraper:
             item['procs'].add(self.weapon_proc_mapping[item['name']][item_slot])
         elif item['name'] in self.proc_mapping:
             item['procs'].add(self.proc_mapping[item['name']])
+
+        item['on_use_effects'] = set()
+        if item['name'] in self.on_use_effect_mapping:
+            item['on_use_effects'].add(self.on_use_effect_mapping[item['name']])
 
         return item

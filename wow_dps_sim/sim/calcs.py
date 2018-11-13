@@ -17,7 +17,11 @@ class Calcs:
     def current_speed(self, hand):
         assert isinstance(hand, Hand)
         current_stats = self.current_stats()
-        return current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')] * (1 - current_stats['haste']/100)
+        return (
+            current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]
+            * (1 - current_stats['haste']/100)
+            * current_stats['speed_multiplier']
+        )
 
     def current_stats(self):
         def apply_temporary_buffs(stats):
@@ -27,14 +31,16 @@ class Calcs:
                 stats = apply_berserker_stance_effects(stats)
             if PlayerBuffs.RECKLESSNESS in self.player.buffs:
                 stats['crit'] += knowledge.RECKLESSNESS_ADDITIONAL_CRIT
-
             if PlayerBuffs.DEATH_WISH in self.player.buffs:
                 stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
-
             if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
                 stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
             if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
                 stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
+            if PlayerBuffs.KISS_OF_THE_SPIDER in self.player.buffs:
+                stats['speed_multiplier'] *= knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
+            if PlayerBuffs.SLAYERS_CREST in self.player.buffs:
+                stats['ap'] += knowledge.SLAYERS_CREST_ADDITIONAL_AP
 
             return stats
 

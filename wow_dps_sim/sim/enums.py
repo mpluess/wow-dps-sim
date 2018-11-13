@@ -55,6 +55,11 @@ class EventType(Enum):
     CRUSADER_OFF_PROC = auto()
     CRUSADER_OFF_PROC_END = auto()
 
+    KISS_OF_THE_SPIDER_CD_END = auto()
+    KISS_OF_THE_SPIDER_END = auto()
+    SLAYERS_CREST_CD_END = auto()
+    SLAYERS_CREST_END = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -66,6 +71,8 @@ class PlayerBuffs(Enum):
     RECKLESSNESS = auto()
     CRUSADER_MAIN = auto()
     CRUSADER_OFF = auto()
+    KISS_OF_THE_SPIDER = auto()
+    SLAYERS_CREST = auto()
 
 
 class Stance(Enum):
