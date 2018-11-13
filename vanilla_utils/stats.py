@@ -1,7 +1,11 @@
 from collections import defaultdict
 import copy
 
-import vanilla_utils.knowledge as knowledge
+from vanilla_utils.expansion.vanilla import buff_config
+from vanilla_utils.expansion.vanilla import consumable_config
+from vanilla_utils.expansion.vanilla import enchant_config
+from vanilla_utils.expansion.vanilla import knowledge
+from vanilla_utils.expansion.vanilla.stats import Stats
 
 
 def calc_unbuffed_stats(race, class_, spec, items):
@@ -10,8 +14,8 @@ def calc_unbuffed_stats(race, class_, spec, items):
     stats = _merge_stats(stats, _item_stats(items))
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
     stats = apply_berserker_stance_effects(stats)
-    stats = _apply_primary_stats_effects(race, class_, spec, stats)
-    stats = _add_tertiary_stats(race, class_, spec, stats)
+    stats = Stats.apply_primary_stats_effects(race, class_, spec, stats)
+    stats = Stats.add_tertiary_stats(race, class_, spec, stats)
 
     return stats
 
@@ -37,8 +41,8 @@ def apply_berserker_stance_effects(stats):
 
 def finalize_buffed_stats(faction, race, class_, spec, stats):
     stats = _apply_permanent_buff_percentage_effects(faction, stats)
-    stats = _apply_primary_stats_effects(race, class_, spec, stats)
-    stats = _add_tertiary_stats(race, class_, spec, stats)
+    stats = Stats.apply_primary_stats_effects(race, class_, spec, stats)
+    stats = Stats.add_tertiary_stats(race, class_, spec, stats)
 
     return stats
 
@@ -67,9 +71,8 @@ def _base_stats(race, class_):
 
 
 def _spec_stats(class_, spec):
-    stats = defaultdict(int)
-    if class_ == 'warrior' and spec == 'fury':
-        stats['crit'] += knowledge.CRUELTY_ADDITIONAL_CRIT
+    if class_ in knowledge.SPEC_STATS and spec in knowledge.SPEC_STATS[class_]:
+        stats = knowledge.SPEC_STATS[class_][spec]
     else:
         raise NotImplementedError(f'Stats for class={class_}, spec={spec} are not implemented.')
 
@@ -102,35 +105,8 @@ def _item_stats(items):
 
 
 def _enchant_stats(class_, spec):
-    stats = defaultdict(int)
-    if class_ == 'warrior' and spec == 'fury':
-        # Head
-        # stats['haste'] += knowledge.ENCHANT_HEAD_HASTE
-        stats['str'] += knowledge.ENCHANT_HEAD_STRENGTH
-
-        # Back
-        stats['agi'] += knowledge.ENCHANT_BACK_AGILITY
-
-        # Chest
-        stats['agi'] += knowledge.ENCHANT_CHEST_STATS
-        stats['int'] += knowledge.ENCHANT_CHEST_STATS
-        stats['spi'] += knowledge.ENCHANT_CHEST_STATS
-        stats['sta'] += knowledge.ENCHANT_CHEST_STATS
-        stats['str'] += knowledge.ENCHANT_CHEST_STATS
-
-        # Wrist
-        stats['str'] += knowledge.ENCHANT_WRIST_STRENGTH
-
-        # Hands
-        # stats['haste'] += knowledge.ENCHANT_HANDS_HASTE
-        stats['str'] += knowledge.ENCHANT_HANDS_STRENGTH
-
-        # Legs
-        # stats['haste'] += knowledge.ENCHANT_LEGS_HASTE
-        stats['str'] += knowledge.ENCHANT_LEGS_STRENGTH
-
-        # Off Hand
-        # stats['str'] += knowledge.ENCHANT_OFF_HAND_STRENGTH
+    if class_ in enchant_config.ENCHANT_STATS and spec in enchant_config.ENCHANT_STATS[class_]:
+        stats = enchant_config.ENCHANT_STATS[class_][spec]
     else:
         raise NotImplementedError(f'Enchant stats for class={class_}, spec={spec} are not implemented.')
 
@@ -138,23 +114,8 @@ def _enchant_stats(class_, spec):
 
 
 def _permanent_buff_flat_stats(faction):
-    """https://github.com/Sweeksprox/vanilla-wow-raid-buffs/blob/master/raidBuffs.js"""
-
-    stats = defaultdict(int)
-    if faction == 'alliance':
-        stats['ap'] += knowledge.BATTLE_SHOUT_ADDITIONAL_AP
-
-        stats['ap'] += knowledge.BLESSING_OF_MIGHT_ADDITIONAL_AP
-
-        stats['agi'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
-        stats['int'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
-        stats['spi'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
-        stats['sta'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
-        stats['str'] += knowledge.MARK_OF_THE_WILD_ADDITIONAL_STATS
-
-        # stats['crit'] += knowledge.LEADER_OF_THE_PACK_ADDITIONAL_CRIT
-
-        stats['ap'] += knowledge.TRUESHOT_AURA_ADDITIONAL_AP
+    if faction in buff_config.PERMANENT_BUFF_FLAT_STATS:
+        stats = buff_config.PERMANENT_BUFF_FLAT_STATS[faction]
     else:
         raise NotImplementedError(f'Buffs for faction {faction} not implemented')
 
@@ -162,65 +123,16 @@ def _permanent_buff_flat_stats(faction):
 
 
 def _consumable_stats():
-    """https://docs.google.com/spreadsheets/d/1MsDWgYDIcPE_5nX6pRbea-hW9JQjYikfCDWk16l5V-8/pubhtml#"""
-
-    stats = defaultdict(int)
-    stats['str'] += knowledge.ROIDS_ADDITIONAL_STRENGTH
-    stats['agi'] += knowledge.ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_AGILITY
-    stats['crit'] += knowledge.ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_CRIT
-    stats['str'] += knowledge.JUJU_POWER_ADDITIONAL_STRENGTH
-    stats['ap'] += knowledge.JUJU_MIGHT_ADDITIONAL_AP
-    stats['str'] += knowledge.BLESSED_SUNFRUIT_ADDITIONAL_STRENGTH
-
-    # stats['damage_range_main_hand'] = knowledge.DENSE_SHARPENING_STONE_ADDITIONAL_DAMAGE
-    stats['crit'] += knowledge.ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT
-
-    stats['crit'] += knowledge.ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT
-
-    return stats
+    return consumable_config.CONSUMABLE_STATS
 
 
 def _apply_permanent_buff_percentage_effects(faction, stats):
     stats = copy.copy(stats)
 
-    if faction == 'alliance':
-        stats['agi'] = round(stats['agi'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
-        stats['int'] = round(stats['int'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
-        stats['spi'] = round(stats['spi'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
-        stats['sta'] = round(stats['sta'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
-        stats['str'] = round(stats['str'] * knowledge.BLESSING_OF_KINGS_STATS_MULTIPLIER)
+    if faction in buff_config.PERMANENT_BUFF_MULTIPLIERS:
+        for stat in buff_config.PERMANENT_BUFF_MULTIPLIERS[faction].keys():
+            stats[stat] = round(stats[stat] * buff_config.PERMANENT_BUFF_MULTIPLIERS[faction][stat])
     else:
         raise NotImplementedError(f'Buffs for faction {faction} not implemented')
-
-    return stats
-
-
-def _apply_primary_stats_effects(race, class_, spec, stats):
-    stats = copy.copy(stats)
-
-    if class_ == 'warrior' and spec == 'fury':
-        stats['ap'] += stats['str'] * 2
-        stats['armor'] += stats['agi'] * 2
-        stats['crit'] += stats['agi'] / 20
-    else:
-        raise NotImplementedError(
-            f'Primary stats effects for class={class_}, spec={spec} are not implemented.')
-
-    return stats
-
-
-def _add_tertiary_stats(race, class_, spec, stats):
-    stats = copy.copy(stats)
-
-    if class_ == 'warrior' and spec == 'fury':
-        stats['health'] = 1509 + min(stats['sta'], 20) * 1 + max(stats['sta'] - 20, 0) * 10
-
-        weapon_type_main_hand = stats['weapon_type_main_hand']
-        stats['weapon_skill_bonus_main_hand'] = stats[weapon_type_main_hand] if weapon_type_main_hand in stats else 0
-        weapon_type_off_hand = stats['weapon_type_off_hand']
-        stats['weapon_skill_bonus_off_hand'] = stats[weapon_type_off_hand] if weapon_type_off_hand in stats else 0
-    else:
-        raise NotImplementedError(
-            f'Primary stats effects for class={class_}, spec={spec} are not implemented.')
 
     return stats

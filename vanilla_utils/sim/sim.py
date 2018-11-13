@@ -8,8 +8,8 @@ from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
 from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
 from vanilla_utils.enums import Proc
-import vanilla_utils.knowledge as knowledge
-import vanilla_utils.rotation_config as rotation_config
+from vanilla_utils.expansion.vanilla import knowledge
+from vanilla_utils.expansion.vanilla import rotation_config
 
 
 class Sim:

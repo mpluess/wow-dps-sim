@@ -1,6 +1,5 @@
 enabled procs, on-use effects should be configurable
 on-use effects
-outsource stats methods with differences to configuration
 
 
 - bloodrage on cd vs. when no rage available for ability

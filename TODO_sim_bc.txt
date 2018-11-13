@@ -33,7 +33,6 @@ code:
 different:
 knowledge (möglichst viel hier abhandeln, möglichst viel sonstiges gleich halten)
 rotation_config
-stats _spec_stats, _enchant_stats, _permanent_buff_flat_stats, _consumable_stats, _apply_permanent_buff_percentage_effects, _apply_primary_stats_effects, _add_tertiary_stats
 sim.entities Boss, Player (partial_buffed_permanent_stats)
 sim.sim main difference: do_rota
 sim.calc current_speed, whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
@@ -43,7 +42,7 @@ templates. user should be able to choose database to scrape from and patch / exp
 run_sim, webapp basics. some additional code to differentiate between expansions.
 enums
 scraper
-stats everything else
+stats
 sim.constants
 sim.entities everything else
 sim.enums

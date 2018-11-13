@@ -1,24 +1,6 @@
 from collections import defaultdict
 
 
-# Base stats
-# TODO are these really correct?
-# https://www.getmangos.eu/forums/topic/8703-level-60-stats/
-BASE_STATS = {
-    'human': {
-        'warrior': defaultdict(int, {
-            'agi': 80,
-            'int': 30,
-            'spi': 50,
-            'sta': 110,
-            'str': 120,
-            'damage_multiplier': 1.0,
-            'Mace': 5,
-            'Sword': 5,
-        }),
-    },
-}
-
 # Warrior general
 GCD_DURATION = 1.5
 STANCE_CD_DURATION = 1.5
@@ -34,10 +16,6 @@ OFF_HAND_FACTOR = 0.625
 BERSERKER_STANCE_ADDITIONAL_CRIT = 3
 
 # Warrior abilities
-
-# imp. battle shout 6
-BATTLE_SHOUT_ADDITIONAL_AP = 231
-
 BLOODRAGE_BASE_RAGE = 10
 BLOODRAGE_CD = 60.0
 BLOODRAGE_DURATION = 10
@@ -78,20 +56,8 @@ WHIRLWIND_CD = 10.0
 WHIRLWIND_RAGE_COST = 25
 
 # Other abilities
-
-BLESSING_OF_KINGS_STATS_MULTIPLIER = 1.1
-
-# imp. blessing of might 6
-BLESSING_OF_MIGHT_ADDITIONAL_AP = 186
-
 CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION = 640
 FAERIE_FIRE_ARMOR_REDUCTION = 505
-LEADER_OF_THE_PACK_ADDITIONAL_CRIT = 3
-
-# imp. mark of the wild 7
-MARK_OF_THE_WILD_ADDITIONAL_STATS = 16
-
-TRUESHOT_AURA_ADDITIONAL_AP = 100
 
 # Items
 NORMALIZED_WEAPON_SPEED_LOOKUP = {
@@ -111,23 +77,28 @@ CRUSADER_ADDITIONAL_STRENGTH = 100
 CRUSADER_DURATION = 15.0
 CRUSADER_PPM = 1.0
 
-ENCHANT_BACK_AGILITY = 3
-ENCHANT_CHEST_STATS = 4
-ENCHANT_HANDS_HASTE = 1
-ENCHANT_HANDS_STRENGTH = 7
-ENCHANT_HEAD_HASTE = 1
-ENCHANT_HEAD_STRENGTH = 8
-ENCHANT_LEGS_HASTE = 1
-ENCHANT_LEGS_STRENGTH = 8
-ENCHANT_OFF_HAND_STRENGTH = 15
-ENCHANT_WRIST_STRENGTH = 9
+# Stats
+# TODO are these really correct?
+# https://www.getmangos.eu/forums/topic/8703-level-60-stats/
+BASE_STATS = {
+    'human': {
+        'warrior': defaultdict(int, {
+            'agi': 80,
+            'int': 30,
+            'spi': 50,
+            'sta': 110,
+            'str': 120,
+            'damage_multiplier': 1.0,
+            'Mace': 5,
+            'Sword': 5,
+        }),
+    },
+}
 
-# Consumables
-BLESSED_SUNFRUIT_ADDITIONAL_STRENGTH = 10
-DENSE_SHARPENING_STONE_ADDITIONAL_DAMAGE = (8, 8)
-ELEMENTAL_SHARPENING_STONE_ADDITIONAL_CRIT = 2
-ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_AGILITY = 25
-ELIXIR_OF_THE_MONGOOSE_ADDITIONAL_CRIT = 2
-JUJU_MIGHT_ADDITIONAL_AP = 40
-JUJU_POWER_ADDITIONAL_STRENGTH = 30
-ROIDS_ADDITIONAL_STRENGTH = 25
+SPEC_STATS = {
+    'warrior': {
+        'fury': defaultdict(int, {
+            'crit': CRUELTY_ADDITIONAL_CRIT,
+        }),
+    },
+}

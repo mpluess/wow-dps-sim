@@ -5,7 +5,7 @@ import os
 import re
 import requests
 
-from vanilla_utils.enums import Proc
+from .enums import Proc
 
 
 class Scraper:

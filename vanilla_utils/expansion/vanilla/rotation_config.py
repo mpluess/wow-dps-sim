@@ -1,4 +1,4 @@
-import vanilla_utils.knowledge as knowledge
+from . import knowledge
 
 
 # BT 30 + WW 25 + HS 13 = 68
