@@ -4,7 +4,10 @@ from statistics import mean
 from .constants import Constants
 from .enums import BossDebuffs, Stance
 import vanilla_utils.stats
-from vanilla_utils.expansion.vanilla import enchant_config
+
+from vanilla_utils.helpers import from_module_import_x
+from vanilla_utils.main_config import EXPANSION_MODULE
+enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')
 
 
 class AbilityLogEntry:

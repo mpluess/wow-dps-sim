@@ -1,11 +1,13 @@
 from collections import defaultdict
 import copy
 
-from vanilla_utils.expansion.vanilla import buff_config
-from vanilla_utils.expansion.vanilla import consumable_config
-from vanilla_utils.expansion.vanilla import enchant_config
-from vanilla_utils.expansion.vanilla import knowledge
-from vanilla_utils.expansion.vanilla.stats import Stats
+from vanilla_utils.helpers import from_module_import_x
+from vanilla_utils.main_config import EXPANSION_MODULE
+buff_config = from_module_import_x(EXPANSION_MODULE, 'buff_config')
+consumable_config = from_module_import_x(EXPANSION_MODULE, 'consumable_config')
+enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')
+knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
+Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 
 
 def calc_unbuffed_stats(race, class_, spec, items):
