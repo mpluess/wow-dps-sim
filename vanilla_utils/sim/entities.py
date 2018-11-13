@@ -4,6 +4,7 @@ from statistics import mean
 from .constants import Constants
 from .enums import BossDebuffs, Stance
 import vanilla_utils.stats
+from vanilla_utils.expansion.vanilla import enchant_config
 
 
 class AbilityLogEntry:
@@ -77,7 +78,7 @@ class Player:
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         if procs is None:
-            self.procs = self._create_proc_set(items)
+            self.procs = self._create_proc_set(items, enchant_config.ENCHANT_PROCS)
         else:
             self.procs = procs
 
@@ -92,8 +93,9 @@ class Player:
         )
 
     @classmethod
-    def _create_proc_set(cls, items):
-        return set.union(*[item['procs'] for item in items])
+    def _create_proc_set(cls, items, enchant_procs):
+        list_of_proc_sets = [item['procs'] for item in items] + [enchant_procs]
+        return set.union(*list_of_proc_sets)
 
 
 class Result:

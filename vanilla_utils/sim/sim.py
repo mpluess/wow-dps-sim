@@ -401,11 +401,14 @@ class Sim:
                         self._add_event(0.0, EventType.IRONFOE_PROC)
 
                 # PPM converted to PPH in the interval [0, 1]
-                current_stats = self.calcs.current_stats()
-                if hand == Hand.MAIN and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_main_hand'] / 60):
-                    self._add_event(0.0, EventType.CRUSADER_MAIN_PROC)
-                if hand == Hand.OFF and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_off_hand'] / 60):
-                    self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
+                if Proc.CRUSADER_MAIN in self.player.procs or Proc.CRUSADER_OFF in self.player.procs:
+                    current_stats = self.calcs.current_stats()
+                    if Proc.CRUSADER_MAIN in self.player.procs:
+                        if hand == Hand.MAIN and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_main_hand'] / 60):
+                            self._add_event(0.0, EventType.CRUSADER_MAIN_PROC)
+                    if Proc.CRUSADER_OFF in self.player.procs:
+                        if hand == Hand.OFF and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_off_hand'] / 60):
+                            self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
 
         attack_result, damage, rage_gained = attack_result_damage_rage_tuple
         if rage_cost is not None:

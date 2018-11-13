@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from vanilla_utils.enums import Proc
+
 
 _ENCHANT_BACK_AGILITY = 3
 _ENCHANT_CHEST_STATS = 4
@@ -47,3 +49,4 @@ ENCHANT_STATS = {
         'fury': _enchant_stats_warrior_fury,
     },
 }
+ENCHANT_PROCS = {Proc.CRUSADER_MAIN, Proc.CRUSADER_OFF}

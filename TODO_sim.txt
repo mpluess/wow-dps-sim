@@ -74,6 +74,6 @@ what about ww?
 hoj, thrash blade mechanics.
 can they really proc off everything (probably not, there was some kind of chain proc fix in 1.9)?
 https://vanilla-twinhead.twinstar.cz/?issue=8131
-works by resetting swing timer -> current implementation is too much damage for sure.
+works by resetting swing timer -> current implementation is too much damage.
 what happens to flurry charge on resetting? probably lost and not applied to the new swing.
 bt not able to proc it since it doesn't require a weapon?
