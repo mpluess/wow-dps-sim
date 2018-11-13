@@ -319,6 +319,23 @@ class Sim:
         elif event_type == EventType.SLAYERS_CREST_END:
             self.player.buffs.remove(PlayerBuffs.SLAYERS_CREST)
             self.log(f"{self._log_entry_beginning('slayers_crest')} fades\n")
+        elif event_type == EventType.JUJU_FLURRY_CD_END:
+            self.player.buffs.add(PlayerBuffs.JUJU_FLURRY)
+            self._add_event(knowledge.JUJU_FLURRY_DURATION, EventType.JUJU_FLURRY_END)
+            self._add_event(knowledge.JUJU_FLURRY_CD, event_type)
+            self.log(f"{self._log_entry_beginning('juju_flurry')} activated\n")
+        elif event_type == EventType.JUJU_FLURRY_END:
+            self.player.buffs.remove(PlayerBuffs.JUJU_FLURRY)
+            self.log(f"{self._log_entry_beginning('juju_flurry')} fades\n")
+        elif event_type == EventType.MIGHTY_RAGE_POTION_CD_END:
+            self._add_rage('mighty_rage_potion', random.randint(knowledge.MIGHTY_RAGE_POTION_MIN_RAGE, knowledge.MIGHTY_RAGE_POTION_MAX_RAGE))
+            self.player.buffs.add(PlayerBuffs.MIGHTY_RAGE_POTION)
+            self._add_event(knowledge.MIGHTY_RAGE_POTION_DURATION, EventType.MIGHTY_RAGE_POTION_END)
+            self._add_event(knowledge.MIGHTY_RAGE_POTION_CD, event_type)
+            self.log(f"{self._log_entry_beginning('mighty_rage_potion')} activated\n")
+        elif event_type == EventType.MIGHTY_RAGE_POTION_END:
+            self.player.buffs.remove(PlayerBuffs.MIGHTY_RAGE_POTION)
+            self.log(f"{self._log_entry_beginning('mighty_rage_potion')} fades\n")
 
     def log(self, message):
         if self.logging:

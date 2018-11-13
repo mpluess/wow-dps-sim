@@ -11,7 +11,9 @@ class Constants:
         'hand_of_justice_proc': 'Hand of Justice Proc',
         'heroic_strike': 'Heroic Strike',
         'ironfoe_proc': 'Ironfoe Proc',
+        'juju_flurry': 'Juju Flurry',
         'kiss_of_the_spider': 'Kiss of the Spider',
+        'mighty_rage_potion': 'Mighty Rage Potion',
         'overpower': 'Overpower',
         'recklessness': 'Recklessness',
         'slayers_crest': "Slayer's Crest",
@@ -25,6 +27,9 @@ class Constants:
     on_use_effect_to_cd_end_event_type = {
         OnUseEffect.KISS_OF_THE_SPIDER: EventType.KISS_OF_THE_SPIDER_CD_END,
         OnUseEffect.SLAYERS_CREST: EventType.SLAYERS_CREST_CD_END,
+
+        OnUseEffect.JUJU_FLURRY: EventType.JUJU_FLURRY_CD_END,
+        OnUseEffect.MIGHTY_RAGE_POTION: EventType.MIGHTY_RAGE_POTION_CD_END,
     }
 
     statistics_ability_mapping = {

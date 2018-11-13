@@ -60,6 +60,11 @@ class EventType(Enum):
     SLAYERS_CREST_CD_END = auto()
     SLAYERS_CREST_END = auto()
 
+    JUJU_FLURRY_CD_END = auto()
+    JUJU_FLURRY_END = auto()
+    MIGHTY_RAGE_POTION_CD_END = auto()
+    MIGHTY_RAGE_POTION_END = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -69,10 +74,15 @@ class Hand(Enum):
 class PlayerBuffs(Enum):
     DEATH_WISH = auto()
     RECKLESSNESS = auto()
+
     CRUSADER_MAIN = auto()
     CRUSADER_OFF = auto()
+
     KISS_OF_THE_SPIDER = auto()
     SLAYERS_CREST = auto()
+
+    JUJU_FLURRY = auto()
+    MIGHTY_RAGE_POTION = auto()
 
 
 class Stance(Enum):

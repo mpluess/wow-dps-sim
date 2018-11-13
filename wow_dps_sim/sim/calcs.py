@@ -33,14 +33,21 @@ class Calcs:
                 stats['crit'] += knowledge.RECKLESSNESS_ADDITIONAL_CRIT
             if PlayerBuffs.DEATH_WISH in self.player.buffs:
                 stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
+
             if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
                 stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
             if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
                 stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
+
             if PlayerBuffs.KISS_OF_THE_SPIDER in self.player.buffs:
                 stats['speed_multiplier'] *= knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
             if PlayerBuffs.SLAYERS_CREST in self.player.buffs:
                 stats['ap'] += knowledge.SLAYERS_CREST_ADDITIONAL_AP
+
+            if PlayerBuffs.JUJU_FLURRY in self.player.buffs:
+                stats['haste'] += knowledge.JUJU_FLURRY_ADDITIONAL_HASTE
+            if PlayerBuffs.MIGHTY_RAGE_POTION in self.player.buffs:
+                stats['str'] += knowledge.MIGHTY_RAGE_POTION_ADDITIONAL_STRENGTH
 
             return stats
 

@@ -17,7 +17,7 @@
 x model buffs (own, other classes, consumables)
 x model procs (items, talents, enchants)
 talents: deep wounds
-model on-use effects (items, consumables (mighty rage potion, juju flurry))
+x model on-use effects (items, consumables (mighty rage potion, juju flurry))
 x model boss buffs / debuffs
 x event queue
 x ability comes off cd = event, end of gcd = event

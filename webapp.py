@@ -8,10 +8,10 @@ import wow_dps_sim.stats
 app = Flask(__name__)
 
 # Northdale (Light's Hope) database
-# scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
+scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
 
 # 1.12 database
-scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
+# scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
 
 
 @app.route('/', methods=['GET'])

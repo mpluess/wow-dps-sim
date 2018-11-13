@@ -5,6 +5,9 @@ class OnUseEffect(Enum):
     KISS_OF_THE_SPIDER = auto()
     SLAYERS_CREST = auto()
 
+    MIGHTY_RAGE_POTION = auto()
+    JUJU_FLURRY = auto()
+
 
 class Proc(Enum):
     CRUSADER_MAIN = auto()
