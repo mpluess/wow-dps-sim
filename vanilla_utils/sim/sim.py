@@ -382,29 +382,30 @@ class Sim:
             if resort_events:
                 self.event_queue.sort()
 
-        def handle_procs(hand):
-            if Proc.HAND_OF_JUSTICE in self.player.procs:
-                if random.random() < knowledge.HAND_OF_JUSTICE_PROC_CHANCE:
-                    self._add_event(0.0, EventType.HAND_OF_JUSTICE_PROC)
-            # Not implemented on-next-swing for simplicity, difference should be negligible
-            if Proc.THRASH_BLADE_MAIN in self.player.procs:
-                # ~1.2 PPM =~ 5% PPH
-                if hand == Hand.MAIN and random.random() < knowledge.THRASH_BLADE_PROC_CHANCE:
-                    self._add_event(0.0, EventType.THRASH_BLADE_PROC)
-            if Proc.THRASH_BLADE_OFF in self.player.procs:
-                # ~1.2 PPM =~ 5% PPH
-                if hand == hand.OFF and random.random() < knowledge.THRASH_BLADE_PROC_CHANCE:
-                    self._add_event(0.0, EventType.THRASH_BLADE_PROC)
-            if Proc.IRONFOE in self.player.procs:
-                if hand == Hand.MAIN and random.random() < knowledge.IRONFOE_PROC_CHANCE:
-                    self._add_event(0.0, EventType.IRONFOE_PROC)
+        def handle_procs(attack_result, hand):
+            if attack_result != AttackResult.MISS and attack_result != AttackResult.DODGE:
+                if Proc.HAND_OF_JUSTICE in self.player.procs:
+                    if random.random() < knowledge.HAND_OF_JUSTICE_PROC_CHANCE:
+                        self._add_event(0.0, EventType.HAND_OF_JUSTICE_PROC)
+                # Not implemented on-next-swing for simplicity, difference should be negligible
+                if Proc.THRASH_BLADE_MAIN in self.player.procs:
+                    # ~1.2 PPM =~ 5% PPH
+                    if hand == Hand.MAIN and random.random() < knowledge.THRASH_BLADE_PROC_CHANCE:
+                        self._add_event(0.0, EventType.THRASH_BLADE_PROC)
+                if Proc.THRASH_BLADE_OFF in self.player.procs:
+                    # ~1.2 PPM =~ 5% PPH
+                    if hand == hand.OFF and random.random() < knowledge.THRASH_BLADE_PROC_CHANCE:
+                        self._add_event(0.0, EventType.THRASH_BLADE_PROC)
+                if Proc.IRONFOE in self.player.procs:
+                    if hand == Hand.MAIN and random.random() < knowledge.IRONFOE_PROC_CHANCE:
+                        self._add_event(0.0, EventType.IRONFOE_PROC)
 
-            # PPM converted to PPH in the interval [0, 1]
-            current_stats = self.calcs.current_stats()
-            if hand == Hand.MAIN and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_main_hand'] / 60):
-                self._add_event(0.0, EventType.CRUSADER_MAIN_PROC)
-            if hand == Hand.OFF and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_off_hand'] / 60):
-                self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
+                # PPM converted to PPH in the interval [0, 1]
+                current_stats = self.calcs.current_stats()
+                if hand == Hand.MAIN and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_main_hand'] / 60):
+                    self._add_event(0.0, EventType.CRUSADER_MAIN_PROC)
+                if hand == Hand.OFF and random.random() < (knowledge.CRUSADER_PPM * current_stats['speed_off_hand'] / 60):
+                    self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
 
         attack_result, damage, rage_gained = attack_result_damage_rage_tuple
         if rage_cost is not None:
@@ -420,7 +421,7 @@ class Sim:
         if triggers_gcd:
             self._trigger_gcd()
 
-        handle_procs(hand)
+        handle_procs(attack_result, hand)
 
         self.ability_log.append(AbilityLogEntry(ability, attack_result, damage))
 
