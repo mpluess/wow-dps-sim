@@ -1,6 +1,6 @@
 differences vanilla vs. bc:
 imp hs 3 statt 2
-op (no op, anger management vs. op, no anger management, only keep 10 rage on stance switch)
+op (no op + anger management vs. op + no anger management (only keep 10 rage on stance switch))
 uw ppm
 no imp exe
 weapon mastery -2% dodge
@@ -31,9 +31,8 @@ heroism
 
 code:
 different:
-knowledge (möglichst viel hier abhandeln, möglichst viel sonstiges gleich halten)
-rotation_config
-sim.entities Boss, Player (partial_buffed_permanent_stats)
+expansion
+sim.entities Boss
 sim.sim main difference: do_rota
 sim.calc current_speed, whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
 
