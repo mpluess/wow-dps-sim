@@ -2,57 +2,14 @@ from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 from collections import defaultdict
 import os
-import re
 import requests
 
-from .enums import OnUseEffect, Proc
+from wow_dps_sim.helpers import from_module_import_x
+from wow_dps_sim.main_config import EXPANSION_MODULE
+ScraperConfig = from_module_import_x(EXPANSION_MODULE + '.scraper_config', 'ScraperConfig')
 
 
 class Scraper:
-    primary_stats_attr_regex_tuples = [
-        ('armor', re.compile(r'\s*(?P<value>\d+) Armor')),
-        ('agi', re.compile(r'\s*\+(?P<value>\d+) Agility')),
-        ('int', re.compile(r'\s*\+(?P<value>\d+) Intellect')),
-        ('spi', re.compile(r'\s*\+(?P<value>\d+) Spirit')),
-        ('sta', re.compile(r'\s*\+(?P<value>\d+) Stamina')),
-        ('str', re.compile(r'\s*\+(?P<value>\d+) Strength')),
-    ]
-    weapon_stats_attr_regex_tuples = [
-        ('speed', re.compile(r'\s*Speed (?P<value>[\d.]+)')),
-        ('damage_range', re.compile(r'\s*(?P<value_min>\d+) - (?P<value_max>\d+)\s+Damage')),
-        ('weapon_type', re.compile(r'\s*(?P<value>Axe|Dagger|Fist Weapon|Mace|Sword)')),
-    ]
-    secondary_stats_attr_regex_tuples = [
-        ('ap', re.compile(r'\s*\+(?P<value>\d+) Attack Power')),
-        ('crit', re.compile(r'\s*Improves your chance to get a critical strike by (?P<value>\d+)%')),
-        ('hit', re.compile(r'\s*Improves your chance to hit by (?P<value>\d+)%')),
-        ('dodge', re.compile(r'\s*Increases your chance to dodge an attack by (?P<value>\d+)%')),
-        ('Axe', re.compile(r'\s*Increased Axes \+(?P<value>\d+)')),
-        ('Dagger', re.compile(r'\s*Increased Daggers \+(?P<value>\d+)')),
-        ('Mace', re.compile(r'\s*Increased Maces \+(?P<value>\d+)')),
-        ('Sword', re.compile(r'\s*Increased Swords \+(?P<value>\d+)')),
-        ('def', re.compile(r'\s*Increased Defense \+(?P<value>\d+)')),
-    ]
-    equip_regex = re.compile(r'\s*Equip:')
-    set_regex = re.compile(r'\s*\((?P<n_set_pieces_for_bonus>\d+)\) Set:')
-
-    proc_mapping = {
-        'Hand of Justice': Proc.HAND_OF_JUSTICE,
-    }
-    weapon_proc_mapping = {
-        'Thrash Blade': {
-            'main_hand': Proc.THRASH_BLADE_MAIN,
-            'off_hand': Proc.THRASH_BLADE_OFF
-        },
-        'Ironfoe': {
-            'main_hand': Proc.IRONFOE
-        },
-    }
-    on_use_effect_mapping = {
-        'Kiss of the Spider': OnUseEffect.KISS_OF_THE_SPIDER,
-        "Slayer's Crest": OnUseEffect.SLAYERS_CREST,
-    }
-
     def __init__(self, url_prefix, use_cache=True, path_to_cache='cache/items'):
         self.url_prefix = url_prefix
         self.use_cache = use_cache
@@ -85,8 +42,8 @@ class Scraper:
         item['set']['bonuses'] = dict()
 
         for navigable_string in [el for el in primary_stats_td.children if isinstance(el, NavigableString)]:
-            for attr, regex in self.primary_stats_attr_regex_tuples:
-                match = regex.match(navigable_string)
+            for attr, regex in ScraperConfig.primary_stats_attr_regex_tuples:
+                match = regex.search(navigable_string)
                 if match is not None:
                     item['stats'][attr] = int(match.group('value'))
                     break
@@ -94,8 +51,8 @@ class Scraper:
         if item_slot == 'main_hand' or item_slot == 'off_hand':
             for table in primary_stats_td.find_all('table', recursive=False):
                 for td_th in table.find_all(['td', 'th']):
-                    for attr, regex in self.weapon_stats_attr_regex_tuples:
-                        match = regex.match(td_th.text)
+                    for attr, regex in ScraperConfig.weapon_stats_attr_regex_tuples:
+                        match = regex.search(td_th.text)
                         if match is not None:
                             attr_key = attr + '_' + item_slot
                             if attr == 'speed':
@@ -109,10 +66,9 @@ class Scraper:
                             break
 
         for span in secondary_stats_td.find_all('span', recursive=False):
-            if self.equip_regex.match(span.text) is not None:
-                a = span.find('a')
-                for attr, regex in self.secondary_stats_attr_regex_tuples:
-                    match = regex.match(a.text)
+            if ScraperConfig.equip_regex.match(span.text) is not None:
+                for attr, regex in ScraperConfig.secondary_stats_attr_regex_tuples:
+                    match = regex.search(span.text)
                     if match is not None:
                         item['stats'][attr] = int(match.group('value'))
                         break
@@ -126,23 +82,23 @@ class Scraper:
                         span_grandchildren = span_child.find_all('span')
                         if len(span_grandchildren) > 0:
                             for span_grandchild in span_grandchildren:
-                                set_regex_match = self.set_regex.match(span_grandchild.text)
+                                set_regex_match = ScraperConfig.set_regex.match(span_grandchild.text)
                                 if set_regex_match is not None:
                                     a = span_grandchild.find('a')
-                                    for attr, regex in self.primary_stats_attr_regex_tuples + self.secondary_stats_attr_regex_tuples:
-                                        match = regex.match(a.text)
+                                    for attr, regex in ScraperConfig.primary_stats_attr_regex_tuples + ScraperConfig.secondary_stats_attr_regex_tuples:
+                                        match = regex.search(a.text)
                                         if match is not None:
                                             item['set']['bonuses'][int(set_regex_match.group('n_set_pieces_for_bonus'))] = (attr, int(match.group('value')))
                                             break
 
         item['procs'] = set()
-        if (item_slot == 'main_hand' or item_slot == 'off_hand') and item['name'] in self.weapon_proc_mapping:
-            item['procs'].add(self.weapon_proc_mapping[item['name']][item_slot])
-        elif item['name'] in self.proc_mapping:
-            item['procs'].add(self.proc_mapping[item['name']])
+        if (item_slot == 'main_hand' or item_slot == 'off_hand') and item['name'] in ScraperConfig.weapon_proc_mapping:
+            item['procs'].add(ScraperConfig.weapon_proc_mapping[item['name']][item_slot])
+        elif item['name'] in ScraperConfig.proc_mapping:
+            item['procs'].add(ScraperConfig.proc_mapping[item['name']])
 
         item['on_use_effects'] = set()
-        if item['name'] in self.on_use_effect_mapping:
-            item['on_use_effects'].add(self.on_use_effect_mapping[item['name']])
+        if item['name'] in ScraperConfig.on_use_effect_mapping:
+            item['on_use_effects'].add(ScraperConfig.on_use_effect_mapping[item['name']])
 
         return item

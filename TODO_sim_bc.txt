@@ -14,8 +14,8 @@ rampage
 knowledge.py
 rotation_config.py
 stats.py
-scraper: hit rating, crit rating, expertise, ...
-gems
+x scraper: hit rating, crit rating, expertise, ...
+gems, meta gem
 boss armor
 hit table
 weapon skill / expertise / glancings

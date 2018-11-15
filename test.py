@@ -80,4 +80,8 @@
 from wow_dps_sim.scraper import Scraper
 
 # print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
-print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
+# print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
+# print(Scraper('https://tbc-twinhead.twinstar.cz/?item=', use_cache=False).scrape_item('head', '28224'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('head', '28224'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('main_hand', '28437'))
+print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('', '35069'))
