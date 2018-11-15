@@ -1,14 +1,13 @@
 differences vanilla vs. bc:
-imp hs 3 statt 2
+x imp hs 3 statt 2
 op (no op + anger management vs. op + no anger management (only keep 10 rage on stance switch))
 uw ppm
-no imp exe
+x no imp exe
 weapon mastery -2% dodge
-flurry 25% statt 30%
-precision +3% hit
-bt ap %? probably still 45% (http://wowwiki.wikia.com/wiki/Bloodthirst)
+x flurry 25% statt 30%
+x precision +3% hit
 ww -1 sec cd, hits with off hand too
-imp berserker +10% ap
+x imp berserker +10% ap
 rampage
 
 knowledge.py
@@ -27,6 +26,8 @@ Stances: It is no longer possible to accidentally change into a stance you are a
 
 wf
 heroism
+drums
+haste potion
 
 
 code:

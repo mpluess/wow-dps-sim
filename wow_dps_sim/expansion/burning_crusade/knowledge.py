@@ -6,7 +6,7 @@ GCD_DURATION = 1.5
 STANCE_CD_DURATION = 1.5
 
 MAX_RAGE = 100
-MAX_RAGE_AFTER_STANCE_SWITCH = 25
+MAX_RAGE_AFTER_STANCE_SWITCH = 10
 
 CRIT_DAMAGE_MULTIPLIER = 2.0
 CRIT_WITH_IMPALE_DAMAGE_MULTIPLIER = 2.2
@@ -14,6 +14,7 @@ CRIT_WITH_IMPALE_DAMAGE_MULTIPLIER = 2.2
 OFF_HAND_FACTOR = 0.625
 
 BERSERKER_STANCE_ADDITIONAL_CRIT = 3
+BERSERKER_STANCE_AP_MULTIPLIER = 1.1
 
 # Warrior abilities
 BLOODRAGE_BASE_RAGE = 10
@@ -30,14 +31,14 @@ DEATH_WISH_DAMAGE_MULTIPLIER = 1.2
 DEATH_WISH_DURATION = 30.0
 DEATH_WISH_RAGE_COST = 10
 
-EXECUTE_BASE_DAMAGE = 600
-EXECUTE_BASE_RAGE_COST = 10
-EXECUTE_DAMAGE_PER_RAGE = 15
+EXECUTE_BASE_DAMAGE = 925
+EXECUTE_BASE_RAGE_COST = 15
+EXECUTE_DAMAGE_PER_RAGE = 21
 
-FLURRY_FACTOR = 0.7
+FLURRY_FACTOR = 0.75
 
-HEROIC_STRIKE_ADDITIONAL_DAMAGE = 138
-HEROIC_STRIKE_RAGE_COST = 13
+HEROIC_STRIKE_ADDITIONAL_DAMAGE = 208
+HEROIC_STRIKE_RAGE_COST = 12
 
 OVERPOWER_ADDITIONAL_DAMAGE = 35
 OVERPOWER_AVAILABILITY_DURATION = 4.0
@@ -48,14 +49,14 @@ RECKLESSNESS_ADDITIONAL_CRIT = 100
 RECKLESSNESS_CD = 1800.0
 RECKLESSNESS_DURATION = 15.0
 
-SUNDER_ARMOR_REDUCTION_PER_STACK = 450
+SUNDER_ARMOR_REDUCTION_PER_STACK = 520
 
-WHIRLWIND_CD = 10.0
+WHIRLWIND_CD = 9.0
 WHIRLWIND_RAGE_COST = 25
 
 # Other abilities
-CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION = 640
-FAERIE_FIRE_ARMOR_REDUCTION = 505
+CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION = 800
+FAERIE_FIRE_ARMOR_REDUCTION = 610
 
 # Items
 NORMALIZED_WEAPON_SPEED_LOOKUP = {
@@ -94,29 +95,29 @@ CRUSADER_DURATION = 15.0
 CRUSADER_PPM = 1.0
 
 # Stats
-# TODO are these really correct?
-# https://www.getmangos.eu/forums/topic/8703-level-60-stats/
+# TODO These are probably not correct (too high) for BC
+# https://wow.gamepedia.com/Base_attributes
 BASE_STATS = {
     'human': {
         'warrior': defaultdict(int, {
-            'agi': 80,
-            'int': 30,
-            'spi': 50,
-            'sta': 110,
-            'str': 120,
+            'agi': 154,
+            'int': 123,
+            'spi': 117,
+            'sta': 154,
+            'str': 252,
             'damage_multiplier': 1.0,
             'speed_multiplier': 1.0,
-            'Mace': 5,
-            'Sword': 5,
         }),
     },
 }
 
 _CRUELTY_ADDITIONAL_CRIT = 5
+_PRECISION_ADDITIONAL_HIT = 3
 SPEC_STATS = {
     'warrior': {
         'fury': defaultdict(int, {
             'crit': _CRUELTY_ADDITIONAL_CRIT,
+            'hit': _PRECISION_ADDITIONAL_HIT,
         }),
     },
 }

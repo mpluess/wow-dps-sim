@@ -15,7 +15,8 @@ def calc_unbuffed_stats(race, class_, spec, items):
     stats = _merge_stats(stats, _spec_stats(class_, spec))
     stats = _merge_stats(stats, _item_stats(items))
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
-    stats = apply_berserker_stance_effects(stats)
+    stats = Stats.apply_berserker_stance_flat_effects(stats)
+    stats = Stats.apply_berserker_stance_percentage_effects(stats)
     stats = Stats.apply_primary_stats_effects(race, class_, spec, stats)
     stats = Stats.add_tertiary_stats(race, class_, spec, stats)
 
@@ -29,14 +30,6 @@ def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items):
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
     stats = _merge_stats(stats, _permanent_buff_flat_stats(faction))
     stats = _merge_stats(stats, _consumable_stats())
-
-    return stats
-
-
-def apply_berserker_stance_effects(stats):
-    stats = copy.copy(stats)
-
-    stats['crit'] += knowledge.BERSERKER_STANCE_ADDITIONAL_CRIT
 
     return stats
 

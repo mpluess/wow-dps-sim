@@ -5,6 +5,10 @@ from wow_dps_sim.sim.entities import Boss, Config, Player
 from wow_dps_sim.sim.sim import do_sim
 import wow_dps_sim.stats
 
+from wow_dps_sim.helpers import from_module_import_x
+from wow_dps_sim.main_config import EXPANSION_MODULE
+Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
+
 app = Flask(__name__)
 
 # Northdale (Light's Hope) database
@@ -12,6 +16,9 @@ scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/
 
 # 1.12 database
 # scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
+
+# 2.4.3 database
+# scraper = Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com')
 
 
 @app.route('/', methods=['GET'])
@@ -54,7 +61,8 @@ def calc_stats():
 
     faction = request_data['faction']
     buffed_stats = wow_dps_sim.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
-    buffed_stats = wow_dps_sim.stats.apply_berserker_stance_effects(buffed_stats)
+    buffed_stats = Stats.apply_berserker_stance_flat_effects(buffed_stats)
+    buffed_stats = Stats.apply_berserker_stance_percentage_effects(buffed_stats)
     buffed_stats = wow_dps_sim.stats.finalize_buffed_stats(faction, race, class_, spec, buffed_stats)
 
     return render_template(

@@ -2,11 +2,12 @@ import copy
 import random
 
 from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
-from wow_dps_sim.stats import apply_berserker_stance_effects, finalize_buffed_stats
+from wow_dps_sim.stats import finalize_buffed_stats
 
 from wow_dps_sim.helpers import from_module_import_x
 from wow_dps_sim.main_config import EXPANSION_MODULE
 knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
+Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 
 
 class Calcs:
@@ -27,12 +28,11 @@ class Calcs:
         def apply_temporary_buffs(stats):
             stats = copy.copy(stats)
 
+            # Flat
             if self.player.stance == Stance.BERSERKER:
-                stats = apply_berserker_stance_effects(stats)
+                stats = Stats.apply_berserker_stance_flat_effects(stats)
             if PlayerBuffs.RECKLESSNESS in self.player.buffs:
                 stats['crit'] += knowledge.RECKLESSNESS_ADDITIONAL_CRIT
-            if PlayerBuffs.DEATH_WISH in self.player.buffs:
-                stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
 
             if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
                 stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
@@ -48,6 +48,12 @@ class Calcs:
                 stats['haste'] += knowledge.JUJU_FLURRY_ADDITIONAL_HASTE
             if PlayerBuffs.MIGHTY_RAGE_POTION in self.player.buffs:
                 stats['str'] += knowledge.MIGHTY_RAGE_POTION_ADDITIONAL_STRENGTH
+
+            # Percentage
+            if self.player.stance == Stance.BERSERKER:
+                stats = Stats.apply_berserker_stance_percentage_effects(stats)
+            if PlayerBuffs.DEATH_WISH in self.player.buffs:
+                stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
 
             return stats
 
