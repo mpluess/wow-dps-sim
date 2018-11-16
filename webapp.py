@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 
+from wow_dps_sim.entities import Boss, Config, Player
 from wow_dps_sim.scraper import Scraper
-from wow_dps_sim.sim.entities import Boss, Config, Player
-from wow_dps_sim.sim.sim import do_sim
+from wow_dps_sim.sim import do_sim
 import wow_dps_sim.stats
 
 from wow_dps_sim.helpers import from_module_import_x

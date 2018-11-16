@@ -1,9 +1,9 @@
 from collections import defaultdict
 import time
 
+from wow_dps_sim.entities import Boss, Config, Player
 from wow_dps_sim.enums import Proc
-from wow_dps_sim.sim.entities import Boss, Config, Player
-from wow_dps_sim.sim.sim import do_sim
+from wow_dps_sim.sim import do_sim
 
 faction = 'alliance'
 race = 'human'

@@ -10,9 +10,6 @@ ww -1 sec cd, hits with off hand too
 x imp berserker +10% ap
 rampage
 
-knowledge.py
-rotation_config.py
-stats.py
 x scraper: hit rating, crit rating, expertise, ...
 gems, meta gem
 boss armor

@@ -1,5 +1,4 @@
-from wow_dps_sim.enums import OnUseEffect
-from .enums import EventType
+from .enums import EventType, OnUseEffect
 
 
 class Constants:
