@@ -30,7 +30,6 @@ haste potion
 code:
 different:
 expansion
-sim.entities Boss
 sim.sim main difference: do_rota
 sim.calc current_speed, whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
 
@@ -41,11 +40,14 @@ enums
 scraper
 stats
 sim.constants
-sim.entities everything else
+sim.entities
 sim.enums
 sim.sim everything else (?)
 sim.calc everything else (?)
 
 
-
+TODOs:
 Make expansion configurable from website: main_config._EXPANSION, items, sockets, scraper
+Use http://www.alpacajs.org/docs/api/connectors.html to get expansion-specific data into wow_dps_sim.html.
+E.g. a initialization page where the user can choose the things mentioned above and the choices then get
+passed to the next stage via GET params.

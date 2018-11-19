@@ -18,26 +18,6 @@ class AbilityLogEntry:
         self.damage = damage
 
 
-class Boss:
-    def __init__(self, armor=4691, base_miss=0.086, base_dodge=0.056, debuffs=None):
-        self.armor = armor
-        self.base_miss = base_miss
-        self.base_dodge = base_dodge
-        self.debuffs = debuffs if debuffs is not None else {BossDebuffs.SUNDER_ARMOR_X5, BossDebuffs.FAERIE_FIRE, BossDebuffs.CURSE_OF_RECKLESSNESS}
-
-
-class Config:
-    def __init__(self, n_runs=1000, logging=False, fight_duration_seconds_mu=180.0, fight_duration_seconds_sigma=20.0,
-                 stat_increase_tuples=None):
-        self.n_runs = n_runs
-        self.logging = logging
-        self.fight_duration_seconds_mu = fight_duration_seconds_mu
-        self.fight_duration_seconds_sigma = fight_duration_seconds_sigma
-
-        # [('hit', 1), ('crit', 1), ('agi', 20), ('ap', 30), ('str', 15), ('haste', 1), ('Sword', 1)]
-        self.stat_increase_tuples = stat_increase_tuples if stat_increase_tuples is not None else []
-
-
 class Event:
     def __init__(self, time_, count, event_type):
         self.time = time_

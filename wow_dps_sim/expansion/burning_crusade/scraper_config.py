@@ -12,3 +12,7 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
         ('arp', re.compile(r"Your attacks ignore (?P<value>\d+) of your opponent's armor")),
         ('exp_rating', re.compile(r'Increases your expertise rating by (?P<value>\d+)')),
     ]
+
+    proc_mapping = dict()
+    weapon_proc_mapping = dict()
+    on_use_effect_mapping = dict()

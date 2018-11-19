@@ -1,7 +1,7 @@
 from collections import defaultdict
 from flask import Flask, render_template, request
 
-from wow_dps_sim.entities import Boss, Config, Player
+from wow_dps_sim.entities import Player
 from wow_dps_sim.scraper import Scraper
 from wow_dps_sim.sim import do_sim
 import wow_dps_sim.stats
@@ -13,13 +13,13 @@ Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 app = Flask(__name__)
 
 # Northdale (Light's Hope) database
-# scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
+scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
 
 # 1.12 database
 # scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
 
 # 2.4.3 database
-scraper = Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com')
+# scraper = Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com')
 
 
 @app.route('/', methods=['GET'])
@@ -73,12 +73,7 @@ def sim():
     # print(player.items)
     # print(player.partial_buffed_permanent_stats)
     # print(player.procs)
-    result, stat_weights = do_sim(
-        player,
-        Boss(),
-        Config()
-        # Config(n_runs=1, logging=True)
-    )
+    result, stat_weights = do_sim(player)
 
     return str(result)
     # return f'{result}\nStat weights: {stat_weights}\n'
@@ -93,7 +88,6 @@ def _fetch_items(request_data):
 
 
 def _fetch_socket_stats(request_data):
-    print(request_data)
     stats = defaultdict(int)
     meta_socket_active = False
     for form_key, form_value in request_data.items():

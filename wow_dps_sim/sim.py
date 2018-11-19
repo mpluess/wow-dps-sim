@@ -7,6 +7,7 @@ from .calcs import Calcs
 from .constants import Constants
 from .entities import AbilityLogEntry, Event, Player, Result, WhiteHitEvent
 from .enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Proc, Stance
+from . import sim_config
 
 from .helpers import from_module_import_x
 from .main_config import EXPANSION_MODULE
@@ -17,10 +18,9 @@ rotation_config = from_module_import_x(EXPANSION_MODULE, 'rotation_config')
 class Sim:
     epsilon = 1e-7
 
-    def __init__(self, boss, player, fight_duration, logging=False, run_nr=None):
-        self.boss = boss
+    def __init__(self, player, fight_duration, logging=False, run_nr=None):
         self.player = player
-        self.calcs = Calcs(boss, player)
+        self.calcs = Calcs(player)
         self.fight_duration = fight_duration
         self.execute_phase_start_time = fight_duration * 0.8
         self.logging = logging
@@ -489,8 +489,8 @@ class Sim:
         self._add_event(knowledge.GCD_DURATION, EventType.GCD_END)
 
 
-def do_sim(player, boss, config):
-    def do_n_runs(player, boss, config):
+def do_sim(player):
+    def do_n_runs(player):
         def sample_fight_duration(mu, sigma):
             """Normal distribution truncated at +/- 3*sigma"""
             f = random.gauss(mu, sigma)
@@ -504,11 +504,11 @@ def do_sim(player, boss, config):
             return f
 
         result_list = []
-        for run_nr in range(config.n_runs):
+        for run_nr in range(sim_config.N_RUNS):
             # Call copy constructor to start with a fresh state
             player = Player.from_player(player)
-            fight_duration = sample_fight_duration(config.fight_duration_seconds_mu, config.fight_duration_seconds_sigma)
-            with Sim(boss, player, fight_duration, logging=config.logging, run_nr=run_nr) as sim:
+            fight_duration = sample_fight_duration(sim_config.FIGHT_DURATION_SECONDS_MU, sim_config.FIGHT_DURATION_SECONDS_SIGMA)
+            with Sim(player, fight_duration, logging=sim_config.LOGGING, run_nr=run_nr) as sim:
                 while sim.current_time_seconds < fight_duration:
                     event = sim.get_next_event()
                     sim.handle_event(event)
@@ -520,7 +520,7 @@ def do_sim(player, boss, config):
 
         return Result.get_merged_result(result_list)
 
-    result_baseline = do_n_runs(player, boss, config)
+    result_baseline = do_n_runs(player)
     stat_weights = dict()
     # for stat, increase in config.stat_increase_tuples:
     #     stats_copy = copy.copy(partial_buffed_permanent_stats)

@@ -6,13 +6,13 @@ from .stats import finalize_buffed_stats
 
 from .helpers import from_module_import_x
 from .main_config import EXPANSION_MODULE
+boss_config = from_module_import_x(EXPANSION_MODULE, 'boss_config')
 knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
 Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 
 
 class Calcs:
-    def __init__(self, boss, player):
-        self.boss = boss
+    def __init__(self, player):
         self.player = player
 
     def current_speed(self, hand):
@@ -141,10 +141,10 @@ class Calcs:
                 return max(
                     0,
 
-                    self.boss.armor
-                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss.debuffs else 0) * knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
-                    - (1 if BossDebuffs.FAERIE_FIRE in self.boss.debuffs else 0) * knowledge.FAERIE_FIRE_ARMOR_REDUCTION
-                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss.debuffs else 0) * knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
+                    boss_config.ARMOR
+                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in boss_config.DEBUFFS else 0) * knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
+                    - (1 if BossDebuffs.FAERIE_FIRE in boss_config.DEBUFFS else 0) * knowledge.FAERIE_FIRE_ARMOR_REDUCTION
+                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in boss_config.DEBUFFS else 0) * knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
                 )
 
             boss_armor = current_boss_armor()
@@ -188,11 +188,11 @@ class Calcs:
 
             miss_chance = max(
                 0.0,
-                (self.boss.base_miss if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss.base_miss + 0.19)
+                (boss_config.BASE_MISS if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else boss_config.BASE_MISS + 0.19)
                 - current_stats['hit']/100
                 - weapon_skill_bonus*0.0004
             )
-            dodge_chance = max(0.0, self.boss.base_dodge - weapon_skill_bonus*0.0004)
+            dodge_chance = max(0.0, boss_config.BASE_DODGE - weapon_skill_bonus*0.0004)
             glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
             crit_chance = max(0.0, current_stats['crit']/100 - (15 - weapon_skill_bonus)*0.0004)
 
