@@ -1,0 +1,43 @@
+blue, meta, +8 ap
+violet, meta
+
+yellow, yellow, +3 crit
+orange, orange
+
+red, +2 hit
+red
+
+red, red, blue, +4 hit
+red, red, violet
+
+yellow, red, +6 ap
+orange, red
+
+red, +3 sta
+red
+
+(1x meta (12 agi, 3% +crit damage))
+2x violet (4 str, 6 sta)
+3x orange (4 str, 4 crit)
+5x red (8 str)
+bonuses: 14 ap, 3 crit, 6 hit, 3 sta
+
+
+auto-optimize or input fields for additional socket stats + meta yes / no
+jeweils 6 optionen in n sockets
+constraints: 2x blau, 2x gelb, 2x rot
+optimieren: max pawn (stats -> pawn dict)
+
+beispiel: 2 items, 1 socket each, 2 options: red, orange
+x1 = is socket 1 red
+x2 = is socket 1 orange
+x3 = is socket 2 red
+x4 = is socket 2 orange
+
+x1*pawn[red] + x2*pawn[orange] + x3*pawn[red] + x4*pawn[orange] + x2*pawn[bonus_1] + (x3 or x4)*pawn[bonus_2]
+
+constraints:
+x1 xor x2
+x3 xor x4
+x1 or x2 or x3 or x4 (1 red)
+x2 or x4 (1 yellow)

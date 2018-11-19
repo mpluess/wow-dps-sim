@@ -45,3 +45,7 @@ sim.entities everything else
 sim.enums
 sim.sim everything else (?)
 sim.calc everything else (?)
+
+
+
+Make expansion configurable from website: main_config._EXPANSION, items, sockets, scraper

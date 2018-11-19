@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, render_template, request
 
 from wow_dps_sim.entities import Boss, Config, Player
@@ -33,13 +34,14 @@ def calc_stats():
     race = request_data['race']
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
-    items = _scrape_items(request_data)
+    items = _fetch_items(request_data)
+    socket_stats, _ = _fetch_socket_stats(request_data)
 
-    unbuffed_stats = wow_dps_sim.stats.calc_unbuffed_stats(race, class_, spec, items)
+    unbuffed_stats = wow_dps_sim.stats.calc_unbuffed_stats(race, class_, spec, items, socket_stats)
     unbuffed_base_stats, unbuffed_primary_stats, unbuffed_secondary_stats = Stats.get_displayable_stats(items, unbuffed_stats)
 
     faction = request_data['faction']
-    buffed_stats = wow_dps_sim.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+    buffed_stats = wow_dps_sim.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items, socket_stats)
     buffed_stats = Stats.apply_berserker_stance_flat_effects(buffed_stats)
     buffed_stats = Stats.apply_berserker_stance_percentage_effects(buffed_stats)
     buffed_stats = wow_dps_sim.stats.finalize_buffed_stats(faction, race, class_, spec, buffed_stats)
@@ -64,9 +66,10 @@ def sim():
     race = request_data['race']
     class_ = request_data['class']
     spec = request_data[f"spec_{request_data['class']}"]
-    items = _scrape_items(request_data)
+    items = _fetch_items(request_data)
+    socket_stats, meta_socket_active = _fetch_socket_stats(request_data)
 
-    player = Player(faction, race, class_, spec, items)
+    player = Player(faction, race, class_, spec, items, meta_socket_active, socket_stats=socket_stats)
     # print(player.items)
     # print(player.partial_buffed_permanent_stats)
     # print(player.procs)
@@ -81,9 +84,23 @@ def sim():
     # return f'{result}\nStat weights: {stat_weights}\n'
 
 
-def _scrape_items(request_data):
+def _fetch_items(request_data):
     item_slot_id_tuples = [(form_key.replace('item_', ''), form_value) for form_key, form_value in request_data.items()
                            if form_key.startswith('item_') and form_value != '']
     items = [scraper.scrape_item(item_slot, item_id) for item_slot, item_id in item_slot_id_tuples]
 
     return items
+
+
+def _fetch_socket_stats(request_data):
+    print(request_data)
+    stats = defaultdict(int)
+    meta_socket_active = False
+    for form_key, form_value in request_data.items():
+        if form_key.startswith('sockets_'):
+            stats[form_key.replace('sockets_', '')] = int(form_value)
+        elif form_key == 'meta_socket_active':
+            assert isinstance(form_value, bool)
+            meta_socket_active = form_value
+
+    return stats, meta_socket_active

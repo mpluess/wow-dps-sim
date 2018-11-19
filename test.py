@@ -77,31 +77,31 @@
 # print(stats['str'])
 
 
-from wow_dps_sim.scraper import Scraper
-
-# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
-# print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
-# print(Scraper('https://tbc-twinhead.twinstar.cz/?item=', use_cache=False).scrape_item('head', '28224'))
-# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('head', '28224'))
-# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('main_hand', '28437'))
-
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28224'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29381'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '33173'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '24259'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '30258'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '23537'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29503'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29247'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '30538'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '25686'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '31920'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28323'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29383'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28034'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('main_hand', '28437'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('off_hand', '23542'))
-print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29151'))
+# from wow_dps_sim.scraper import Scraper
+#
+# # print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
+# # print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
+# # print(Scraper('https://tbc-twinhead.twinstar.cz/?item=', use_cache=False).scrape_item('head', '28224'))
+# # print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('head', '28224'))
+# # print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('main_hand', '28437'))
+#
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28224'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29381'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '33173'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '24259'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '30258'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '23537'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29503'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29247'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '30538'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '25686'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '31920'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28323'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29383'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '28034'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('main_hand', '28437'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('off_hand', '23542'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com').scrape_item('', '29151'))
 
 
 # from collections import defaultdict
@@ -150,3 +150,6 @@ print(Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tb
 # import math
 #
 # print(type(math.floor(2.1)))
+
+
+print(int(' '))

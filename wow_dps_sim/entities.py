@@ -69,15 +69,18 @@ class WhiteHitEvent(Event):
 
 
 class Player:
-    def __init__(self, faction, race, class_, spec, items, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
+    def __init__(self, faction, race, class_, spec, items, meta_socket_active,
+                 socket_stats=None, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
         self.faction = faction
         self.race = race
         self.class_ = class_
         self.spec = spec
         self.items = items
+        self.meta_socket_active = meta_socket_active
 
+        assert (socket_stats is None) ^ (partial_buffed_permanent_stats is None)
         if partial_buffed_permanent_stats is None:
-            self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+            self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items, socket_stats)
         else:
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
@@ -97,8 +100,10 @@ class Player:
     @classmethod
     def from_player(cls, player):
         return cls(
-            player.faction, player.race, player.class_, player.spec, player.items,
-            player.partial_buffed_permanent_stats, player.procs, player.on_use_effects
+            player.faction, player.race, player.class_, player.spec, player.items, player.meta_socket_active,
+            partial_buffed_permanent_stats=player.partial_buffed_permanent_stats,
+            procs=player.procs,
+            on_use_effects=player.on_use_effects
         )
 
     @staticmethod

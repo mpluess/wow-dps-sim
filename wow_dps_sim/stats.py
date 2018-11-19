@@ -10,10 +10,11 @@ knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
 Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 
 
-def calc_unbuffed_stats(race, class_, spec, items):
+def calc_unbuffed_stats(race, class_, spec, items, socket_stats):
     stats = _base_stats(race, class_)
     stats = _merge_stats(stats, _spec_stats(class_, spec))
     stats = _merge_stats(stats, _item_stats(items))
+    stats = _merge_stats(stats, socket_stats)
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
     stats = Stats.apply_berserker_stance_flat_effects(stats)
     stats = Stats.apply_berserker_stance_percentage_effects(stats)
@@ -23,10 +24,11 @@ def calc_unbuffed_stats(race, class_, spec, items):
     return stats
 
 
-def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items):
+def calc_partial_buffed_permanent_stats(faction, race, class_, spec, items, socket_stats):
     stats = _base_stats(race, class_)
     stats = _merge_stats(stats, _spec_stats(class_, spec))
     stats = _merge_stats(stats, _item_stats(items))
+    stats = _merge_stats(stats, socket_stats)
     stats = _merge_stats(stats, _enchant_stats(class_, spec))
     stats = _merge_stats(stats, _permanent_buff_flat_stats(faction))
     stats = _merge_stats(stats, _consumable_stats())
