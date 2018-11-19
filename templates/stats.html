@@ -10,12 +10,18 @@
 {% endmacro %}
 
 <h3>Unbuffed</h3>
-<div id="base_stats">{{ build_stats_table(unbuffed_base_stats) }}</div>
+{{ build_stats_table(unbuffed_base_stats) }}
 <br />
-<div id="primary_stats">{{ build_stats_table(unbuffed_primary_stats)  }}</div>
+{{ build_stats_table(unbuffed_primary_stats)  }}
 <br />
-<div id="secondary_stats">{{ build_stats_table(unbuffed_secondary_stats) }}</div>
+{{ build_stats_table(unbuffed_secondary_stats) }}
 <br />
 
 <h3>Buffed</h3>
 <p>{{buffed_stats}}</p>
+{{ build_stats_table(buffed_base_stats) }}
+<br />
+{{ build_stats_table(buffed_primary_stats)  }}
+<br />
+{{ build_stats_table(buffed_secondary_stats) }}
+<br />

@@ -14,3 +14,7 @@ class Stats:
     @staticmethod
     def apply_primary_stats_effects(race, class_, spec, stats):
         pass
+
+    @staticmethod
+    def get_displayable_stats(items, stats):
+        pass

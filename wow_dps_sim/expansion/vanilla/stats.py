@@ -48,3 +48,30 @@ class Stats(wow_dps_sim.expansion.stats.Stats):
                 f'Primary stats effects for class={class_}, spec={spec} are not implemented.')
 
         return stats
+
+    @staticmethod
+    def get_displayable_stats(items, stats):
+        base_stats = [
+            ('Items', ', '.join([item['name'] for item in items])),
+            ('Health', stats['health']),
+            ('Armor', stats['armor']),
+        ]
+        primary_stats = [
+            ('Agility', stats['agi']),
+            ('Intelligence', stats['int']),
+            ('Spirit', stats['spi']),
+            ('Stamina', stats['sta']),
+            ('Strength', stats['str']),
+        ]
+        secondary_stats = [
+            ('Attack Power', stats['ap']),
+            ('Crit', stats['crit']),
+            ('Hit', stats['hit']),
+            ('Haste', stats['haste']),
+            ('Axes', stats['Axe']),
+            ('Daggers', stats['Dagger']),
+            ('Maces', stats['Mace']),
+            ('Swords', stats['Sword']),
+        ]
+
+        return base_stats, primary_stats, secondary_stats

@@ -107,17 +107,26 @@ BASE_STATS = {
             'str': 252,
             'damage_multiplier': 1.0,
             'speed_multiplier': 1.0,
+            'minus_dodge': 0.0,
+            'Mace': {
+                'minus_dodge': 1.25,
+            },
+            'Sword': {
+                'minus_dodge': 1.25,
+            },
         }),
     },
 }
 
 _CRUELTY_ADDITIONAL_CRIT = 5
 _PRECISION_ADDITIONAL_HIT = 3
+_WEAPON_MASTERY_MINUS_DODGE = 2.0
 SPEC_STATS = {
     'warrior': {
         'fury': defaultdict(int, {
             'crit': _CRUELTY_ADDITIONAL_CRIT,
             'hit': _PRECISION_ADDITIONAL_HIT,
+            'minus_dodge': _WEAPON_MASTERY_MINUS_DODGE
         }),
     },
 }
