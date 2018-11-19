@@ -77,11 +77,54 @@
 # print(stats['str'])
 
 
-from wow_dps_sim.scraper import Scraper
+# from wow_dps_sim.scraper import Scraper
+#
+# # print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
+# # print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
+# # print(Scraper('https://tbc-twinhead.twinstar.cz/?item=', use_cache=False).scrape_item('head', '28224'))
+# # print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('head', '28224'))
+# # print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('main_hand', '28437'))
+# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('', '35069'))
 
-# print(Scraper('https://vanillawowdb.com/?item=', use_cache=False).scrape_item('main_hand', '14555'))
-# print(Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch').scrape_item('legs', '21495'))
-# print(Scraper('https://tbc-twinhead.twinstar.cz/?item=', use_cache=False).scrape_item('head', '28224'))
-# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('head', '28224'))
-# print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('main_hand', '28437'))
-print(Scraper('http://tbc.cavernoftime.com/item=', use_cache=False).scrape_item('', '35069'))
+
+from collections import defaultdict
+import os
+
+
+def find_files(base_dir, excluded_exts, excluded_dirs):
+    files = []
+    for element in os.listdir(base_dir):
+        path_to_element = os.path.join(base_dir, element)
+        if os.path.isfile(path_to_element) and os.path.splitext(element)[1] not in excluded_exts:
+            files.append(path_to_element)
+        elif os.path.isdir(path_to_element) and element not in excluded_dirs:
+            files.extend(find_files(path_to_element, excluded_exts, excluded_dirs))
+
+    return files
+
+
+# base_dir = r'C:\Users\Naturwerk\Desktop\VanillaUtils'
+# base_dir = r'C:\Users\Naturwerk\Desktop\VanillaUtils\wow_dps_sim\expansion'
+# excluded_dirs = {'.git', '.idea', '__pycache__', 'cache', 'logs', 'static'}
+
+# base_dir = r'C:\Users\Naturwerk\Documents\GitHub\izivi_new\apps\iZivi'
+# excluded_dirs = {'.git', '.idea', '__pycache__', 'font', 'fpdf', 'json', 'smarty', 'tcpdf', 'utf8fpdf', 'templates_c', 'tmp', 'lib', 'jscolor'}
+
+base_dir = r'C:\Users\Naturwerk\Documents\GitHub\naturvielfalt_drupal_8_composer\web\modules\custom'
+excluded_dirs = {'.git', '.idea', '__pycache__', 'language'}
+
+files = find_files(base_dir, {'.gif', '.jpg', '.png', '.doc', '.pdf', '.log', '.ico', '.swf'}, excluded_dirs)
+stats = defaultdict(int)
+for file in files:
+    ext = os.path.splitext(file)[1]
+    print(file)
+    with open(file, encoding='utf-8') as f:
+        try:
+            n_lines = len(f.readlines())
+        except UnicodeDecodeError:
+            with open(file) as f:
+                n_lines = len(f.readlines())
+        stats[ext] += n_lines
+
+print(sum(stats.values()))
+print(stats)

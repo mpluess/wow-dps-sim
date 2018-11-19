@@ -2,10 +2,10 @@ import copy
 import random
 
 from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
-from wow_dps_sim.stats import finalize_buffed_stats
+from .stats import finalize_buffed_stats
 
-from wow_dps_sim.helpers import from_module_import_x
-from wow_dps_sim.main_config import EXPANSION_MODULE
+from .helpers import from_module_import_x
+from .main_config import EXPANSION_MODULE
 knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
 Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 

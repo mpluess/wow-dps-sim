@@ -12,7 +12,7 @@ rampage
 
 x scraper: hit rating, crit rating, expertise, ...
 gems, meta gem
-boss armor
+boss armor, armor damage reduction, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
 hit table
 weapon skill / expertise / glancings
 racials

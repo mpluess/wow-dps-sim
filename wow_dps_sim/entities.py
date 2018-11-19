@@ -3,10 +3,10 @@ from statistics import mean
 
 from .constants import Constants
 from .enums import BossDebuffs, Stance
-import wow_dps_sim.stats
+from . import stats
 
-from wow_dps_sim.helpers import from_module_import_x
-from wow_dps_sim.main_config import EXPANSION_MODULE
+from .helpers import from_module_import_x
+from .main_config import EXPANSION_MODULE
 consumable_config = from_module_import_x(EXPANSION_MODULE, 'consumable_config')
 enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')
 
@@ -77,7 +77,7 @@ class Player:
         self.items = items
 
         if partial_buffed_permanent_stats is None:
-            self.partial_buffed_permanent_stats = wow_dps_sim.stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
+            self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items)
         else:
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
