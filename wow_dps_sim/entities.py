@@ -2,13 +2,10 @@ from collections import defaultdict
 from statistics import mean
 
 from .constants import Constants
-from .enums import BossDebuffs, Stance
-from . import stats
+from .enums import Stance
+from .stats import Stats
 
 from .helpers import from_module_import_x
-from .main_config import EXPANSION_MODULE
-consumable_config = from_module_import_x(EXPANSION_MODULE, 'consumable_config')
-enchant_config = from_module_import_x(EXPANSION_MODULE, 'enchant_config')
 
 
 class AbilityLogEntry:
@@ -50,7 +47,7 @@ class WhiteHitEvent(Event):
 
 class Player:
     def __init__(self, faction, race, class_, spec, items, meta_socket_active,
-                 socket_stats=None, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
+                 expansion=None, socket_stats=None, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
         self.faction = faction
         self.race = race
         self.class_ = class_
@@ -58,18 +55,22 @@ class Player:
         self.items = items
         self.meta_socket_active = meta_socket_active
 
-        assert (socket_stats is None) ^ (partial_buffed_permanent_stats is None)
         if partial_buffed_permanent_stats is None:
+            assert socket_stats is not None and expansion is not None
+            stats = Stats(expansion)
             self.partial_buffed_permanent_stats = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items, socket_stats)
         else:
+            assert socket_stats is None and expansion is None
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         if procs is None:
+            enchant_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'enchant_config')
             self.procs = self._create_proc_set(items, enchant_config.ENCHANT_PROCS)
         else:
             self.procs = procs
 
         if on_use_effects is None:
+            consumable_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'consumable_config')
             self.on_use_effects = self._create_on_use_effect_set(items, consumable_config.CONSUMABLE_ON_USE_EFFECTS)
         else:
             self.on_use_effects = on_use_effects

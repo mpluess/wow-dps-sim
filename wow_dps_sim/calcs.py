@@ -2,17 +2,20 @@ import copy
 import random
 
 from .enums import AttackResult, AttackTableModification, AttackType, BossDebuffs, Hand, PlayerBuffs, Stance
-from .stats import finalize_buffed_stats
+from .stats import Stats
 
 from .helpers import from_module_import_x
-from .main_config import EXPANSION_MODULE
-boss_config = from_module_import_x(EXPANSION_MODULE, 'boss_config')
-knowledge = from_module_import_x(EXPANSION_MODULE, 'knowledge')
-Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 
 
 class Calcs:
-    def __init__(self, player):
+    def __init__(self, expansion, player):
+        self.stats = Stats(expansion)
+
+        expansion_module = 'wow_dps_sim.expansion.' + expansion
+        self.boss_config = from_module_import_x(expansion_module, 'boss_config')
+        self.knowledge = from_module_import_x(expansion_module, 'knowledge')
+        self.ExpansionSpecificStats = from_module_import_x(expansion_module + '.stats', 'Stats')
+
         self.player = player
 
     def current_speed(self, hand):
@@ -30,47 +33,47 @@ class Calcs:
 
             # Flat
             if self.player.stance == Stance.BERSERKER:
-                stats = Stats.apply_berserker_stance_flat_effects(stats)
+                stats = self.ExpansionSpecificStats.apply_berserker_stance_flat_effects(stats)
             if PlayerBuffs.RECKLESSNESS in self.player.buffs:
-                stats['crit'] += knowledge.RECKLESSNESS_ADDITIONAL_CRIT
+                stats['crit'] += self.knowledge.RECKLESSNESS_ADDITIONAL_CRIT
 
             if PlayerBuffs.CRUSADER_MAIN in self.player.buffs:
-                stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
+                stats['str'] += self.knowledge.CRUSADER_ADDITIONAL_STRENGTH
             if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
-                stats['str'] += knowledge.CRUSADER_ADDITIONAL_STRENGTH
+                stats['str'] += self.knowledge.CRUSADER_ADDITIONAL_STRENGTH
 
             if PlayerBuffs.KISS_OF_THE_SPIDER in self.player.buffs:
-                stats['speed_multiplier'] *= knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
+                stats['speed_multiplier'] *= self.knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
             if PlayerBuffs.SLAYERS_CREST in self.player.buffs:
-                stats['ap'] += knowledge.SLAYERS_CREST_ADDITIONAL_AP
+                stats['ap'] += self.knowledge.SLAYERS_CREST_ADDITIONAL_AP
 
             if PlayerBuffs.JUJU_FLURRY in self.player.buffs:
-                stats['haste'] += knowledge.JUJU_FLURRY_ADDITIONAL_HASTE
+                stats['haste'] += self.knowledge.JUJU_FLURRY_ADDITIONAL_HASTE
             if PlayerBuffs.MIGHTY_RAGE_POTION in self.player.buffs:
-                stats['str'] += knowledge.MIGHTY_RAGE_POTION_ADDITIONAL_STRENGTH
+                stats['str'] += self.knowledge.MIGHTY_RAGE_POTION_ADDITIONAL_STRENGTH
 
             # Percentage
             if self.player.stance == Stance.BERSERKER:
-                stats = Stats.apply_berserker_stance_percentage_effects(stats)
+                stats = self.ExpansionSpecificStats.apply_berserker_stance_percentage_effects(stats)
             if PlayerBuffs.DEATH_WISH in self.player.buffs:
-                stats['damage_multiplier'] *= knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
+                stats['damage_multiplier'] *= self.knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
 
             return stats
 
         stats = self.player.partial_buffed_permanent_stats
         stats = apply_temporary_buffs(stats)
-        stats = finalize_buffed_stats(self.player.faction, self.player.race, self.player.class_, self.player.spec, stats)
+        stats = self.stats.finalize_buffed_stats(self.player.faction, self.player.race, self.player.class_, self.player.spec, stats)
 
         return stats
 
     def bloodthirst(self):
         current_stats = self.current_stats()
-        base_damage = round(knowledge.BLOODTHIRST_AP_FACTOR * current_stats['ap'])
+        base_damage = round(self.knowledge.BLOODTHIRST_AP_FACTOR * current_stats['ap'])
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
     def execute(self, rage):
-        base_damage = knowledge.EXECUTE_BASE_DAMAGE + (rage - knowledge.EXECUTE_BASE_RAGE_COST)*knowledge.EXECUTE_DAMAGE_PER_RAGE
+        base_damage = self.knowledge.EXECUTE_BASE_DAMAGE + (rage - self.knowledge.EXECUTE_BASE_RAGE_COST)*self.knowledge.EXECUTE_DAMAGE_PER_RAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
 
@@ -81,7 +84,7 @@ class Calcs:
             current_stats['speed_main_hand']
         )
         # Rank 8
-        base_damage += knowledge.HEROIC_STRIKE_ADDITIONAL_DAMAGE
+        base_damage += self.knowledge.HEROIC_STRIKE_ADDITIONAL_DAMAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.HEROIC_STRIKE, Hand.MAIN)
 
@@ -89,9 +92,9 @@ class Calcs:
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
             current_stats['damage_range_main_hand'],
-            knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
+            self.knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
         )
-        base_damage += knowledge.OVERPOWER_ADDITIONAL_DAMAGE
+        base_damage += self.knowledge.OVERPOWER_ADDITIONAL_DAMAGE
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN, AttackTableModification.OVERPOWER)
 
@@ -99,7 +102,7 @@ class Calcs:
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
             current_stats['damage_range_main_hand'],
-            knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
+            self.knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
         )
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
@@ -126,9 +129,9 @@ class Calcs:
             elif attack_result == AttackResult.CRIT:
                 # Impale only works on abilities, not auto attacks
                 if attack_type == AttackType.WHITE:
-                    modifier = knowledge.CRIT_DAMAGE_MULTIPLIER
+                    modifier = self.knowledge.CRIT_DAMAGE_MULTIPLIER
                 else:
-                    modifier = knowledge.CRIT_WITH_IMPALE_DAMAGE_MULTIPLIER
+                    modifier = self.knowledge.CRIT_WITH_IMPALE_DAMAGE_MULTIPLIER
                 return round(damage * modifier)
             elif attack_result == AttackResult.HIT:
                 return damage
@@ -141,10 +144,10 @@ class Calcs:
                 return max(
                     0,
 
-                    boss_config.ARMOR
-                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in boss_config.DEBUFFS else 0) * knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
-                    - (1 if BossDebuffs.FAERIE_FIRE in boss_config.DEBUFFS else 0) * knowledge.FAERIE_FIRE_ARMOR_REDUCTION
-                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in boss_config.DEBUFFS else 0) * knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
+                    self.boss_config.ARMOR
+                    - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss_config.DEBUFFS else 0) * self.knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
+                    - (1 if BossDebuffs.FAERIE_FIRE in self.boss_config.DEBUFFS else 0) * self.knowledge.FAERIE_FIRE_ARMOR_REDUCTION
+                    - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss_config.DEBUFFS else 0) * self.knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
                 )
 
             boss_armor = current_boss_armor()
@@ -188,11 +191,11 @@ class Calcs:
 
             miss_chance = max(
                 0.0,
-                (boss_config.BASE_MISS if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else boss_config.BASE_MISS + 0.19)
+                (self.boss_config.BASE_MISS if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else self.boss_config.BASE_MISS + 0.19)
                 - current_stats['hit']/100
                 - weapon_skill_bonus*0.0004
             )
-            dodge_chance = max(0.0, boss_config.BASE_DODGE - weapon_skill_bonus*0.0004)
+            dodge_chance = max(0.0, self.boss_config.BASE_DODGE - weapon_skill_bonus*0.0004)
             glancing_chance = (0.0 if (attack_type == AttackType.YELLOW or attack_type == AttackType.HEROIC_STRIKE) else 0.4)
             crit_chance = max(0.0, current_stats['crit']/100 - (15 - weapon_skill_bonus)*0.0004)
 
@@ -230,7 +233,7 @@ class Calcs:
             damage = apply_boss_armor(damage)
 
             if hand == Hand.OFF:
-                damage = round(damage * knowledge.OFF_HAND_FACTOR)
+                damage = round(damage * self.knowledge.OFF_HAND_FACTOR)
 
             current_stats = self.current_stats()
             damage = round(damage * current_stats['damage_multiplier'])

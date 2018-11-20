@@ -143,6 +143,13 @@
             "title": "Ranged"
         },
 
+        "expansion": {
+            "type": "string"
+        },
+        "scraper_item_db": {
+            "type": "string"
+        },
+
         "meta_socket_active": {
             "type": "boolean",
             "title": "Meta socket active"

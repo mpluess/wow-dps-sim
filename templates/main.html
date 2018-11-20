@@ -7,8 +7,9 @@
         <script type="text/javascript" src="{{url_for('static', filename='js/handlebars.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/alpaca.min.js')}}"></script>
 
-        <title>WoW DPS Sim</title>
+        <title>WoW DPS Sim - Main</title>
     </head>
+
     <body>
         <div id="form"></div>
         <div id="stats"></div>
@@ -16,8 +17,8 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $("#form").alpaca({
-                    "schemaSource": "{{url_for('static', filename='alpaca/burning_crusade/schema.json')}}",
-                    "dataSource": "{{url_for('static', filename='alpaca/burning_crusade/data_pre_raid_bis.json')}}",
+                    "schemaSource": "{{url_for('static', filename='alpaca/' + expansion + '/schema.json')}}",
+                    "dataSource": "{{url_for('static', filename='alpaca/' + item_set)}}",
 
                     "options": {
                         "form":{
@@ -25,7 +26,7 @@
                                 "calc_stats": {
                                     "title": "Calc stats",
                                     "click": function() {
-                                        fetch("/", {
+                                        fetch("/main/calc_stats", {
                                             method: "POST",
                                             headers: {
                                                 "Content-Type": "application/json",
@@ -34,12 +35,12 @@
                                         })
                                         .then(response => response.text())
                                         .then(text => $("#stats").html(text));
-                                    },
+                                    }
                                 },
                                 "sim": {
                                     "title": "Simulate",
                                     "click": function() {
-                                        fetch("/sim", {
+                                        fetch("/main/sim", {
                                             method: "POST",
                                             headers: {
                                                 "Content-Type": "application/json",
@@ -48,88 +49,100 @@
                                         })
                                         .then(response => response.text())
                                         .then(text => $("#sim_results").html(text));
-                                    },
-                                },
+                                    }
+                                }
                             }
                         },
                         "fields": {
                             "faction": {
                                 "type": "select",
-                                "optionLabels": ["Alliance", "Horde"],
+                                "optionLabels": ["Alliance", "Horde"]
                             },
                             "race": {
                                 "type": "select",
-                                "optionLabels": ["Dwarf", "Gnome", "Human", "Nightelf", "Orc", "Tauren", "Troll", "Undead"],
+                                "optionLabels": ["Dwarf", "Gnome", "Human", "Nightelf", "Orc", "Tauren", "Troll", "Undead"]
                             },
                             "class": {
                                 "type": "select",
-                                "optionLabels": ["Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"],
+                                "optionLabels": ["Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"]
                             },
                             "spec_druid": {
                                 "type": "select",
                                 "optionLabels": ["Balance", "Feral Combat", "Restoration"],
                                 "dependencies": {
-                                    "class": "druid",
-                                },
+                                    "class": "druid"
+                                }
                             },
                             "spec_hunter": {
                                 "type": "select",
                                 "optionLabels": ["Beast Mastery", "Marksmanship", "Survival"],
                                 "dependencies": {
-                                    "class": "hunter",
-                                },
+                                    "class": "hunter"
+                                }
                             },
                             "spec_mage": {
                                 "type": "select",
                                 "optionLabels": ["Arcane", "Fire", "Frost"],
                                 "dependencies": {
-                                    "class": "mage",
-                                },
+                                    "class": "mage"
+                                }
                             },
                             "spec_paladin": {
                                 "type": "select",
                                 "optionLabels": ["Holy", "Protection", "Retribution"],
                                 "dependencies": {
-                                    "class": "paladin",
-                                },
+                                    "class": "paladin"
+                                }
                             },
                             "spec_priest": {
                                 "type": "select",
                                 "optionLabels": ["Discipline", "Holy", "Shadow"],
                                 "dependencies": {
-                                    "class": "priest",
-                                },
+                                    "class": "priest"
+                                }
                             },
                             "spec_rogue": {
                                 "type": "select",
                                 "optionLabels": ["Assassination", "Combat", "Subtlety"],
                                 "dependencies": {
-                                    "class": "rogue",
-                                },
+                                    "class": "rogue"
+                                }
                             },
                             "spec_shaman": {
                                 "type": "select",
                                 "optionLabels": ["Elemental", "Enhancement", "Restoration"],
                                 "dependencies": {
-                                    "class": "shaman",
-                                },
+                                    "class": "shaman"
+                                }
                             },
                             "spec_warlock": {
                                 "type": "select",
                                 "optionLabels": ["Affliction", "Demonology", "Destruction"],
                                 "dependencies": {
-                                    "class": "warlock",
-                                },
+                                    "class": "warlock"
+                                }
                             },
                             "spec_warrior": {
                                 "type": "select",
                                 "optionLabels": ["Arms", "Fury", "Protection"],
                                 "dependencies": {
-                                    "class": "warrior",
-                                },
+                                    "class": "warrior"
+                                }
                             },
-                        },
+
+                            "expansion": {
+                                "type": "hidden"
+                            },
+                            "scraper_item_db": {
+                                "type": "hidden"
+                            }
+                        }
                     },
+
+                    "data": {
+                        "expansion": "{{expansion}}",
+                        "scraper_item_db": "{{scraper_item_db}}"
+                    }
                 });
             });
         </script>

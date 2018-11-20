@@ -5,15 +5,29 @@ import os
 import requests
 
 from wow_dps_sim.helpers import from_module_import_x
-from wow_dps_sim.main_config import EXPANSION_MODULE
-ScraperConfig = from_module_import_x(EXPANSION_MODULE + '.scraper_config', 'ScraperConfig')
 
 
 class Scraper:
-    def __init__(self, url_prefix, use_cache=True, path_to_cache='cache/items'):
-        self.url_prefix = url_prefix
+    lookup = {
+        'vanillawowdb.com': {
+            'url_prefix': 'https://vanillawowdb.com/?item=',
+            'path_to_cache': 'cache/items/vanillawowdb.com',
+        },
+        'classicdb.ch': {
+            'url_prefix': 'https://classicdb.ch/?item=',
+            'path_to_cache': 'cache/items/classicdb.ch',
+        },
+        'tbc.cavernoftime.com': {
+            'url_prefix': 'http://tbc.cavernoftime.com/item=',
+            'path_to_cache': 'cache/items/tbc.cavernoftime.com',
+        },
+    }
+
+    def __init__(self, item_db, expansion, use_cache=True):
+        self.url_prefix = self.lookup[item_db]['url_prefix']
+        self.path_to_cache = self.lookup[item_db]['path_to_cache']
+        self.ScraperConfig = from_module_import_x('wow_dps_sim.expansion.' + expansion + '.scraper_config', 'ScraperConfig')
         self.use_cache = use_cache
-        self.path_to_cache = path_to_cache
 
     def scrape_item(self, item_slot, item_id):
         path_to_item = os.path.join(self.path_to_cache, f'{item_id}.html')
@@ -42,7 +56,7 @@ class Scraper:
         item['set']['bonuses'] = dict()
 
         for navigable_string in [el for el in primary_stats_td.children if isinstance(el, NavigableString)]:
-            for attr, regex in ScraperConfig.primary_stats_attr_regex_tuples:
+            for attr, regex in self.ScraperConfig.primary_stats_attr_regex_tuples:
                 match = regex.search(navigable_string)
                 if match is not None:
                     item['stats'][attr] = int(match.group('value'))
@@ -51,7 +65,7 @@ class Scraper:
         if item_slot == 'main_hand' or item_slot == 'off_hand':
             for table in primary_stats_td.find_all('table', recursive=False):
                 for td_th in table.find_all(['td', 'th']):
-                    for attr, regex in ScraperConfig.weapon_stats_attr_regex_tuples:
+                    for attr, regex in self.ScraperConfig.weapon_stats_attr_regex_tuples:
                         match = regex.search(td_th.text)
                         if match is not None:
                             attr_key = attr + '_' + item_slot
@@ -66,8 +80,8 @@ class Scraper:
                             break
 
         for span in secondary_stats_td.find_all('span', recursive=False):
-            if ScraperConfig.equip_regex.match(span.text) is not None:
-                for attr, regex in ScraperConfig.secondary_stats_attr_regex_tuples:
+            if self.ScraperConfig.equip_regex.match(span.text) is not None:
+                for attr, regex in self.ScraperConfig.secondary_stats_attr_regex_tuples:
                     match = regex.search(span.text)
                     if match is not None:
                         item['stats'][attr] = int(match.group('value'))
@@ -82,23 +96,23 @@ class Scraper:
                         span_grandchildren = span_child.find_all('span')
                         if len(span_grandchildren) > 0:
                             for span_grandchild in span_grandchildren:
-                                set_regex_match = ScraperConfig.set_regex.match(span_grandchild.text)
+                                set_regex_match = self.ScraperConfig.set_regex.match(span_grandchild.text)
                                 if set_regex_match is not None:
                                     a = span_grandchild.find('a')
-                                    for attr, regex in ScraperConfig.primary_stats_attr_regex_tuples + ScraperConfig.secondary_stats_attr_regex_tuples:
+                                    for attr, regex in self.ScraperConfig.primary_stats_attr_regex_tuples + self.ScraperConfig.secondary_stats_attr_regex_tuples:
                                         match = regex.search(a.text)
                                         if match is not None:
                                             item['set']['bonuses'][int(set_regex_match.group('n_set_pieces_for_bonus'))] = (attr, int(match.group('value')))
                                             break
 
         item['procs'] = set()
-        if (item_slot == 'main_hand' or item_slot == 'off_hand') and item['name'] in ScraperConfig.weapon_proc_mapping:
-            item['procs'].add(ScraperConfig.weapon_proc_mapping[item['name']][item_slot])
-        elif item['name'] in ScraperConfig.proc_mapping:
-            item['procs'].add(ScraperConfig.proc_mapping[item['name']])
+        if (item_slot == 'main_hand' or item_slot == 'off_hand') and item['name'] in self.ScraperConfig.weapon_proc_mapping:
+            item['procs'].add(self.ScraperConfig.weapon_proc_mapping[item['name']][item_slot])
+        elif item['name'] in self.ScraperConfig.proc_mapping:
+            item['procs'].add(self.ScraperConfig.proc_mapping[item['name']])
 
         item['on_use_effects'] = set()
-        if item['name'] in ScraperConfig.on_use_effect_mapping:
-            item['on_use_effects'].add(ScraperConfig.on_use_effect_mapping[item['name']])
+        if item['name'] in self.ScraperConfig.on_use_effect_mapping:
+            item['on_use_effects'].add(self.ScraperConfig.on_use_effect_mapping[item['name']])
 
         return item

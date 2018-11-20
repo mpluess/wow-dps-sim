@@ -141,6 +141,13 @@
         "item_ranged": {
             "type": "string",
             "title": "Ranged"
+        },
+
+        "expansion": {
+            "type": "string"
+        },
+        "scraper_item_db": {
+            "type": "string"
         }
     },
 

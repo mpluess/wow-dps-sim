@@ -47,7 +47,4 @@ sim.calc everything else (?)
 
 
 TODOs:
-Make expansion configurable from website: main_config._EXPANSION, items, sockets, scraper
-Use http://www.alpacajs.org/docs/api/connectors.html to get expansion-specific data into wow_dps_sim.html.
-E.g. a initialization page where the user can choose the things mentioned above and the choices then get
-passed to the next stage via GET params.
+Draenei with racial.
