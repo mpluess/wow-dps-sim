@@ -1,0 +1,198 @@
+{
+    "type": "object",
+    "properties": {
+        "faction": {
+            "type": "string",
+            "title": "Faction",
+            "enum": ["alliance", "horde"],
+            "required": true
+        },
+        "race": {
+            "type": "string",
+            "title": "Race",
+            "enum": ["dwarf", "gnome", "human", "nightelf", "orc", "tauren", "troll", "undead"],
+            "required": true
+        },
+        "class": {
+            "type": "string",
+            "title": "Class",
+            "enum": ["druid", "hunter", "mage", "paladin", "priest", "rogue", "shaman", "warlock", "warrior"],
+            "required": true
+        },
+        "spec_druid": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["balance", "feral_combat", "restoration"],
+            "required": true
+        },
+        "spec_hunter": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["beast_mastery", "marksmanship", "survival"],
+            "required": true
+        },
+        "spec_mage": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["arcane", "fire", "frost"],
+            "required": true
+        },
+        "spec_paladin": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["holy", "protection", "retribution"],
+            "required": true
+        },
+        "spec_priest": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["discipline", "holy", "shadow"],
+            "required": true
+        },
+        "spec_rogue": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["assassination", "combat", "subtlety"],
+            "required": true
+        },
+        "spec_shaman": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["elemental", "enhancement", "restoration"],
+            "required": true
+        },
+        "spec_warlock": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["affliction", "demonology", "destruction"],
+            "required": true
+        },
+        "spec_warrior": {
+            "type": "string",
+            "title": "Spec",
+            "enum": ["arms", "fury", "protection"],
+            "required": true
+        },
+
+        "item_head": {
+            "type": "string",
+            "title": "Head"
+        },
+        "item_neck": {
+            "type": "string",
+            "title": "Neck"
+        },
+        "item_shoulder": {
+            "type": "string",
+            "title": "Shoulder"
+        },
+        "item_back": {
+            "type": "string",
+            "title": "Back"
+        },
+        "item_chest": {
+            "type": "string",
+            "title": "Chest"
+        },
+        "item_wrist": {
+            "type": "string",
+            "title": "Wrist"
+        },
+        "item_hands": {
+            "type": "string",
+            "title": "Hands"
+        },
+        "item_waist": {
+            "type": "string",
+            "title": "Waist"
+        },
+        "item_legs": {
+            "type": "string",
+            "title": "Legs"
+        },
+        "item_feet": {
+            "type": "string",
+            "title": "Feet"
+        },
+        "item_ring_1": {
+            "type": "string",
+            "title": "Ring 1"
+        },
+        "item_ring_2": {
+            "type": "string",
+            "title": "Ring 2"
+        },
+        "item_trinket_1": {
+            "type": "string",
+            "title": "Trinket 1"
+        },
+        "item_trinket_2": {
+            "type": "string",
+            "title": "Trinket 2"
+        },
+        "item_main_hand": {
+            "type": "string",
+            "title": "Main Hand"
+        },
+        "item_off_hand": {
+            "type": "string",
+            "title": "Off Hand"
+        },
+        "item_ranged": {
+            "type": "string",
+            "title": "Ranged"
+        },
+
+        "meta_socket_active": {
+            "type": "boolean",
+            "title": "Meta socket active"
+        },
+        "sockets_agi": {
+            "type": "string",
+            "title": "Agility from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_sta": {
+            "type": "string",
+            "title": "Stamina from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_str": {
+            "type": "string",
+            "title": "Strength from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_ap": {
+            "type": "string",
+            "title": "Attack Power from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_crit_rating": {
+            "type": "string",
+            "title": "Crit Rating from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_hit_rating": {
+            "type": "string",
+            "title": "Hit Rating from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_haste_rating": {
+            "type": "string",
+            "title": "Haste Rating from sockets",
+            "description": "Including socket bonuses and meta gem"
+        }
+    },
+
+    "dependencies": {
+        "spec_druid": ["class"],
+        "spec_hunter": ["class"],
+        "spec_mage": ["class"],
+        "spec_paladin": ["class"],
+        "spec_priest": ["class"],
+        "spec_rogue": ["class"],
+        "spec_shaman": ["class"],
+        "spec_warlock": ["class"],
+        "spec_warrior": ["class"]
+    }
+}

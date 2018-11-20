@@ -13,13 +13,13 @@ Stats = from_module_import_x(EXPANSION_MODULE + '.stats', 'Stats')
 app = Flask(__name__)
 
 # Northdale (Light's Hope) database
-scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
+# scraper = Scraper('https://vanillawowdb.com/?item=', path_to_cache='cache/items/vanillawowdb.com')
 
 # 1.12 database
 # scraper = Scraper('https://classicdb.ch/?item=', path_to_cache='cache/items/classicdb.ch')
 
 # 2.4.3 database
-# scraper = Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com')
+scraper = Scraper('http://tbc.cavernoftime.com/item=', path_to_cache='cache/items/tbc.cavernoftime.com')
 
 
 @app.route('/', methods=['GET'])

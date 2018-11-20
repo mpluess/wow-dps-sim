@@ -1,0 +1,23 @@
+{
+    "faction": "alliance",
+    "race": "human",
+    "class": "warrior",
+    "spec_warrior": "fury",
+    "item_head": "12640",
+    "item_neck": "19377",
+    "item_shoulder": "21330",
+    "item_back": "23045",
+    "item_chest": "23000",
+    "item_wrist": "22936",
+    "item_hands": "21581",
+    "item_waist": "23219",
+    "item_legs": "23068",
+    "item_feet": "19387",
+    "item_ring_1": "19384",
+    "item_ring_2": "17063",
+    "item_trinket_1": "23041",
+    "item_trinket_2": "22954",
+    "item_main_hand": "23054",
+    "item_off_hand": "23577",
+    "item_ranged": "22812"
+}
