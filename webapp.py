@@ -2,11 +2,10 @@ from collections import defaultdict
 from flask import Flask, render_template, request
 
 from wow_dps_sim.entities import Player
+from wow_dps_sim.helpers import from_module_import_x
 from wow_dps_sim.scraper import Scraper
 from wow_dps_sim.sim import do_sim
 from wow_dps_sim.stats import Stats
-
-from wow_dps_sim.helpers import from_module_import_x
 
 app = Flask(__name__)
 

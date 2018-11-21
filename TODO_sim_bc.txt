@@ -1,32 +1,3 @@
-differences vanilla vs. bc:
-x imp hs 3 statt 2
-op (no op + anger management vs. op + no anger management (only keep 10 rage on stance switch))
-uw ppm
-x no imp exe
-weapon mastery -2% dodge
-x flurry 25% statt 30%
-x precision +3% hit
-ww -1 sec cd, hits with off hand too
-x imp berserker +10% ap
-rampage
-
-x scraper: hit rating, crit rating, expertise, ...
-gems, meta gem
-boss armor, armor damage reduction, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
-hit table
-weapon skill / expertise / glancings
-racials
-
-gcd on stance change?
-http://wowwiki.wikia.com/wiki/Patch_2.4.0:
-Stances: It is no longer possible to accidentally change into a stance you are already in via macros (resulting in a global cooldown and loss of rage).
-
-wf
-heroism
-drums
-haste potion
-
-
 code:
 different:
 expansion
@@ -46,5 +17,45 @@ sim.sim everything else (?)
 sim.calc everything else (?)
 
 
-TODOs:
-Draenei with racial.
+knowledge:
+x imp hs 3 statt 2
+x no imp exe
+x flurry 25% statt 30%
+x precision +3% hit
+x imp berserker +10% ap
+
+abilities:
+no op
+ww -1 sec cd, hits with off hand too
+rampage
+uw ppm
+anger management
+
+calc:
+weapon mastery -2% dodge
+boss armor, armor damage reduction, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
+hit table
+weapon skill / expertise / glancings
+racials, draenei race
+
+misc:
+x scraper: hit rating, crit rating, expertise, ...
+x gems
+meta gem
+
+gcd on stance change?
+http://wowwiki.wikia.com/wiki/Patch_2.4.0:
+Stances: It is no longer possible to accidentally change into a stance you are already in via macros (resulting in a global cooldown and loss of rage).
+
+proc:
+wf
+items
+
+on use:
+heroism
+drums
+haste potion
+items
+
+comparisons:
+no op + anger management vs. op + no anger management

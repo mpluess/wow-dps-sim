@@ -3,9 +3,8 @@ from statistics import mean
 
 from .constants import Constants
 from .enums import Stance
-from .stats import Stats
-
 from .helpers import from_module_import_x
+from .stats import Stats
 
 
 class AbilityLogEntry:
