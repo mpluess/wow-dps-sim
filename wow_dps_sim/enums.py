@@ -65,6 +65,10 @@ class EventType(Enum):
     MIGHTY_RAGE_POTION_CD_END = auto()
     MIGHTY_RAGE_POTION_END = auto()
 
+    # Burning Crusade
+    RAMPAGE_END = auto()
+    ATTACK_CRIT = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -96,6 +100,9 @@ class PlayerBuffs(Enum):
     JUJU_FLURRY = auto()
     MIGHTY_RAGE_POTION = auto()
 
+    # Burning Crusade
+    RAMPAGE = auto()
+
 
 class Proc(Enum):
     # Vanilla
@@ -106,7 +113,7 @@ class Proc(Enum):
     THRASH_BLADE_MAIN = auto()
     THRASH_BLADE_OFF = auto()
 
-    # BC
+    # Burning Crusade
     EXECUTIONER_MAIN = auto()
     EXECUTIONER_OFF = auto()
     MONGOOSE_MAIN = auto()

@@ -25,15 +25,16 @@ x precision +3% hit
 x imp berserker +10% ap
 
 abilities:
-no op
-ww -1 sec cd, hits with off hand too
-rampage
+x no op
+x ww -1 sec cd, hits with off hand too
+x prefer bt vs. exe
+x rampage
 uw ppm
 anger management
 
 calc:
 weapon mastery -2% dodge
-boss armor, armor damage reduction, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
+boss armor, armor damage reduction incl. arp, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
 hit table
 weapon skill / expertise / glancings
 racials, draenei race
@@ -59,3 +60,9 @@ items
 
 comparisons:
 no op + anger management vs. op + no anger management
+dw spec, imp exe, weapon mastery, precision, imp ww choice
+rampage @ execute phase?
+
+research:
+is ww with both hands actually 2 attacks, 2 times damage dealt, 2 times chance to proc stuff etc.?
+2.4 patch notes seem to indicate this: "Whirlwind: Critical strikes with the off-hand weapon from this ability can now trigger Flurry and Rampage."

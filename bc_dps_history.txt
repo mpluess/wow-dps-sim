@@ -1,0 +1,32 @@
+with vanilla rota and calcs:
+DPS: 772
+
+
+no op, ww both hands, prefer bt over exe:
+DPS: 806.12
+White Hit 55137625 38.04 min=161 max=1053 mean=427
+Bloodthirst 31427536 21.68 min=804 max=1769 mean=1223
+Heroic Strike 26164968 18.05 min=570 max=1440 mean=938
+Whirlwind 16314927 11.26 min=245 max=1074 mean=546
+Execute 15904512 10.97 min=568 max=3664 mean=1071
+
+White Hit AttackResult.GLANCING 61945 40.09 AttackResult.CRIT 55964 36.22 AttackResult.MISS 15873 10.27 AttackResult.HIT 11228 7.27 AttackResult.DODGE 9516 6.16
+Bloodthirst AttackResult.HIT 14543 53.04 AttackResult.CRIT 11156 40.69 AttackResult.DODGE 1721 6.28
+Heroic Strike AttackResult.HIT 15559 52.22 AttackResult.CRIT 12350 41.45 AttackResult.DODGE 1884 6.32
+Whirlwind AttackResult.HIT 16595 52.11 AttackResult.CRIT 13293 41.74 AttackResult.DODGE 1960 6.15
+Execute AttackResult.HIT 9135 57.72 AttackResult.CRIT 5716 36.12 AttackResult.DODGE 976 6.17
+
+
+rampage:
+DPS: 852.03
+White Hit 58326351 38.29 min=161 max=1125 mean=453
+Bloodthirst 34154848 22.42 min=804 max=1952 mean=1333
+Heroic Strike 26727547 17.55 min=575 max=1518 mean=985
+Whirlwind 17359882 11.40 min=245 max=1144 mean=586
+Execute 15767047 10.35 min=568 max=3664 mean=1079
+
+White Hit AttackResult.GLANCING 61601 39.90 AttackResult.CRIT 56081 36.33 AttackResult.MISS 15985 10.35 AttackResult.HIT 10979 7.11 AttackResult.DODGE 9731 6.30
+Bloodthirst AttackResult.HIT 14427 52.74 AttackResult.CRIT 11187 40.90 AttackResult.DODGE 1740 6.36
+Heroic Strike AttackResult.HIT 15320 53.08 AttackResult.CRIT 11807 40.91 AttackResult.DODGE 1735 6.01
+Whirlwind AttackResult.HIT 16202 51.31 AttackResult.CRIT 13424 42.51 AttackResult.DODGE 1950 6.18
+Execute AttackResult.HIT 9098 58.33 AttackResult.CRIT 5518 35.38 AttackResult.DODGE 981 6.29

@@ -13,12 +13,6 @@ class Sim:
     epsilon = 1e-7
 
     def __init__(self, expansion, player, fight_duration, logging=False, run_nr=None):
-        expansion_module = 'wow_dps_sim.expansion.' + expansion
-        Calcs = from_module_import_x(expansion_module + '.calcs', 'Calcs')
-        self.calcs = Calcs(expansion, player)
-        self.knowledge = from_module_import_x(expansion_module, 'knowledge')
-        self.rotation_config = from_module_import_x(expansion_module, 'rotation_config')
-
         self.player = player
         self.fight_duration = fight_duration
         self.execute_phase_start_time = fight_duration * 0.8
@@ -49,6 +43,12 @@ class Sim:
             'execute_phase': False,
         }
 
+        expansion_module = 'wow_dps_sim.expansion.' + expansion
+        Calcs = from_module_import_x(expansion_module + '.calcs', 'Calcs')
+        self.calcs = Calcs(expansion, player, self.state)
+        self.knowledge = from_module_import_x(expansion_module, 'knowledge')
+        self.rotation_config = from_module_import_x(expansion_module, 'rotation_config')
+
         self._add_event(0.0, EventType.BLOODRAGE_CD_END)
         for on_use_effect in self.player.on_use_effects:
             self._add_event(0.0, Constants.on_use_effect_to_cd_end_event_type[on_use_effect])
@@ -78,7 +78,6 @@ class Sim:
         return event
 
     def handle_event(self, event):
-        # self.log(f"{self._log_entry_beginning()} flurry_charges={self.state['flurry_charges']}\n")
         event_type = event.event_type
         if event_type == EventType.BLOODRAGE_CD_END:
             self._add_rage('bloodrage', self.knowledge.BLOODRAGE_BASE_RAGE)
@@ -325,8 +324,7 @@ class Sim:
         # it's slightly better to delay WW and wait until 30 rage are available to use BT instead.
         if (
             not self.state['on_gcd'] and not self.state['bloodthirst_available']
-            and self.state['whirlwind_available'] and self.player.stance == Stance.BERSERKER and self.state[
-            'rage'] >= self.knowledge.WHIRLWIND_RAGE_COST
+            and self.state['whirlwind_available'] and self.player.stance == Stance.BERSERKER and self.state['rage'] >= self.knowledge.WHIRLWIND_RAGE_COST
         ):
             ability = 'whirlwind'
             self.state['whirlwind_available'] = False

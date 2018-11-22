@@ -7,7 +7,7 @@ from wow_dps_sim.stats import Stats
 
 
 class Calcs:
-    def __init__(self, expansion, player):
+    def __init__(self, expansion, player, sim_state):
         self.stats = Stats(expansion)
 
         expansion_module = 'wow_dps_sim.expansion.' + expansion
@@ -16,6 +16,8 @@ class Calcs:
         self.ExpansionSpecificStats = from_module_import_x(expansion_module + '.stats', 'Stats')
 
         self.player = player
+
+        self.sim_state = sim_state
 
     def current_speed(self, hand):
         assert isinstance(hand, Hand)
@@ -28,15 +30,15 @@ class Calcs:
 
     def current_stats(self):
         stats = self.player.partial_buffed_permanent_stats
-        stats = self._apply_temporary_buffs(stats)
+        stats = self._apply_temporary_buffs_flat(stats)
+        stats = self._apply_temporary_buffs_percentage(stats)
         stats = self.stats.finalize_buffed_stats(self.player.faction, self.player.race, self.player.class_, self.player.spec, stats)
 
         return stats
 
-    def _apply_temporary_buffs(self, stats):
+    def _apply_temporary_buffs_flat(self, stats):
         stats = copy.copy(stats)
 
-        # Flat
         if self.player.stance == Stance.BERSERKER:
             stats = self.ExpansionSpecificStats.apply_berserker_stance_flat_effects(stats)
         if PlayerBuffs.RECKLESSNESS in self.player.buffs:
@@ -57,7 +59,11 @@ class Calcs:
         if PlayerBuffs.MIGHTY_RAGE_POTION in self.player.buffs:
             stats['str'] += self.knowledge.MIGHTY_RAGE_POTION_ADDITIONAL_STRENGTH
 
-        # Percentage
+        return stats
+
+    def _apply_temporary_buffs_percentage(self, stats):
+        stats = copy.copy(stats)
+
         if self.player.stance == Stance.BERSERKER:
             stats = self.ExpansionSpecificStats.apply_berserker_stance_percentage_effects(stats)
         if PlayerBuffs.DEATH_WISH in self.player.buffs:
@@ -96,14 +102,16 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN, AttackTableModification.OVERPOWER)
 
-    def whirlwind(self):
+    def whirlwind(self, hand=Hand.MAIN):
         current_stats = self.current_stats()
         base_damage = self._calc_weapon_damage(
-            current_stats['damage_range_main_hand'],
-            self.knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[current_stats['weapon_type_main_hand']]
+            current_stats[('damage_range_off_hand' if hand == Hand.OFF else 'damage_range_main_hand')],
+            self.knowledge.NORMALIZED_WEAPON_SPEED_LOOKUP[
+                current_stats[('weapon_type_off_hand' if hand == Hand.OFF else 'weapon_type_main_hand')]
+            ]
         )
 
-        return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, Hand.MAIN)
+        return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, hand)
 
     def white_hit(self, hand):
         assert isinstance(hand, Hand)
