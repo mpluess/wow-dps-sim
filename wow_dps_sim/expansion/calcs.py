@@ -140,10 +140,9 @@ class Calcs:
             current_stats = self.current_stats()
             damage = round(damage * current_stats['damage_multiplier'])
 
-            # https://forum.elysium-project.org/topic/22647-rage-explained-by-blizzard/
-            # TODO not sure if I understood this correctly
+            # https://blue.mmo-champion.com/topic/18325-the-new-rage-formula-by-kalgan/
             if attack_type == AttackType.WHITE:
-                rage += round(damage / 230.6 * 7.5)
+                rage += self._rage_from_damage(damage, hand, attack_result)
 
             if attack_type == AttackType.WHITE or attack_type == AttackType.HEROIC_STRIKE:
                 rage += self._unbridled_wrath(hand)
@@ -174,13 +173,11 @@ class Calcs:
         boss_armor = self._current_boss_armor()
 
         # See http://wowwiki.wikia.com/wiki/Armor
-        # TODO not 100% sure if that's correct for player vs. boss @ vanilla
         damage_reduction = boss_armor / (boss_armor + 5882.5)
 
         return round(damage * (1 - damage_reduction))
 
     def _current_boss_armor(self):
-        # TODO further armor pen if available
         return max(
             0,
 
@@ -188,6 +185,7 @@ class Calcs:
             - (1 if BossDebuffs.SUNDER_ARMOR_X5 in self.boss_config.DEBUFFS else 0) * self.knowledge.SUNDER_ARMOR_REDUCTION_PER_STACK * 5
             - (1 if BossDebuffs.FAERIE_FIRE in self.boss_config.DEBUFFS else 0) * self.knowledge.FAERIE_FIRE_ARMOR_REDUCTION
             - (1 if BossDebuffs.CURSE_OF_RECKLESSNESS in self.boss_config.DEBUFFS else 0) * self.knowledge.CURSE_OF_RECKLESSNESS_ARMOR_REDUCTION
+            - self.current_stats()['arp']
         )
 
     def _attack_table_roll(self, attack_type, hand, attack_table_modification):
@@ -250,6 +248,9 @@ class Calcs:
             attack_result = AttackResult.HIT
 
         return attack_result
+
+    def _rage_from_damage(self, damage, hand, attack_result):
+        return round(damage / 230.6 * 7.5)
 
     def _unbridled_wrath(self, hand):
         return 1 if random.random() < 0.4 else 0

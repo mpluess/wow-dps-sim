@@ -2,7 +2,7 @@ code:
 different:
 expansion
 sim.sim main difference: do_rota
-sim.calc current_speed, whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
+sim.calc whirlwind, _calc_attack_result_damage_rage, unbridled_wrath
 
 same:
 templates. user should be able to choose database to scrape from and patch / expansion level.
@@ -33,16 +33,19 @@ x uw ppm
 x anger management
 
 calc:
-weapon mastery -2% dodge
-boss armor, armor damage reduction incl. arp, base miss / dodge (http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/)
-hit table
-weapon skill / expertise / glancings
-racials, draenei race
+x weapon mastery -2% dodge
+
+x boss armor, armor damage reduction incl. arp, base miss / dodge
+http://web.archive.org/web/20130810120034/http://elitistjerks.com/f81/t22705-dps_compendium/
+
+x hit table
+x weapon skill / expertise / glancings
 
 misc:
 x scraper: hit rating, crit rating, expertise, ...
 x gems
-meta gem
+x meta gem
+draenei race
 
 gcd on stance change?
 http://wowwiki.wikia.com/wiki/Patch_2.4.0:
