@@ -146,7 +146,7 @@ class Calcs:
                 rage += round(damage / 230.6 * 7.5)
 
             if attack_type == AttackType.WHITE or attack_type == AttackType.HEROIC_STRIKE:
-                rage += self._unbridled_wrath()
+                rage += self._unbridled_wrath(hand)
 
         return attack_result, damage, rage
 
@@ -251,8 +251,7 @@ class Calcs:
 
         return attack_result
 
-    @staticmethod
-    def _unbridled_wrath():
+    def _unbridled_wrath(self, hand):
         return 1 if random.random() < 0.4 else 0
 
     def _calc_weapon_damage(self, base_damage_range, speed):

@@ -3,6 +3,7 @@ from .enums import EventType, OnUseEffect
 
 class Constants:
     ability_names_lookup = {
+        'anger_management': 'Anger Management',
         'bloodrage': 'Bloodrage',
         'bloodthirst': 'Bloodthirst',
         'death_wish': 'Death Wish',

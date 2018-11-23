@@ -29,8 +29,8 @@ x no op
 x ww -1 sec cd, hits with off hand too
 x prefer bt vs. exe
 x rampage
-uw ppm
-anger management
+x uw ppm
+x anger management
 
 calc:
 weapon mastery -2% dodge

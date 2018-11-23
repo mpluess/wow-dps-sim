@@ -68,6 +68,7 @@ class EventType(Enum):
     # Burning Crusade
     RAMPAGE_END = auto()
     ATTACK_CRIT = auto()
+    ANGER_MANAGEMENT_TICK = auto()
 
 
 class Hand(Enum):

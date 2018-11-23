@@ -30,3 +30,33 @@ Bloodthirst AttackResult.HIT 14427 52.74 AttackResult.CRIT 11187 40.90 AttackRes
 Heroic Strike AttackResult.HIT 15320 53.08 AttackResult.CRIT 11807 40.91 AttackResult.DODGE 1735 6.01
 Whirlwind AttackResult.HIT 16202 51.31 AttackResult.CRIT 13424 42.51 AttackResult.DODGE 1950 6.18
 Execute AttackResult.HIT 9098 58.33 AttackResult.CRIT 5518 35.38 AttackResult.DODGE 981 6.29
+
+
+anger management:
+DPS: 857.14
+White Hit 57836842 37.44 min=161 max=1125 mean=451
+Bloodthirst 34587412 22.39 min=804 max=1952 mean=1334
+Heroic Strike 28373250 18.37 min=571 max=1518 mean=986
+Whirlwind 17535385 11.35 min=245 max=1144 mean=585
+Execute 16136225 10.45 min=568 max=3664 mean=1089
+
+White Hit AttackResult.GLANCING 61551 39.99 AttackResult.CRIT 55613 36.13 AttackResult.MISS 15942 10.36 AttackResult.HIT 11215 7.29 AttackResult.DODGE 9612 6.24
+Bloodthirst AttackResult.HIT 14580 52.63 AttackResult.CRIT 11346 40.95 AttackResult.DODGE 1778 6.42
+Heroic Strike AttackResult.HIT 16219 52.78 AttackResult.CRIT 12549 40.83 AttackResult.DODGE 1964 6.39
+Whirlwind AttackResult.HIT 16438 51.47 AttackResult.CRIT 13517 42.32 AttackResult.DODGE 1983 6.21
+Execute AttackResult.HIT 9137 57.88 AttackResult.CRIT 5674 35.94 AttackResult.DODGE 975 6.18
+
+
+uw ppm:
+DPS: 862.08
+White Hit 57639077 37.13 min=161 max=1125 mean=450
+Bloodthirst 34648509 22.32 min=804 max=1952 mean=1329
+Heroic Strike 28945251 18.64 min=582 max=1518 mean=984
+Whirlwind 17607898 11.34 min=245 max=1144 mean=587
+Execute 16413349 10.57 min=568 max=3664 mean=1099
+
+White Hit AttackResult.GLANCING 61386 40.04 AttackResult.CRIT 55704 36.34 AttackResult.MISS 15626 10.19 AttackResult.HIT 10958 7.15 AttackResult.DODGE 9625 6.28
+Bloodthirst AttackResult.HIT 14783 53.23 AttackResult.CRIT 11286 40.64 AttackResult.DODGE 1704 6.14
+Heroic Strike AttackResult.HIT 16686 53.14 AttackResult.CRIT 12738 40.56 AttackResult.DODGE 1979 6.30
+Whirlwind AttackResult.HIT 16300 51.10 AttackResult.CRIT 13677 42.87 AttackResult.DODGE 1923 6.03
+Execute AttackResult.HIT 9240 58.14 AttackResult.CRIT 5690 35.80 AttackResult.DODGE 963 6.06

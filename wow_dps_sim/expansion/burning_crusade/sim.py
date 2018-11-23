@@ -13,6 +13,8 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
 
         self.rampage_end_event = None
 
+        self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
+
     def handle_event(self, event):
         super().handle_event(event)
 
@@ -24,6 +26,9 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.log(f"{self._log_entry_beginning('rampage')} fades\n")
         elif event_type == EventType.ATTACK_CRIT:
             self._do_rota()
+        elif event_type == EventType.ANGER_MANAGEMENT_TICK:
+            self._add_rage('anger_management', self.knowledge.ANGER_MANAGEMENT_TICK_RAGE)
+            self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
 
     def _do_rota(self):
         if self.state['execute_phase']:
