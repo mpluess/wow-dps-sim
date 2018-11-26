@@ -1,6 +1,32 @@
 from enum import auto, Enum
 
 
+class Ability(Enum):
+    ANGER_MANAGEMENT = auto()
+    BLOODRAGE = auto()
+    BLOODTHIRST = auto()
+    DEATH_WISH = auto()
+    EXECUTE = auto()
+    HAND_OF_JUSTICE_PROC = auto()
+    HEROIC_STRIKE = auto()
+    IRONFOE_PROC = auto()
+    JUJU_FLURRY = auto()
+    KISS_OF_THE_SPIDER = auto()
+    MIGHTY_RAGE_POTION = auto()
+    OVERPOWER = auto()
+    RAMPAGE = auto()
+    RECKLESSNESS = auto()
+    SLAYERS_CREST = auto()
+    THRASH_BLADE_PROC = auto()
+    WHIRLWIND = auto()
+    WHIRLWIND_MAIN = auto()
+    WHIRLWIND_OFF = auto()
+    WHITE = auto()
+    WHITE_MAIN = auto()
+    WHITE_OFF = auto()
+    WINDFURY_PROC = auto()
+
+
 class AttackResult(Enum):
     MISS = auto()
     DODGE = auto()
@@ -65,6 +91,8 @@ class EventType(Enum):
     MIGHTY_RAGE_POTION_CD_END = auto()
     MIGHTY_RAGE_POTION_END = auto()
 
+    WINDFURY_TOTEM_PROC = auto()
+
     # Burning Crusade
     RAMPAGE_END = auto()
     ATTACK_CRIT = auto()
@@ -113,6 +141,7 @@ class Proc(Enum):
     IRONFOE = auto()
     THRASH_BLADE_MAIN = auto()
     THRASH_BLADE_OFF = auto()
+    WINDFURY_TOTEM = auto()
 
     # Burning Crusade
     EXECUTIONER_MAIN = auto()

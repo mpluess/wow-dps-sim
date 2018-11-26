@@ -5,7 +5,7 @@ import time
 
 from wow_dps_sim.constants import Constants
 from wow_dps_sim.entities import AbilityLogEntry, Event, WhiteHitEvent
-from wow_dps_sim.enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Proc, Stance
+from wow_dps_sim.enums import Ability, AttackResult, AttackType, EventType, Hand, PlayerBuffs, Proc, Stance
 from wow_dps_sim.helpers import from_module_import_x
 
 
@@ -80,21 +80,21 @@ class Sim:
     def handle_event(self, event):
         event_type = event.event_type
         if event_type == EventType.BLOODRAGE_CD_END:
-            self._add_rage('bloodrage', self.knowledge.BLOODRAGE_BASE_RAGE)
+            self._add_rage(Ability.BLOODRAGE, self.knowledge.BLOODRAGE_BASE_RAGE)
             for i in range(self.knowledge.BLOODRAGE_DURATION):
                 self._add_event(i + 1, EventType.BLOODRAGE_ADD_RAGE_OVER_TIME)
             self._add_event(self.knowledge.BLOODRAGE_CD, EventType.BLOODRAGE_CD_END)
         elif event_type == EventType.BLOODRAGE_ADD_RAGE_OVER_TIME:
-            self._add_rage('bloodrage', self.knowledge.BLOODRAGE_TICK_RAGE)
+            self._add_rage(Ability.BLOODRAGE, self.knowledge.BLOODRAGE_TICK_RAGE)
         elif event_type == EventType.DEATH_WISH_END:
             self.player.buffs.remove(PlayerBuffs.DEATH_WISH)
-            self.log(f"{self._log_entry_beginning('death_wish')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.DEATH_WISH)} fades\n")
         elif event_type == EventType.DEATH_WISH_CD_END:
             self.state['death_wish_available'] = True
             self._do_rota()
         elif event_type == EventType.RECKLESSNESS_END:
             self.player.buffs.remove(PlayerBuffs.RECKLESSNESS)
-            self.log(f"{self._log_entry_beginning('recklessness')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.RECKLESSNESS)} fades\n")
         elif event_type == EventType.RECKLESSNESS_CD_END:
             self.state['recklessness_available'] = True
             self._do_rota()
@@ -121,21 +121,21 @@ class Sim:
         elif event_type == EventType.WHITE_HIT_MAIN:
             self.next_white_hit_main = self._add_event(self.calcs.current_speed(Hand.MAIN), EventType.WHITE_HIT_MAIN)
             if self.state['heroic_strike_toggled'] and self.state['rage'] >= self.knowledge.HEROIC_STRIKE_RAGE_COST:
-                self._apply_melee_attack_effects('heroic_strike', self.calcs.heroic_strike(), False, AttackType.HEROIC_STRIKE, Hand.MAIN, rage_cost=self.knowledge.HEROIC_STRIKE_RAGE_COST)
+                self._apply_melee_attack_effects(Ability.HEROIC_STRIKE, self.calcs.heroic_strike(), False, AttackType.HEROIC_STRIKE, Hand.MAIN, rage_cost=self.knowledge.HEROIC_STRIKE_RAGE_COST)
                 self._add_event(0.0, EventType.HEROIC_STRIKE_LANDED)
             else:
-                self._apply_melee_attack_effects('white_main', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN)
+                self._apply_melee_attack_effects(Ability.WHITE_MAIN, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN)
             self.state['heroic_strike_toggled'] = False
         elif event_type == EventType.WHITE_HIT_OFF:
             self.next_white_hit_off = self._add_event(self.calcs.current_speed(Hand.OFF), EventType.WHITE_HIT_OFF)
-            self._apply_melee_attack_effects('white_off', self.calcs.white_hit(Hand.OFF), False, AttackType.WHITE, Hand.OFF)
+            self._apply_melee_attack_effects(Ability.WHITE_OFF, self.calcs.white_hit(Hand.OFF), False, AttackType.WHITE, Hand.OFF)
         elif event_type == EventType.HAND_OF_JUSTICE_PROC:
-            self._apply_melee_attack_effects('hand_of_justice_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+            self._apply_melee_attack_effects(Ability.HAND_OF_JUSTICE_PROC, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
         elif event_type == EventType.THRASH_BLADE_PROC:
-            self._apply_melee_attack_effects('thrash_blade_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+            self._apply_melee_attack_effects(Ability.THRASH_BLADE_PROC, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
         elif event_type == EventType.IRONFOE_PROC:
-            self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
-            self._apply_melee_attack_effects('ironfoe_proc', self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+            self._apply_melee_attack_effects(Ability.IRONFOE_PROC, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
+            self._apply_melee_attack_effects(Ability.IRONFOE_PROC, self.calcs.white_hit(Hand.MAIN), False, AttackType.WHITE, Hand.MAIN, is_white_proc=True)
         elif event_type == EventType.RAGE_GAINED:
             self._do_rota()
             self._use_heroic_strike()
@@ -171,35 +171,40 @@ class Sim:
             self.player.buffs.add(PlayerBuffs.KISS_OF_THE_SPIDER)
             self._add_event(self.knowledge.KISS_OF_THE_SPIDER_DURATION, EventType.KISS_OF_THE_SPIDER_END)
             self._add_event(self.knowledge.KISS_OF_THE_SPIDER_CD, event_type)
-            self.log(f"{self._log_entry_beginning('kiss_of_the_spider')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.KISS_OF_THE_SPIDER)} activated\n")
         elif event_type == EventType.KISS_OF_THE_SPIDER_END:
             self.player.buffs.remove(PlayerBuffs.KISS_OF_THE_SPIDER)
-            self.log(f"{self._log_entry_beginning('kiss_of_the_spider')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.KISS_OF_THE_SPIDER)} fades\n")
         elif event_type == EventType.SLAYERS_CREST_CD_END:
             self.player.buffs.add(PlayerBuffs.SLAYERS_CREST)
             self._add_event(self.knowledge.SLAYERS_CREST_DURATION, EventType.SLAYERS_CREST_END)
             self._add_event(self.knowledge.SLAYERS_CREST_CD, event_type)
-            self.log(f"{self._log_entry_beginning('slayers_crest')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.SLAYERS_CREST)} activated\n")
         elif event_type == EventType.SLAYERS_CREST_END:
             self.player.buffs.remove(PlayerBuffs.SLAYERS_CREST)
-            self.log(f"{self._log_entry_beginning('slayers_crest')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.SLAYERS_CREST)} fades\n")
         elif event_type == EventType.JUJU_FLURRY_CD_END:
             self.player.buffs.add(PlayerBuffs.JUJU_FLURRY)
             self._add_event(self.knowledge.JUJU_FLURRY_DURATION, EventType.JUJU_FLURRY_END)
             self._add_event(self.knowledge.JUJU_FLURRY_CD, event_type)
-            self.log(f"{self._log_entry_beginning('juju_flurry')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.JUJU_FLURRY)} activated\n")
         elif event_type == EventType.JUJU_FLURRY_END:
             self.player.buffs.remove(PlayerBuffs.JUJU_FLURRY)
-            self.log(f"{self._log_entry_beginning('juju_flurry')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.JUJU_FLURRY)} fades\n")
         elif event_type == EventType.MIGHTY_RAGE_POTION_CD_END:
-            self._add_rage('mighty_rage_potion', random.randint(self.knowledge.MIGHTY_RAGE_POTION_MIN_RAGE, self.knowledge.MIGHTY_RAGE_POTION_MAX_RAGE))
+            self._add_rage(Ability.MIGHTY_RAGE_POTION, random.randint(self.knowledge.MIGHTY_RAGE_POTION_MIN_RAGE, self.knowledge.MIGHTY_RAGE_POTION_MAX_RAGE))
             self.player.buffs.add(PlayerBuffs.MIGHTY_RAGE_POTION)
             self._add_event(self.knowledge.MIGHTY_RAGE_POTION_DURATION, EventType.MIGHTY_RAGE_POTION_END)
             self._add_event(self.knowledge.MIGHTY_RAGE_POTION_CD, event_type)
-            self.log(f"{self._log_entry_beginning('mighty_rage_potion')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.MIGHTY_RAGE_POTION)} activated\n")
         elif event_type == EventType.MIGHTY_RAGE_POTION_END:
             self.player.buffs.remove(PlayerBuffs.MIGHTY_RAGE_POTION)
-            self.log(f"{self._log_entry_beginning('mighty_rage_potion')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.MIGHTY_RAGE_POTION)} fades\n")
+        elif event_type == EventType.WINDFURY_TOTEM_PROC:
+            self._apply_melee_attack_effects(
+                Ability.WINDFURY_PROC, self.calcs.white_hit(Hand.MAIN, extra_flat_stats={'ap': self.knowledge.WINDFURY_EXTRA_AP}),
+                False, AttackType.WHITE, Hand.MAIN, is_white_proc=True
+            )
 
     def _do_rota(self):
         if self.state['execute_phase']:
@@ -241,9 +246,8 @@ class Sim:
 
     def _use_bloodthirst(self):
         if not self.state['on_gcd'] and self.state['bloodthirst_available'] and self.state['rage'] >= self.knowledge.BLOODTHIRST_RAGE_COST:
-            ability = 'bloodthirst'
             self.state['bloodthirst_available'] = False
-            self._apply_melee_attack_effects(ability, self.calcs.bloodthirst(), True, AttackType.YELLOW, Hand.MAIN,
+            self._apply_melee_attack_effects(Ability.BLOODTHIRST, self.calcs.bloodthirst(), True, AttackType.YELLOW, Hand.MAIN,
                                              rage_cost=self.knowledge.BLOODTHIRST_RAGE_COST)
             added_event = self._add_event(self.knowledge.BLOODTHIRST_CD, EventType.BLOODTHIRST_CD_END)
             self.state['next_bloodthirst_available_at'] = added_event.time
@@ -255,12 +259,12 @@ class Sim:
     def _use_death_wish(self):
         if not self.state['on_gcd'] and self.state['death_wish_available'] and self.state['rage'] >= self.knowledge.DEATH_WISH_RAGE_COST:
             self.state['death_wish_available'] = False
-            self._consume_rage('death_wish', self.knowledge.DEATH_WISH_RAGE_COST, None)
+            self._consume_rage(Ability.DEATH_WISH, self.knowledge.DEATH_WISH_RAGE_COST, None)
             self.player.buffs.add(PlayerBuffs.DEATH_WISH)
             self._trigger_gcd()
             self._add_event(self.knowledge.DEATH_WISH_DURATION, EventType.DEATH_WISH_END)
             self._add_event(self.knowledge.DEATH_WISH_CD, EventType.DEATH_WISH_CD_END)
-            self.log(f"{self._log_entry_beginning('death_wish')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.DEATH_WISH)} activated\n")
 
             return True
         else:
@@ -268,9 +272,8 @@ class Sim:
 
     def _use_execute(self):
         if not self.state['on_gcd'] and self.state['rage'] >= self.knowledge.EXECUTE_BASE_RAGE_COST:
-            ability = 'execute'
             self._apply_melee_attack_effects(
-                ability, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW, Hand.MAIN,
+                Ability.EXECUTE, self.calcs.execute(self.state['rage']), True, AttackType.YELLOW, Hand.MAIN,
                 rage_cost=self.state['rage'], base_rage_cost=self.knowledge.EXECUTE_BASE_RAGE_COST
             )
 
@@ -295,10 +298,9 @@ class Sim:
             assert not self.state['whirlwind_available']
 
             if self._switch_stance(Stance.BATTLE):
-                ability = 'overpower'
                 self.state['overpower_not_on_cd'] = False
                 self.state['overpower_available_till'] = self.current_time_seconds
-                self._apply_melee_attack_effects(ability, self.calcs.overpower(), True, AttackType.YELLOW, Hand.MAIN,
+                self._apply_melee_attack_effects(Ability.OVERPOWER, self.calcs.overpower(), True, AttackType.YELLOW, Hand.MAIN,
                                                  rage_cost=self.knowledge.OVERPOWER_RAGE_COST)
                 self._add_event(self.knowledge.OVERPOWER_CD, EventType.OVERPOWER_CD_END)
 
@@ -313,7 +315,7 @@ class Sim:
             self._trigger_gcd()
             self._add_event(self.knowledge.RECKLESSNESS_DURATION, EventType.RECKLESSNESS_END)
             self._add_event(self.knowledge.RECKLESSNESS_CD, EventType.RECKLESSNESS_CD_END)
-            self.log(f"{self._log_entry_beginning('recklessness')} activated\n")
+            self.log(f"{self._log_entry_beginning(Ability.RECKLESSNESS)} activated\n")
 
             return True
         else:
@@ -326,9 +328,8 @@ class Sim:
             not self.state['on_gcd'] and not self.state['bloodthirst_available']
             and self.state['whirlwind_available'] and self.player.stance == Stance.BERSERKER and self.state['rage'] >= self.knowledge.WHIRLWIND_RAGE_COST
         ):
-            ability = 'whirlwind'
             self.state['whirlwind_available'] = False
-            self._apply_melee_attack_effects(ability, self.calcs.whirlwind(), True, AttackType.YELLOW, Hand.MAIN,
+            self._apply_melee_attack_effects(Ability.WHIRLWIND, self.calcs.whirlwind(), True, AttackType.YELLOW, Hand.MAIN,
                                              rage_cost=self.knowledge.WHIRLWIND_RAGE_COST)
             added_event = self._add_event(self.knowledge.WHIRLWIND_CD, EventType.WHIRLWIND_CD_END)
             self.state['next_whirlwind_available_at'] = added_event.time
@@ -377,7 +378,7 @@ class Sim:
         if triggers_gcd:
             self._trigger_gcd()
 
-        self._handle_procs(attack_result, hand)
+        self._handle_procs(ability, attack_result, hand)
 
         self.ability_log.append(AbilityLogEntry(ability, attack_result, damage))
 
@@ -438,22 +439,22 @@ class Sim:
         if resort_events:
             self.event_queue.sort()
 
-    def _handle_procs(self, attack_result, hand):
+    def _handle_procs(self, ability, attack_result, hand):
         if attack_result != AttackResult.MISS and attack_result != AttackResult.DODGE:
             if Proc.HAND_OF_JUSTICE in self.player.procs:
-                if random.random() < self.knowledge.HAND_OF_JUSTICE_PROC_CHANCE:
+                if ability != Ability.HAND_OF_JUSTICE_PROC and random.random() < self.knowledge.HAND_OF_JUSTICE_PROC_CHANCE:
                     self._add_event(0.0, EventType.HAND_OF_JUSTICE_PROC)
             # Not implemented on-next-swing for simplicity, difference should be negligible
             if Proc.THRASH_BLADE_MAIN in self.player.procs:
                 # ~1.2 PPM =~ 5% PPH
-                if hand == Hand.MAIN and random.random() < self.knowledge.THRASH_BLADE_PROC_CHANCE:
+                if ability != Ability.THRASH_BLADE_PROC and hand == Hand.MAIN and random.random() < self.knowledge.THRASH_BLADE_PROC_CHANCE:
                     self._add_event(0.0, EventType.THRASH_BLADE_PROC)
             if Proc.THRASH_BLADE_OFF in self.player.procs:
                 # ~1.2 PPM =~ 5% PPH
-                if hand == hand.OFF and random.random() < self.knowledge.THRASH_BLADE_PROC_CHANCE:
+                if ability != Ability.THRASH_BLADE_PROC and hand == hand.OFF and random.random() < self.knowledge.THRASH_BLADE_PROC_CHANCE:
                     self._add_event(0.0, EventType.THRASH_BLADE_PROC)
             if Proc.IRONFOE in self.player.procs:
-                if hand == Hand.MAIN and random.random() < self.knowledge.IRONFOE_PROC_CHANCE:
+                if ability != Ability.IRONFOE_PROC and hand == Hand.MAIN and random.random() < self.knowledge.IRONFOE_PROC_CHANCE:
                     self._add_event(0.0, EventType.IRONFOE_PROC)
 
             # PPM converted to PPH in the interval [0, 1]
@@ -465,6 +466,10 @@ class Sim:
                 if Proc.CRUSADER_OFF in self.player.procs:
                     if hand == Hand.OFF and random.random() < (self.knowledge.CRUSADER_PPM * current_stats['speed_off_hand'] / 60):
                         self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
+
+            if hand == Hand.MAIN and Proc.WINDFURY_TOTEM in self.player.procs:
+                if ability != Ability.WINDFURY_PROC and random.random() < self.knowledge.WINDFURY_PROC_CHANCE:
+                    self._add_event(0.0, EventType.WINDFURY_TOTEM_PROC)
 
     def _consume_rage(self, ability, rage, attack_result, base_rage_cost=None):
         assert rage > 0

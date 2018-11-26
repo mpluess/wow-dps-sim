@@ -152,4 +152,9 @@
 # print(type(math.floor(2.1)))
 
 
-print(int(' '))
+# print(int(' '))
+
+
+a = {1}
+b = {1, 2}
+print(set.union(a, b))

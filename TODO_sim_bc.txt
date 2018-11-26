@@ -52,14 +52,14 @@ http://wowwiki.wikia.com/wiki/Patch_2.4.0:
 Stances: It is no longer possible to accidentally change into a stance you are already in via macros (resulting in a global cooldown and loss of rage).
 
 proc:
-wf
-items
+x wf
+items (drakefist hammer, Hourglass of the Unraveller)
 
 on use:
 heroism
 drums
 haste potion
-items
+items (Bloodlust Brooch)
 
 comparisons:
 no op + anger management vs. op + no anger management

@@ -28,8 +28,10 @@ class Calcs:
             * current_stats['speed_multiplier']
         )
 
-    def current_stats(self):
+    def current_stats(self, extra_flat_stats=None):
         stats = self.player.partial_buffed_permanent_stats
+        if extra_flat_stats is not None:
+            stats = self.stats.merge_stats(stats, extra_flat_stats)
         stats = self._apply_temporary_buffs_flat(stats)
         stats = self._apply_temporary_buffs_percentage(stats)
         stats = self.stats.finalize_buffed_stats(self.player.faction, self.player.race, self.player.class_, self.player.spec, stats)
@@ -113,9 +115,9 @@ class Calcs:
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.YELLOW, hand)
 
-    def white_hit(self, hand):
+    def white_hit(self, hand, extra_flat_stats=None):
         assert isinstance(hand, Hand)
-        current_stats = self.current_stats()
+        current_stats = self.current_stats(extra_flat_stats)
         base_damage = self._calc_weapon_damage(
             current_stats[('damage_range_off_hand' if hand == Hand.OFF else 'damage_range_main_hand')],
             current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]

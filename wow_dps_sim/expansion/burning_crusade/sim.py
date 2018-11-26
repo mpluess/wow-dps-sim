@@ -1,6 +1,6 @@
 import random
 
-from wow_dps_sim.enums import AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
+from wow_dps_sim.enums import Ability, AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
 import wow_dps_sim.expansion.sim
 
 
@@ -23,11 +23,11 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.player.buffs.remove(PlayerBuffs.RAMPAGE)
             self.state['rampage_stacks'] = 0
             self.rampage_end_event = None
-            self.log(f"{self._log_entry_beginning('rampage')} fades\n")
+            self.log(f"{self._log_entry_beginning(Ability.RAMPAGE)} fades\n")
         elif event_type == EventType.ATTACK_CRIT:
             self._do_rota()
         elif event_type == EventType.ANGER_MANAGEMENT_TICK:
-            self._add_rage('anger_management', self.knowledge.ANGER_MANAGEMENT_TICK_RAGE)
+            self._add_rage(Ability.ANGER_MANAGEMENT, self.knowledge.ANGER_MANAGEMENT_TICK_RAGE)
             self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
 
     def _do_rota(self):
@@ -70,7 +70,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             and self.state['rage'] >= self.knowledge.RAMPAGE_RAGE_COST
             and (self.state['rampage_available_till'] - self.current_time_seconds) > self.epsilon
         ):
-            ability = 'rampage'
+            ability = Ability.RAMPAGE
             self._consume_rage(ability, self.knowledge.RAMPAGE_RAGE_COST, None)
             self.state['rampage_stacks'] = max(1, self.state['rampage_stacks'])
             self._trigger_gcd()
@@ -95,9 +95,9 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             and self.state['whirlwind_available'] and self.player.stance == Stance.BERSERKER and self.state['rage'] >= self.knowledge.WHIRLWIND_RAGE_COST
         ):
             self.state['whirlwind_available'] = False
-            self._apply_melee_attack_effects('whirlwind_main', self.calcs.whirlwind(Hand.MAIN), True, AttackType.YELLOW, Hand.MAIN,
+            self._apply_melee_attack_effects(Ability.WHIRLWIND_MAIN, self.calcs.whirlwind(Hand.MAIN), True, AttackType.YELLOW, Hand.MAIN,
                                              rage_cost=self.knowledge.WHIRLWIND_RAGE_COST)
-            self._apply_melee_attack_effects('whirlwind_off', self.calcs.whirlwind(Hand.OFF), False, AttackType.YELLOW, Hand.OFF)
+            self._apply_melee_attack_effects(Ability.WHIRLWIND_OFF, self.calcs.whirlwind(Hand.OFF), False, AttackType.YELLOW, Hand.OFF)
             added_event = self._add_event(self.knowledge.WHIRLWIND_CD, EventType.WHIRLWIND_CD_END)
             self.state['next_whirlwind_available_at'] = added_event.time
 

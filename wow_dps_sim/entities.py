@@ -63,8 +63,9 @@ class Player:
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
         if procs is None:
+            buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
             enchant_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'enchant_config')
-            self.procs = self._create_proc_set(items, enchant_config.ENCHANT_PROCS)
+            self.procs = self._create_proc_set(items, set.union(buff_config.BUFF_PROCS, enchant_config.ENCHANT_PROCS))
         else:
             self.procs = procs
 
@@ -87,13 +88,13 @@ class Player:
         )
 
     @staticmethod
-    def _create_proc_set(items, enchant_procs):
-        list_of_proc_sets = [item['procs'] for item in items] + [enchant_procs]
+    def _create_proc_set(items, additional_procs):
+        list_of_proc_sets = [item['procs'] for item in items] + [additional_procs]
         return set.union(*list_of_proc_sets)
 
     @staticmethod
-    def _create_on_use_effect_set(items, consumable_on_use_effects):
-        list_of_on_use_effect_sets = [item['on_use_effects'] for item in items] + [consumable_on_use_effects]
+    def _create_on_use_effect_set(items, additional_on_use_effects):
+        list_of_on_use_effect_sets = [item['on_use_effects'] for item in items] + [additional_on_use_effects]
         return set.union(*list_of_on_use_effect_sets)
 
 

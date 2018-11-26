@@ -15,10 +15,10 @@ class Stats:
 
     def calc_unbuffed_stats(self, race, class_, spec, items, socket_stats):
         stats = self._base_stats(race, class_)
-        stats = self._merge_stats(stats, self._spec_stats(class_, spec))
-        stats = self._merge_stats(stats, self._item_stats(items))
-        stats = self._merge_stats(stats, socket_stats)
-        stats = self._merge_stats(stats, self._enchant_stats(class_, spec))
+        stats = self.merge_stats(stats, self._spec_stats(class_, spec))
+        stats = self.merge_stats(stats, self._item_stats(items))
+        stats = self.merge_stats(stats, socket_stats)
+        stats = self.merge_stats(stats, self._enchant_stats(class_, spec))
         stats = self.ExpansionSpecificStats.apply_berserker_stance_flat_effects(stats)
         stats = self.ExpansionSpecificStats.apply_berserker_stance_percentage_effects(stats)
         stats = self.ExpansionSpecificStats.apply_primary_stats_effects(race, class_, spec, stats)
@@ -28,12 +28,12 @@ class Stats:
 
     def calc_partial_buffed_permanent_stats(self, faction, race, class_, spec, items, socket_stats):
         stats = self._base_stats(race, class_)
-        stats = self._merge_stats(stats, self._spec_stats(class_, spec))
-        stats = self._merge_stats(stats, self._item_stats(items))
-        stats = self._merge_stats(stats, socket_stats)
-        stats = self._merge_stats(stats, self._enchant_stats(class_, spec))
-        stats = self._merge_stats(stats, self._permanent_buff_flat_stats(faction))
-        stats = self._merge_stats(stats, self._consumable_stats())
+        stats = self.merge_stats(stats, self._spec_stats(class_, spec))
+        stats = self.merge_stats(stats, self._item_stats(items))
+        stats = self.merge_stats(stats, socket_stats)
+        stats = self.merge_stats(stats, self._enchant_stats(class_, spec))
+        stats = self.merge_stats(stats, self._permanent_buff_flat_stats(faction))
+        stats = self.merge_stats(stats, self._consumable_stats())
 
         return stats
 
@@ -45,7 +45,7 @@ class Stats:
         return stats
 
     @staticmethod
-    def _merge_stats(stats_1, stats_2):
+    def merge_stats(stats_1, stats_2):
         merged_stats = copy.copy(stats_1)
         for stat_key, stat_value in stats_2.items():
             if stat_key in merged_stats:

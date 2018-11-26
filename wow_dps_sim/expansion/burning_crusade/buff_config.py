@@ -2,6 +2,8 @@
 
 from collections import defaultdict
 
+from wow_dps_sim.enums import Proc
+
 # imp. battle shout 8
 _BATTLE_SHOUT_ADDITIONAL_AP = 381
 
@@ -54,4 +56,8 @@ PERMANENT_BUFF_MULTIPLIERS = {
         'ap': _UNLEASHED_RAGE_AP_MULTIPLIER,
         'damage_multiplier': _BLOOD_FRENZY_DAMAGE_MULTIPLIER,
     }
+}
+
+BUFF_PROCS = {
+    Proc.WINDFURY_TOTEM,
 }
