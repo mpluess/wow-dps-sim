@@ -11,9 +11,7 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.RAMPAGE in self.player.buffs:
             stats['ap'] += self.knowledge.RAMPAGE_ADDITIONAL_AP_PER_STACK * self.sim_state['rampage_stacks']
 
-        if PlayerBuffs.DRAKEFIST_HAMMER_MAIN in self.player.buffs:
-            stats['haste_rating'] += self.knowledge.DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING
-        if PlayerBuffs.DRAKEFIST_HAMMER_OFF in self.player.buffs:
+        if PlayerBuffs.DRAKEFIST_HAMMER in self.player.buffs:
             stats['haste_rating'] += self.knowledge.DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING
 
         return stats

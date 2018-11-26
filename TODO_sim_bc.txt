@@ -55,7 +55,7 @@ Stances: It is no longer possible to accidentally change into a stance you are a
 
 proc:
 x wf
-items (drakefist hammer, Hourglass of the Unraveller)
+items (x drakefist hammer, Hourglass of the Unraveller)
 enchants
 
 on use:

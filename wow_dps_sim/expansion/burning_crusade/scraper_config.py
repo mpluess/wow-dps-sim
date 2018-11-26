@@ -20,7 +20,15 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
         'Drakefist Hammer': {
             'main_hand': Proc.DRAKEFIST_HAMMER_MAIN,
             'off_hand': Proc.DRAKEFIST_HAMMER_OFF
-        }
+        },
+        'Dragonmaw': {
+            'main_hand': Proc.DRAKEFIST_HAMMER_MAIN,
+            'off_hand': Proc.DRAKEFIST_HAMMER_OFF
+        },
+        'Dragonstrike': {
+            'main_hand': Proc.DRAKEFIST_HAMMER_MAIN,
+            'off_hand': Proc.DRAKEFIST_HAMMER_OFF
+        },
     }
 
     on_use_effect_mapping = dict()
