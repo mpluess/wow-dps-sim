@@ -91,6 +91,7 @@ Whirlwind AttackResult.HIT 16773 53.15 AttackResult.CRIT 13644 43.23 AttackResul
 Heroic Strike AttackResult.HIT 10167 55.22 AttackResult.CRIT 7681 41.72 AttackResult.DODGE 564 3.06
 Execute AttackResult.HIT 9346 61.44 AttackResult.CRIT 5422 35.64 AttackResult.DODGE 444 2.92
 
+
 wf:
 DPS: 1217.06
 White Hit 78236259 36.11 min=194 max=1397 mean=587
@@ -106,3 +107,20 @@ Heroic Strike AttackResult.HIT 15969 54.62 AttackResult.CRIT 12371 42.31 AttackR
 Whirlwind AttackResult.HIT 16723 52.94 AttackResult.CRIT 13710 43.41 AttackResult.DODGE 1153 3.65
 Execute AttackResult.HIT 9828 61.38 AttackResult.CRIT 5714 35.69 AttackResult.DODGE 470 2.94
 Windfury Proc AttackResult.CRIT 10112 38.62 AttackResult.GLANCING 6488 24.78 AttackResult.HIT 6081 23.23 AttackResult.MISS 2692 10.28 AttackResult.DODGE 809 3.09
+
+
+drakefist hammer proc:
+DPS: 1270.25
+White Hit 82379140 35.96 min=194 max=1397 mean=582
+Bloodthirst 43513017 19.00 min=969 max=2425 mean=1628
+Heroic Strike 39303422 17.16 min=689 max=1886 mean=1208
+Whirlwind 22126602 9.66 min=296 max=1421 mean=719
+Execute 21189987 9.25 min=685 max=4551 mean=1326
+Windfury Proc 20550790 8.97 min=373 max=1397 mean=857
+
+White Hit AttackResult.CRIT 62810 38.06 AttackResult.GLANCING 41323 25.04 AttackResult.HIT 37437 22.69 AttackResult.MISS 17005 10.31 AttackResult.DODGE 6437 3.90
+Bloodthirst AttackResult.HIT 15297 55.50 AttackResult.CRIT 11433 41.48 AttackResult.DODGE 832 3.02
+Heroic Strike AttackResult.HIT 18456 55.06 AttackResult.CRIT 14074 41.99 AttackResult.DODGE 989 2.95
+Whirlwind AttackResult.HIT 16954 52.97 AttackResult.CRIT 13809 43.15 AttackResult.DODGE 1243 3.88
+Execute AttackResult.HIT 10013 60.72 AttackResult.CRIT 5971 36.21 AttackResult.DODGE 507 3.07
+Windfury Proc AttackResult.CRIT 10632 38.27 AttackResult.GLANCING 6930 24.95 AttackResult.HIT 6427 23.14 AttackResult.MISS 2986 10.75 AttackResult.DODGE 805 2.90

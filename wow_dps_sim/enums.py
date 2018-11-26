@@ -97,6 +97,10 @@ class EventType(Enum):
     RAMPAGE_END = auto()
     ATTACK_CRIT = auto()
     ANGER_MANAGEMENT_TICK = auto()
+    DRAKEFIST_HAMMER_MAIN_PROC = auto()
+    DRAKEFIST_HAMMER_MAIN_PROC_END = auto()
+    DRAKEFIST_HAMMER_OFF_PROC = auto()
+    DRAKEFIST_HAMMER_OFF_PROC_END = auto()
 
 
 class Hand(Enum):
@@ -131,6 +135,8 @@ class PlayerBuffs(Enum):
 
     # Burning Crusade
     RAMPAGE = auto()
+    DRAKEFIST_HAMMER_MAIN = auto()
+    DRAKEFIST_HAMMER_OFF = auto()
 
 
 class Proc(Enum):
@@ -148,6 +154,8 @@ class Proc(Enum):
     EXECUTIONER_OFF = auto()
     MONGOOSE_MAIN = auto()
     MONGOOSE_OFF = auto()
+    DRAKEFIST_HAMMER_MAIN = auto()
+    DRAKEFIST_HAMMER_OFF = auto()
 
 
 class Stance(Enum):

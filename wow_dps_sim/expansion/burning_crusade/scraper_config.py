@@ -1,5 +1,6 @@
 import re
 
+from wow_dps_sim.enums import Proc
 import wow_dps_sim.expansion.scraper_config
 
 
@@ -14,5 +15,12 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
     ]
 
     proc_mapping = dict()
-    weapon_proc_mapping = dict()
+
+    weapon_proc_mapping = {
+        'Drakefist Hammer': {
+            'main_hand': Proc.DRAKEFIST_HAMMER_MAIN,
+            'off_hand': Proc.DRAKEFIST_HAMMER_OFF
+        }
+    }
+
     on_use_effect_mapping = dict()

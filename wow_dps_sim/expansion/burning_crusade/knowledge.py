@@ -107,6 +107,12 @@ MIGHTY_RAGE_POTION_DURATION = 20.0
 MIGHTY_RAGE_POTION_MIN_RAGE = 45
 MIGHTY_RAGE_POTION_MAX_RAGE = 75
 
+# https://github.com/FeenixServerProject/Archangel_2.4.3_Bugtracker/issues/1045
+# https://www.reddit.com/r/wowservers/comments/6g23fl/need_help_with_tbc_fury_warrior_weapons_choice/
+DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING = 212
+DRAKEFIST_HAMMER_DURATION = 10.0
+DRAKEFIST_HAMMER_PPM = 1.4
+
 # Enchants
 CRUSADER_ADDITIONAL_STRENGTH = 100
 CRUSADER_DURATION = 15.0

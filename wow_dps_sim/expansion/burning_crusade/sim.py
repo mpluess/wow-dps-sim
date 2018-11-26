@@ -1,6 +1,6 @@
 import random
 
-from wow_dps_sim.enums import Ability, AttackResult, AttackType, EventType, Hand, PlayerBuffs, Stance
+from wow_dps_sim.enums import Ability, AttackResult, AttackType, EventType, Hand, PlayerBuffs, Proc, Stance
 import wow_dps_sim.expansion.sim
 
 
@@ -12,6 +12,8 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
         self.state['rampage_available_till'] = 0.0
 
         self.rampage_end_event = None
+        self.drakefist_hammer_main_proc_end_event = None
+        self.drakefist_hammer_off_proc_end_event = None
 
         self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
 
@@ -29,6 +31,32 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
         elif event_type == EventType.ANGER_MANAGEMENT_TICK:
             self._add_rage(Ability.ANGER_MANAGEMENT, self.knowledge.ANGER_MANAGEMENT_TICK_RAGE)
             self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
+        elif event_type == EventType.DRAKEFIST_HAMMER_MAIN_PROC:
+            if self.drakefist_hammer_main_proc_end_event is None:
+                self.drakefist_hammer_main_proc_end_event = self._add_event(self.knowledge.DRAKEFIST_HAMMER_DURATION, EventType.DRAKEFIST_HAMMER_MAIN_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Drakefist Hammer Main Hand Proc\n")
+            else:
+                self.drakefist_hammer_main_proc_end_event.time = self.current_time_seconds + self.knowledge.DRAKEFIST_HAMMER_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Drakefist Hammer Main Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.DRAKEFIST_HAMMER_MAIN)
+        elif event_type == EventType.DRAKEFIST_HAMMER_MAIN_PROC_END:
+            self.drakefist_hammer_main_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.DRAKEFIST_HAMMER_MAIN)
+            self.log(f"{self._log_entry_beginning()} Drakefist Hammer Main Hand Proc fades\n")
+        elif event_type == EventType.DRAKEFIST_HAMMER_OFF_PROC:
+            if self.drakefist_hammer_off_proc_end_event is None:
+                self.drakefist_hammer_off_proc_end_event = self._add_event(self.knowledge.DRAKEFIST_HAMMER_DURATION, EventType.DRAKEFIST_HAMMER_OFF_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Drakefist Hammer Off Hand Proc\n")
+            else:
+                self.drakefist_hammer_off_proc_end_event.time = self.current_time_seconds + self.knowledge.DRAKEFIST_HAMMER_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Drakefist Hammer Off Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.DRAKEFIST_HAMMER_OFF)
+        elif event_type == EventType.DRAKEFIST_HAMMER_OFF_PROC_END:
+            self.drakefist_hammer_off_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.DRAKEFIST_HAMMER_OFF)
+            self.log(f"{self._log_entry_beginning()} Drakefist Hammer Off Hand Proc fades\n")
 
     def _do_rota(self):
         if self.state['execute_phase']:
@@ -121,3 +149,16 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             and random.random() < self.knowledge.RAMPAGE_PROC_CHANCE
         ):
             self.state['rampage_stacks'] = min(self.knowledge.RAMPAGE_MAX_STACKS, self.state['rampage_stacks'] + 1)
+
+    def _handle_procs(self, ability, attack_result, hand):
+        super()._handle_procs(ability, attack_result, hand)
+
+        if attack_result != AttackResult.MISS and attack_result != AttackResult.DODGE:
+            if Proc.DRAKEFIST_HAMMER_MAIN in self.player.procs or Proc.DRAKEFIST_HAMMER_OFF in self.player.procs:
+                current_stats = self.calcs.current_stats()
+                if Proc.DRAKEFIST_HAMMER_MAIN in self.player.procs:
+                    if hand == Hand.MAIN and random.random() < (self.knowledge.DRAKEFIST_HAMMER_PPM * current_stats['speed_main_hand'] / 60):
+                        self._add_event(0.0, EventType.DRAKEFIST_HAMMER_MAIN_PROC)
+                if Proc.DRAKEFIST_HAMMER_OFF in self.player.procs:
+                    if hand == Hand.OFF and random.random() < (self.knowledge.DRAKEFIST_HAMMER_PPM * current_stats['speed_off_hand'] / 60):
+                        self._add_event(0.0, EventType.DRAKEFIST_HAMMER_OFF_PROC)
