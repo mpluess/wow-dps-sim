@@ -14,6 +14,9 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
 
         self.rampage_end_event = None
         self.drakefist_hammer_proc_end_event = None
+        self.executioner_proc_end_event = None
+        self.mongoose_main_proc_end_event = None
+        self.mongoose_off_proc_end_event = None
 
         self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
 
@@ -59,6 +62,45 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.log(f"{self._log_entry_beginning(Ability.HOURGLASS_OF_THE_UNRAVELLER)} fades\n")
         elif event_type == EventType.HOURGLASS_OF_THE_UNRAVELLER_ICD_END:
             self.state['hourglass_of_the_unraveller_on_icd'] = False
+        elif event_type == EventType.EXECUTIONER_PROC:
+            if self.executioner_proc_end_event is None:
+                self.executioner_proc_end_event = self._add_event(self.knowledge.EXECUTIONER_DURATION, EventType.EXECUTIONER_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Executioner Proc\n")
+            else:
+                self.executioner_proc_end_event.time = self.current_time_seconds + self.knowledge.EXECUTIONER_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Executioner Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.EXECUTIONER)
+        elif event_type == EventType.EXECUTIONER_PROC_END:
+            self.executioner_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.EXECUTIONER)
+            self.log(f"{self._log_entry_beginning()} Executioner Proc fades\n")
+        elif event_type == EventType.MONGOOSE_MAIN_PROC:
+            if self.mongoose_main_proc_end_event is None:
+                self.mongoose_main_proc_end_event = self._add_event(self.knowledge.MONGOOSE_DURATION, EventType.MONGOOSE_MAIN_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Mongoose Main Hand Proc\n")
+            else:
+                self.mongoose_main_proc_end_event.time = self.current_time_seconds + self.knowledge.MONGOOSE_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Mongoose Main Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.MONGOOSE_MAIN)
+        elif event_type == EventType.MONGOOSE_MAIN_PROC_END:
+            self.mongoose_main_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.MONGOOSE_MAIN)
+            self.log(f"{self._log_entry_beginning()} Mongoose Main Hand Proc fades\n")
+        elif event_type == EventType.MONGOOSE_OFF_PROC:
+            if self.mongoose_off_proc_end_event is None:
+                self.mongoose_off_proc_end_event = self._add_event(self.knowledge.MONGOOSE_DURATION, EventType.MONGOOSE_OFF_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Mongoose Off Hand Proc\n")
+            else:
+                self.mongoose_off_proc_end_event.time = self.current_time_seconds + self.knowledge.MONGOOSE_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Mongoose Off Hand Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.MONGOOSE_OFF)
+        elif event_type == EventType.MONGOOSE_OFF_PROC_END:
+            self.mongoose_off_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.MONGOOSE_OFF)
+            self.log(f"{self._log_entry_beginning()} Mongoose Off Hand Proc fades\n")
 
     def _do_rota(self):
         if self.state['execute_phase']:
@@ -164,6 +206,24 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 if Proc.DRAKEFIST_HAMMER_OFF in self.player.procs:
                     if hand == Hand.OFF and random.random() < (self.knowledge.DRAKEFIST_HAMMER_PPM * current_stats['speed_off_hand'] / 60):
                         self._add_event(0.0, EventType.DRAKEFIST_HAMMER_PROC)
+
+            if Proc.EXECUTIONER_MAIN in self.player.procs or Proc.EXECUTIONER_OFF in self.player.procs:
+                current_stats = self.calcs.current_stats()
+                if Proc.EXECUTIONER_MAIN in self.player.procs:
+                    if hand == Hand.MAIN and random.random() < (self.knowledge.EXECUTIONER_PPM * current_stats['speed_main_hand'] / 60):
+                        self._add_event(0.0, EventType.EXECUTIONER_PROC)
+                if Proc.EXECUTIONER_OFF in self.player.procs:
+                    if hand == Hand.OFF and random.random() < (self.knowledge.EXECUTIONER_PPM * current_stats['speed_off_hand'] / 60):
+                        self._add_event(0.0, EventType.EXECUTIONER_PROC)
+
+            if Proc.MONGOOSE_MAIN in self.player.procs or Proc.MONGOOSE_OFF in self.player.procs:
+                current_stats = self.calcs.current_stats()
+                if Proc.MONGOOSE_MAIN in self.player.procs:
+                    if hand == Hand.MAIN and random.random() < (self.knowledge.MONGOOSE_PPM * current_stats['speed_main_hand'] / 60):
+                        self._add_event(0.0, EventType.MONGOOSE_MAIN_PROC)
+                if Proc.MONGOOSE_OFF in self.player.procs:
+                    if hand == Hand.OFF and random.random() < (self.knowledge.MONGOOSE_PPM * current_stats['speed_off_hand'] / 60):
+                        self._add_event(0.0, EventType.MONGOOSE_OFF_PROC)
 
         if attack_result == AttackResult.CRIT:
             if Proc.HOURGLASS_OF_THE_UNRAVELLER in self.player.procs:

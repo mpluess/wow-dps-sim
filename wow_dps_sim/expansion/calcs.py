@@ -51,8 +51,6 @@ class Calcs:
         if PlayerBuffs.CRUSADER_OFF in self.player.buffs:
             stats['str'] += self.knowledge.CRUSADER_ADDITIONAL_STRENGTH
 
-        if PlayerBuffs.KISS_OF_THE_SPIDER in self.player.buffs:
-            stats['speed_multiplier'] *= self.knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
         if PlayerBuffs.SLAYERS_CREST in self.player.buffs:
             stats['ap'] += self.knowledge.SLAYERS_CREST_ADDITIONAL_AP
 
@@ -70,6 +68,9 @@ class Calcs:
             stats = self.ExpansionSpecificStats.apply_berserker_stance_percentage_effects(stats)
         if PlayerBuffs.DEATH_WISH in self.player.buffs:
             stats['damage_multiplier'] *= self.knowledge.DEATH_WISH_DAMAGE_MULTIPLIER
+
+        if PlayerBuffs.KISS_OF_THE_SPIDER in self.player.buffs:
+            stats['speed_multiplier'] *= self.knowledge.KISS_OF_THE_SPIDER_SPEED_MULTIPLIER
 
         return stats
 

@@ -108,6 +108,14 @@ class EventType(Enum):
     HOURGLASS_OF_THE_UNRAVELLER_PROC = auto()
     HOURGLASS_OF_THE_UNRAVELLER_PROC_END = auto()
 
+    EXECUTIONER_PROC = auto()
+    EXECUTIONER_PROC_END = auto()
+
+    MONGOOSE_MAIN_PROC = auto()
+    MONGOOSE_MAIN_PROC_END = auto()
+    MONGOOSE_OFF_PROC = auto()
+    MONGOOSE_OFF_PROC_END = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -143,6 +151,9 @@ class PlayerBuffs(Enum):
     RAMPAGE = auto()
     DRAKEFIST_HAMMER = auto()
     HOURGLASS_OF_THE_UNRAVELLER = auto()
+    EXECUTIONER = auto()
+    MONGOOSE_MAIN = auto()
+    MONGOOSE_OFF = auto()
 
 
 class Proc(Enum):

@@ -55,8 +55,7 @@ ENCHANT_STATS = {
         'fury': _enchant_stats_warrior_fury,
     },
 }
-# ENCHANT_PROCS = {
-#     Proc.EXECUTIONER_MAIN,
-#     Proc.MONGOOSE_OFF,
-# }
-ENCHANT_PROCS = set()
+ENCHANT_PROCS = {
+    Proc.EXECUTIONER_MAIN,
+    Proc.MONGOOSE_OFF,
+}

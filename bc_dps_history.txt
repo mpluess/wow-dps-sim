@@ -141,3 +141,20 @@ Heroic Strike AttackResult.HIT 18687 54.90 AttackResult.CRIT 14372 42.22 AttackR
 Whirlwind AttackResult.HIT 16682 52.43 AttackResult.CRIT 13896 43.68 AttackResult.DODGE 1238 3.89
 Execute AttackResult.HIT 10017 60.79 AttackResult.CRIT 5952 36.12 AttackResult.DODGE 509 3.09
 Windfury Proc AttackResult.CRIT 10637 38.36 AttackResult.GLANCING 6959 25.10 AttackResult.HIT 6431 23.19 AttackResult.MISS 2902 10.47 AttackResult.DODGE 798 2.88
+
+
+executioner main, mongoose off:
+DPS: 1370.34
+White Hit 86188462 34.93 min=194 max=1598 mean=614
+Bloodthirst 46554992 18.87 min=969 max=2867 mean=1730
+Heroic Strike 45246554 18.34 min=694 max=2128 mean=1280
+Whirlwind 23462159 9.51 min=297 max=1621 mean=763
+Execute 23243911 9.42 min=685 max=4836 mean=1433
+Windfury Proc 22021479 8.93 min=373 max=1598 mean=909
+
+White Hit AttackResult.CRIT 64877 39.60 AttackResult.GLANCING 40778 24.89 AttackResult.HIT 34817 21.25 AttackResult.MISS 17010 10.38 AttackResult.DODGE 6349 3.88
+Bloodthirst AttackResult.HIT 15094 54.39 AttackResult.CRIT 11818 42.59 AttackResult.DODGE 839 3.02
+Heroic Strike AttackResult.HIT 19537 53.65 AttackResult.CRIT 15809 43.41 AttackResult.DODGE 1072 2.94
+Whirlwind AttackResult.HIT 16487 51.62 AttackResult.CRIT 14280 44.71 AttackResult.DODGE 1175 3.68
+Execute AttackResult.HIT 9847 58.94 AttackResult.CRIT 6376 38.16 AttackResult.DODGE 485 2.90
+Windfury Proc AttackResult.CRIT 11121 39.77 AttackResult.GLANCING 6999 25.03 AttackResult.HIT 6112 21.86 AttackResult.MISS 2913 10.42 AttackResult.DODGE 815 2.91

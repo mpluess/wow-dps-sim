@@ -17,6 +17,24 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.HOURGLASS_OF_THE_UNRAVELLER in self.player.buffs:
             stats['ap'] += self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_ADDITIONAL_AP
 
+        if PlayerBuffs.EXECUTIONER in self.player.buffs:
+            stats['arp'] += self.knowledge.EXECUTIONER_ADDITIONAL_ARP
+
+        if PlayerBuffs.MONGOOSE_MAIN in self.player.buffs:
+            stats['agi'] += self.knowledge.MONGOOSE_ADDITIONAL_AGILITY
+        if PlayerBuffs.MONGOOSE_OFF in self.player.buffs:
+            stats['agi'] += self.knowledge.MONGOOSE_ADDITIONAL_AGILITY
+
+        return stats
+
+    def _apply_temporary_buffs_percentage(self, stats):
+        stats = super()._apply_temporary_buffs_percentage(stats)
+
+        if PlayerBuffs.MONGOOSE_MAIN in self.player.buffs:
+            stats['speed_multiplier'] *= self.knowledge.MONGOOSE_SPEED_MULTIPLIER
+        if PlayerBuffs.MONGOOSE_OFF in self.player.buffs:
+            stats['speed_multiplier'] *= self.knowledge.MONGOOSE_SPEED_MULTIPLIER
+
         return stats
 
     def _apply_attack_table_roll(self, damage, attack_result, hand, attack_type):

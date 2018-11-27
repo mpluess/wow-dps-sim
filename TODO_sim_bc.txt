@@ -48,6 +48,7 @@ x meta gem
 draenei race
 scrape from twinstar, cavernoftime seems off by +1 on most stats.
 refactor procs, on use effects to avoid boilerplate code, track proc uptime
+attack speed %: haste vs. speed multiplier
 
 gcd on stance change?
 http://wowwiki.wikia.com/wiki/Patch_2.4.0:
@@ -56,7 +57,7 @@ Stances: It is no longer possible to accidentally change into a stance you are a
 proc:
 x wf
 x items (drakefist hammer, Hourglass of the Unraveller)
-enchants
+x enchants
 
 on use:
 heroism
