@@ -175,3 +175,37 @@ Bloodthirst AttackResult.HIT 15245 54.29 AttackResult.CRIT 12017 42.79 AttackRes
 Windfury Proc AttackResult.CRIT 12887 40.22 AttackResult.GLANCING 8100 25.28 AttackResult.HIT 6911 21.57 AttackResult.MISS 3232 10.09 AttackResult.DODGE 913 2.85
 Whirlwind AttackResult.HIT 17065 52.65 AttackResult.CRIT 14187 43.77 AttackResult.DODGE 1160 3.58
 Execute AttackResult.HIT 9994 59.50 AttackResult.CRIT 6277 37.37 AttackResult.DODGE 526 3.13
+
+
+sockets fix:
+DPS: 1720.11
+White Hit 100394200 32.57 min=198 max=1757 mean=628
+Heroic Strike 80850928 26.23 min=707 max=2303 mean=1449
+Bloodthirst 50948498 16.53 min=1002 max=3276 mean=1869
+Windfury Proc 26857179 8.71 min=383 max=1757 mean=969
+Whirlwind 24938817 8.09 min=305 max=1776 mean=802
+Execute 24248404 7.87 min=685 max=4836 mean=1475
+
+White Hit AttackResult.CRIT 75466 40.53 AttackResult.GLANCING 46617 25.04 AttackResult.HIT 37696 20.24 AttackResult.MISS 19191 10.31 AttackResult.DODGE 7237 3.89
+Heroic Strike AttackResult.CRIT 29611 51.53 AttackResult.HIT 26200 45.60 AttackResult.DODGE 1650 2.87
+Bloodthirst AttackResult.HIT 15104 53.79 AttackResult.CRIT 12150 43.27 AttackResult.DODGE 828 2.95
+Windfury Proc AttackResult.CRIT 13008 40.71 AttackResult.GLANCING 7922 24.79 AttackResult.HIT 6779 21.21 AttackResult.MISS 3252 10.18 AttackResult.DODGE 994 3.11
+Whirlwind AttackResult.HIT 16861 52.25 AttackResult.CRIT 14254 44.17 AttackResult.DODGE 1157 3.59
+Execute AttackResult.HIT 9976 58.95 AttackResult.CRIT 6461 38.18 AttackResult.DODGE 486 2.87
+
+
+wastewalker / doomplate sets:
+DPS: 1744.11
+White Hit 102177968 32.44 min=203 max=1781 mean=627
+Heroic Strike 83599123 26.54 min=717 max=2330 mean=1462
+Bloodthirst 51807900 16.45 min=1029 max=3340 mean=1883
+Windfury Proc 27877038 8.85 min=391 max=1781 mean=971
+Whirlwind 25298632 8.03 min=319 max=1800 mean=806
+Execute 24212655 7.69 min=685 max=4836 mean=1448
+
+White Hit AttackResult.CRIT 73172 39.44 AttackResult.GLANCING 46124 24.86 AttackResult.HIT 43744 23.58 AttackResult.MISS 15377 8.29 AttackResult.DODGE 7117 3.84
+Heroic Strike AttackResult.CRIT 29907 50.76 AttackResult.HIT 27281 46.30 AttackResult.DODGE 1729 2.93
+Bloodthirst AttackResult.HIT 15811 55.70 AttackResult.CRIT 11700 41.21 AttackResult.DODGE 877 3.09
+Windfury Proc AttackResult.CRIT 12833 39.59 AttackResult.GLANCING 8160 25.17 AttackResult.HIT 7718 23.81 AttackResult.MISS 2748 8.48 AttackResult.DODGE 956 2.95
+Whirlwind AttackResult.HIT 17425 53.58 AttackResult.CRIT 13956 42.91 AttackResult.DODGE 1143 3.51
+Execute AttackResult.HIT 10558 61.31 AttackResult.CRIT 6161 35.77 AttackResult.DODGE 503 2.92

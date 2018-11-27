@@ -148,6 +148,8 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 pass
             elif self._use_recklessness():
                 pass
+            # elif self._use_rampage(has_priority=True):
+            #     pass
             elif self._use_bloodthirst():
                 pass
             elif self._use_execute():
@@ -166,12 +168,17 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             elif self._use_recklessness():
                 pass
 
-    def _use_rampage(self):
+    def _use_rampage(self, has_priority=False):
         if (
             not self.state['on_gcd']
 
-            and (self.state['next_bloodthirst_available_at'] - self.current_time_seconds) > self.rotation_config.RAMPAGE_MIN_BLOODTHIRST_CD_LEFT
-            and (self.state['next_whirlwind_available_at'] - self.current_time_seconds) > self.rotation_config.RAMPAGE_MIN_WHIRLWIND_CD_LEFT
+            and (
+                has_priority or (
+                    (self.state['next_bloodthirst_available_at'] - self.current_time_seconds) > self.rotation_config.RAMPAGE_MIN_BLOODTHIRST_CD_LEFT
+                    and
+                    (self.state['next_whirlwind_available_at'] - self.current_time_seconds) > self.rotation_config.RAMPAGE_MIN_WHIRLWIND_CD_LEFT
+                )
+            )
 
             # TODO One could argue that for the sake of completeness, there should be a "rampage runs out in 5 sec" event
             # that leads to _do_rota being called.

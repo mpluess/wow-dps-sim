@@ -1,26 +1,41 @@
+head:
 blue, meta, +8 ap
 violet, meta
 
-yellow, yellow, +3 crit
-orange, orange
+shoulders:
+red, blue, +3 crit
+red, orange
 
+back:
 red, +2 hit
 red
 
-red, red, blue, +4 hit
+chest:
+red, red, blue, +4 crit
 red, red, violet
 
+hands:
+yellow, yellow, blue, +3 hit
+red, red, red
+
+legs:
+red, red, blue, +4 hit
+red, red, red
+
+boots:
 yellow, red, +6 ap
 orange, red
 
+off hand:
 red, +3 sta
 red
 
-(1x meta (12 agi, 3% +crit damage))
+1x meta (12 agi, 3% +crit damage)
 2x violet (4 str, 6 sta)
-3x orange (4 str, 4 crit)
-5x red (8 str)
-bonuses: 14 ap, 3 crit, 6 hit, 3 sta
+2x orange (4 str, 4 crit)
+12x red (8 str)
+bonuses: 14 ap, 2 hit, 4 crit, 3 sta
+total: 12 agi, 15 sta, 112 str, 14 ap, 12 crit, 2 hit
 
 
 auto-optimize or input fields for additional socket stats + meta yes / no

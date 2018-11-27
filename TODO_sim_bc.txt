@@ -60,15 +60,25 @@ x items (drakefist hammer, Hourglass of the Unraveller)
 x enchants
 
 on use:
-drums x2
-haste potion
-heroism
-items (Bloodlust Brooch)
+x drums x2
+x haste potion
+x heroism
+x items (Bloodlust Brooch)
 
 comparisons:
 no op + anger management vs. op + no anger management
+
 dw spec, imp exe, weapon mastery, precision, imp ww choice
+5/5 dw, 0/2 exe, 2/2 wm, 3/3 prec, 1/2 ww: 1669.52
+5/5 dw, 0/2 exe, 2/2 wm, 2/3 prec, 2/2 ww: 1662.15
+5/5 dw, 2/2 exe, 2/2 wm, 1/3 prec, 1/2 ww: 1668.26
+3/5 dw, 2/2 exe, 2/2 wm, 3/3 prec, 1/2 ww: 1659.03
+
 rampage @ execute phase?
+nope, slightly worse: 1669.52 (no rampage, below-average run) vs. 1668.76 DPS (rampage, only one run done)
+might be slightly better if not refreshed anymore ~20-25 seconds before the fight ends, but not worth the hassle.
+
+ww: wait for bt
 
 research:
 is ww with both hands actually 2 attacks, 2 times damage dealt, 2 times chance to proc stuff etc.?
