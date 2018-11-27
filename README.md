@@ -1,6 +1,6 @@
 # wow-dps-sim
-WoW DPS Sim
+WoW DPS simulation webapp written in Python including a basic character planner scraping item stats from a range of web databases.
 
 Current functionality:
-- Vanilla Fury Warrior Character Planner Webapp. Calculates stats from item ids.
-- Vanilla Fury Warrior Simulation Webapp. What DPS would you achieve with the current items?
+- Vanilla Fury Warrior simulation
+- Burning Crusade Fury Warrior simulation
