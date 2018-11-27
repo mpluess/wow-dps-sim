@@ -3,7 +3,6 @@ from .enums import Ability, EventType, OnUseEffect
 
 class Constants:
     ability_names_lookup = {
-        Ability.ANGER_MANAGEMENT: 'Anger Management',
         Ability.BLOODRAGE: 'Bloodrage',
         Ability.BLOODTHIRST: 'Bloodthirst',
         Ability.DEATH_WISH: 'Death Wish',
@@ -15,17 +14,21 @@ class Constants:
         Ability.KISS_OF_THE_SPIDER: 'Kiss of the Spider',
         Ability.MIGHTY_RAGE_POTION: 'Mighty Rage Potion',
         Ability.OVERPOWER: 'Overpower',
-        Ability.RAMPAGE: 'Rampage',
         Ability.RECKLESSNESS: 'Recklessness',
         Ability.SLAYERS_CREST: "Slayer's Crest",
         Ability.THRASH_BLADE_PROC: 'Thrash Blade Proc',
         Ability.WHIRLWIND: 'Whirlwind',
-        Ability.WHIRLWIND_MAIN: 'Whirlwind Main',
-        Ability.WHIRLWIND_OFF: 'Whirlwind Off',
         Ability.WHITE: 'White Hit',
         Ability.WHITE_MAIN: 'White Hit Main',
         Ability.WHITE_OFF: 'White Hit Off',
         Ability.WINDFURY_PROC: 'Windfury Proc',
+
+        # BC
+        Ability.ANGER_MANAGEMENT: 'Anger Management',
+        Ability.HOURGLASS_OF_THE_UNRAVELLER: 'Hourglass of the Unraveller',
+        Ability.RAMPAGE: 'Rampage',
+        Ability.WHIRLWIND_MAIN: 'Whirlwind Main',
+        Ability.WHIRLWIND_OFF: 'Whirlwind Off',
     }
 
     on_use_effect_to_cd_end_event_type = {
@@ -45,9 +48,11 @@ class Constants:
         Ability.OVERPOWER: Ability.OVERPOWER,
         Ability.THRASH_BLADE_PROC: Ability.THRASH_BLADE_PROC,
         Ability.WHIRLWIND: Ability.WHIRLWIND,
-        Ability.WHIRLWIND_MAIN: Ability.WHIRLWIND,
-        Ability.WHIRLWIND_OFF: Ability.WHIRLWIND,
         Ability.WHITE_MAIN: Ability.WHITE,
         Ability.WHITE_OFF: Ability.WHITE,
         Ability.WINDFURY_PROC: Ability.WINDFURY_PROC,
+
+        # BC
+        Ability.WHIRLWIND_MAIN: Ability.WHIRLWIND,
+        Ability.WHIRLWIND_OFF: Ability.WHIRLWIND,
     }

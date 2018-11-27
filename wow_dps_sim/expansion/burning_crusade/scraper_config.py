@@ -14,7 +14,9 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
         ('exp_rating', re.compile(r'Increases your expertise rating by (?P<value>\d+)')),
     ]
 
-    proc_mapping = dict()
+    proc_mapping = {
+        'Hourglass of the Unraveller': Proc.HOURGLASS_OF_THE_UNRAVELLER,
+    }
 
     weapon_proc_mapping = {
         'Drakefist Hammer': {

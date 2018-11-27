@@ -10,6 +10,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
 
         self.state['rampage_stacks'] = 0
         self.state['rampage_available_till'] = 0.0
+        self.state['hourglass_of_the_unraveller_on_icd'] = False
 
         self.rampage_end_event = None
         self.drakefist_hammer_proc_end_event = None
@@ -43,6 +44,21 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.drakefist_hammer_proc_end_event = None
             self.player.buffs.remove(PlayerBuffs.DRAKEFIST_HAMMER)
             self.log(f"{self._log_entry_beginning()} Drakefist Hammer Proc fades\n")
+        elif event_type == EventType.HOURGLASS_OF_THE_UNRAVELLER_PROC:
+            # Additional check is necessary for rare cases where attack A procs hourglass and WF and that WF
+            # procs the hourglass again, with the WF event coming in before the first proc event, leading to
+            # 2 proc events.
+            if not self.state['hourglass_of_the_unraveller_on_icd']:
+                self.player.buffs.add(PlayerBuffs.HOURGLASS_OF_THE_UNRAVELLER)
+                self.state['hourglass_of_the_unraveller_on_icd'] = True
+                self._add_event(self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_DURATION, EventType.HOURGLASS_OF_THE_UNRAVELLER_PROC_END)
+                self._add_event(self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_ICD_DURATION, EventType.HOURGLASS_OF_THE_UNRAVELLER_ICD_END)
+                self.log(f"{self._log_entry_beginning(Ability.HOURGLASS_OF_THE_UNRAVELLER)} activated\n")
+        elif event_type == EventType.HOURGLASS_OF_THE_UNRAVELLER_PROC_END:
+            self.player.buffs.remove(PlayerBuffs.HOURGLASS_OF_THE_UNRAVELLER)
+            self.log(f"{self._log_entry_beginning(Ability.HOURGLASS_OF_THE_UNRAVELLER)} fades\n")
+        elif event_type == EventType.HOURGLASS_OF_THE_UNRAVELLER_ICD_END:
+            self.state['hourglass_of_the_unraveller_on_icd'] = False
 
     def _do_rota(self):
         if self.state['execute_phase']:
@@ -148,3 +164,8 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 if Proc.DRAKEFIST_HAMMER_OFF in self.player.procs:
                     if hand == Hand.OFF and random.random() < (self.knowledge.DRAKEFIST_HAMMER_PPM * current_stats['speed_off_hand'] / 60):
                         self._add_event(0.0, EventType.DRAKEFIST_HAMMER_PROC)
+
+        if attack_result == AttackResult.CRIT:
+            if Proc.HOURGLASS_OF_THE_UNRAVELLER in self.player.procs:
+                if not self.state['hourglass_of_the_unraveller_on_icd'] and random.random() < self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_PROC_CHANCE:
+                    self._add_event(0.0, EventType.HOURGLASS_OF_THE_UNRAVELLER_PROC)

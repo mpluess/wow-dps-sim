@@ -2,7 +2,6 @@ from enum import auto, Enum
 
 
 class Ability(Enum):
-    ANGER_MANAGEMENT = auto()
     BLOODRAGE = auto()
     BLOODTHIRST = auto()
     DEATH_WISH = auto()
@@ -14,17 +13,21 @@ class Ability(Enum):
     KISS_OF_THE_SPIDER = auto()
     MIGHTY_RAGE_POTION = auto()
     OVERPOWER = auto()
-    RAMPAGE = auto()
     RECKLESSNESS = auto()
     SLAYERS_CREST = auto()
     THRASH_BLADE_PROC = auto()
     WHIRLWIND = auto()
-    WHIRLWIND_MAIN = auto()
-    WHIRLWIND_OFF = auto()
     WHITE = auto()
     WHITE_MAIN = auto()
     WHITE_OFF = auto()
     WINDFURY_PROC = auto()
+
+    # BC
+    ANGER_MANAGEMENT = auto()
+    HOURGLASS_OF_THE_UNRAVELLER = auto()
+    RAMPAGE = auto()
+    WHIRLWIND_MAIN = auto()
+    WHIRLWIND_OFF = auto()
 
 
 class AttackResult(Enum):
@@ -97,8 +100,13 @@ class EventType(Enum):
     RAMPAGE_END = auto()
     ATTACK_CRIT = auto()
     ANGER_MANAGEMENT_TICK = auto()
+
     DRAKEFIST_HAMMER_PROC = auto()
     DRAKEFIST_HAMMER_PROC_END = auto()
+
+    HOURGLASS_OF_THE_UNRAVELLER_ICD_END = auto()
+    HOURGLASS_OF_THE_UNRAVELLER_PROC = auto()
+    HOURGLASS_OF_THE_UNRAVELLER_PROC_END = auto()
 
 
 class Hand(Enum):
@@ -134,6 +142,7 @@ class PlayerBuffs(Enum):
     # Burning Crusade
     RAMPAGE = auto()
     DRAKEFIST_HAMMER = auto()
+    HOURGLASS_OF_THE_UNRAVELLER = auto()
 
 
 class Proc(Enum):
@@ -153,6 +162,7 @@ class Proc(Enum):
     MONGOOSE_OFF = auto()
     DRAKEFIST_HAMMER_MAIN = auto()
     DRAKEFIST_HAMMER_OFF = auto()
+    HOURGLASS_OF_THE_UNRAVELLER = auto()
 
 
 class Stance(Enum):

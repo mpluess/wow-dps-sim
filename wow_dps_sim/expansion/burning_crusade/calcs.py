@@ -14,6 +14,9 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.DRAKEFIST_HAMMER in self.player.buffs:
             stats['haste_rating'] += self.knowledge.DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING
 
+        if PlayerBuffs.HOURGLASS_OF_THE_UNRAVELLER in self.player.buffs:
+            stats['ap'] += self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_ADDITIONAL_AP
+
         return stats
 
     def _apply_attack_table_roll(self, damage, attack_result, hand, attack_type):

@@ -124,3 +124,20 @@ Heroic Strike AttackResult.HIT 18456 55.06 AttackResult.CRIT 14074 41.99 AttackR
 Whirlwind AttackResult.HIT 16954 52.97 AttackResult.CRIT 13809 43.15 AttackResult.DODGE 1243 3.88
 Execute AttackResult.HIT 10013 60.72 AttackResult.CRIT 5971 36.21 AttackResult.DODGE 507 3.07
 Windfury Proc AttackResult.CRIT 10632 38.27 AttackResult.GLANCING 6930 24.95 AttackResult.HIT 6427 23.14 AttackResult.MISS 2986 10.75 AttackResult.DODGE 805 2.90
+
+
+hourglass proc:
+DPS: 1298.41
+White Hit 82912060 35.67 min=194 max=1504 mean=591
+Bloodthirst 44254151 19.04 min=969 max=2698 mean=1665
+Heroic Strike 40586534 17.46 min=698 max=2003 mean=1228
+Whirlwind 22487876 9.67 min=296 max=1525 mean=735
+Execute 21336220 9.18 min=685 max=4551 mean=1336
+Windfury Proc 20891754 8.99 min=373 max=1504 mean=870
+
+White Hit AttackResult.CRIT 62576 38.32 AttackResult.GLANCING 40773 24.97 AttackResult.HIT 36861 22.57 AttackResult.MISS 16839 10.31 AttackResult.DODGE 6248 3.83
+Bloodthirst AttackResult.HIT 15210 55.45 AttackResult.CRIT 11375 41.47 AttackResult.DODGE 843 3.07
+Heroic Strike AttackResult.HIT 18687 54.90 AttackResult.CRIT 14372 42.22 AttackResult.DODGE 980 2.88
+Whirlwind AttackResult.HIT 16682 52.43 AttackResult.CRIT 13896 43.68 AttackResult.DODGE 1238 3.89
+Execute AttackResult.HIT 10017 60.79 AttackResult.CRIT 5952 36.12 AttackResult.DODGE 509 3.09
+Windfury Proc AttackResult.CRIT 10637 38.36 AttackResult.GLANCING 6959 25.10 AttackResult.HIT 6431 23.19 AttackResult.MISS 2902 10.47 AttackResult.DODGE 798 2.88
