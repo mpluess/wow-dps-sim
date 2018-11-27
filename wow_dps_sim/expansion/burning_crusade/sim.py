@@ -101,6 +101,46 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.mongoose_off_proc_end_event = None
             self.player.buffs.remove(PlayerBuffs.MONGOOSE_OFF)
             self.log(f"{self._log_entry_beginning()} Mongoose Off Hand Proc fades\n")
+        elif event_type == EventType.BLOODLUST_BROOCH_CD_END:
+            self.player.buffs.add(PlayerBuffs.BLOODLUST_BROOCH)
+            self._add_event(self.knowledge.BLOODLUST_BROOCH_DURATION, EventType.BLOODLUST_BROOCH_END)
+            self._add_event(self.knowledge.BLOODLUST_BROOCH_CD, event_type)
+            self.log(f"{self._log_entry_beginning(Ability.BLOODLUST_BROOCH)} activated\n")
+        elif event_type == EventType.BLOODLUST_BROOCH_END:
+            self.player.buffs.remove(PlayerBuffs.BLOODLUST_BROOCH)
+            self.log(f"{self._log_entry_beginning(Ability.BLOODLUST_BROOCH)} fades\n")
+        elif event_type == EventType.DRUMS_OF_BATTLE_CD_END:
+            self.player.buffs.add(PlayerBuffs.DRUMS_OF_BATTLE)
+            self._add_event(self.knowledge.DRUMS_OF_BATTLE_DURATION, EventType.DRUMS_OF_BATTLE_END)
+            self._add_event(self.knowledge.DRUMS_OF_BATTLE_CD, event_type)
+            self.log(f"{self._log_entry_beginning(Ability.DRUMS_OF_BATTLE)} activated\n")
+        elif event_type == EventType.DRUMS_OF_BATTLE_END:
+            self.player.buffs.remove(PlayerBuffs.DRUMS_OF_BATTLE)
+            self.log(f"{self._log_entry_beginning(Ability.DRUMS_OF_BATTLE)} fades\n")
+        elif event_type == EventType.DRUMS_OF_WAR_CD_END:
+            self.player.buffs.add(PlayerBuffs.DRUMS_OF_WAR)
+            self._add_event(self.knowledge.DRUMS_OF_WAR_DURATION, EventType.DRUMS_OF_WAR_END)
+            self._add_event(self.knowledge.DRUMS_OF_WAR_CD, event_type)
+            self.log(f"{self._log_entry_beginning(Ability.DRUMS_OF_WAR)} activated\n")
+        elif event_type == EventType.DRUMS_OF_WAR_END:
+            self.player.buffs.remove(PlayerBuffs.DRUMS_OF_WAR)
+            self.log(f"{self._log_entry_beginning(Ability.DRUMS_OF_WAR)} fades\n")
+        elif event_type == EventType.HASTE_POTION_CD_END:
+            self.player.buffs.add(PlayerBuffs.HASTE_POTION)
+            self._add_event(self.knowledge.HASTE_POTION_DURATION, EventType.HASTE_POTION_END)
+            self._add_event(self.knowledge.HASTE_POTION_CD, event_type)
+            self.log(f"{self._log_entry_beginning(Ability.HASTE_POTION)} activated\n")
+        elif event_type == EventType.HASTE_POTION_END:
+            self.player.buffs.remove(PlayerBuffs.HASTE_POTION)
+            self.log(f"{self._log_entry_beginning(Ability.HASTE_POTION)} fades\n")
+        elif event_type == EventType.HEROISM_CD_END:
+            self.player.buffs.add(PlayerBuffs.HEROISM)
+            self._add_event(self.knowledge.HEROISM_DURATION, EventType.HEROISM_END)
+            self._add_event(self.knowledge.HEROISM_CD, event_type)
+            self.log(f"{self._log_entry_beginning(Ability.HEROISM)} activated\n")
+        elif event_type == EventType.HEROISM_END:
+            self.player.buffs.remove(PlayerBuffs.HEROISM)
+            self.log(f"{self._log_entry_beginning(Ability.HEROISM)} fades\n")
 
     def _do_rota(self):
         if self.state['execute_phase']:

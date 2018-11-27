@@ -70,8 +70,9 @@ class Player:
             self.procs = procs
 
         if on_use_effects is None:
+            buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
             consumable_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'consumable_config')
-            self.on_use_effects = self._create_on_use_effect_set(items, consumable_config.CONSUMABLE_ON_USE_EFFECTS)
+            self.on_use_effects = self._create_on_use_effect_set(items, set.union(buff_config.BUFF_ON_USE_EFFECTS, consumable_config.CONSUMABLE_ON_USE_EFFECTS))
         else:
             self.on_use_effects = on_use_effects
 

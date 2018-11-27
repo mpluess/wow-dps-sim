@@ -60,9 +60,9 @@ x items (drakefist hammer, Hourglass of the Unraveller)
 x enchants
 
 on use:
-heroism
-drums
+drums x2
 haste potion
+heroism
 items (Bloodlust Brooch)
 
 comparisons:

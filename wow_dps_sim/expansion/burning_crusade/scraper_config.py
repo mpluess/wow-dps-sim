@@ -1,6 +1,6 @@
 import re
 
-from wow_dps_sim.enums import Proc
+from wow_dps_sim.enums import Proc, OnUseEffect
 import wow_dps_sim.expansion.scraper_config
 
 
@@ -33,4 +33,6 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
         },
     }
 
-    on_use_effect_mapping = dict()
+    on_use_effect_mapping = {
+        'Bloodlust Brooch': OnUseEffect.BLOODLUST_BROOCH,
+    }

@@ -25,6 +25,11 @@ class Constants:
 
         # BC
         Ability.ANGER_MANAGEMENT: 'Anger Management',
+        Ability.BLOODLUST_BROOCH: 'Bloodlust Brooch',
+        Ability.DRUMS_OF_BATTLE: 'Drums of Battle',
+        Ability.DRUMS_OF_WAR: 'Drums of War',
+        Ability.HASTE_POTION: 'Haste Potion',
+        Ability.HEROISM: 'Heroism',
         Ability.HOURGLASS_OF_THE_UNRAVELLER: 'Hourglass of the Unraveller',
         Ability.RAMPAGE: 'Rampage',
         Ability.WHIRLWIND_MAIN: 'Whirlwind Main',
@@ -37,6 +42,13 @@ class Constants:
 
         OnUseEffect.JUJU_FLURRY: EventType.JUJU_FLURRY_CD_END,
         OnUseEffect.MIGHTY_RAGE_POTION: EventType.MIGHTY_RAGE_POTION_CD_END,
+
+        # BC
+        OnUseEffect.BLOODLUST_BROOCH: EventType.BLOODLUST_BROOCH_CD_END,
+        OnUseEffect.DRUMS_OF_BATTLE: EventType.DRUMS_OF_BATTLE_CD_END,
+        OnUseEffect.DRUMS_OF_WAR: EventType.DRUMS_OF_WAR_CD_END,
+        OnUseEffect.HASTE_POTION: EventType.HASTE_POTION_CD_END,
+        OnUseEffect.HEROISM: EventType.HEROISM_CD_END,
     }
 
     statistics_ability_mapping = {

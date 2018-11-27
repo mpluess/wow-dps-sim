@@ -25,6 +25,15 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.MONGOOSE_OFF in self.player.buffs:
             stats['agi'] += self.knowledge.MONGOOSE_ADDITIONAL_AGILITY
 
+        if PlayerBuffs.BLOODLUST_BROOCH in self.player.buffs:
+            stats['ap'] += self.knowledge.BLOODLUST_BROOCH_ADDITIONAL_AP
+        if PlayerBuffs.DRUMS_OF_BATTLE in self.player.buffs:
+            stats['haste_rating'] += self.knowledge.DRUMS_OF_BATTLE_ADDITIONAL_HASTE_RATING
+        if PlayerBuffs.DRUMS_OF_WAR in self.player.buffs:
+            stats['ap'] += self.knowledge.DRUMS_OF_WAR_ADDITIONAL_AP
+        if PlayerBuffs.HASTE_POTION in self.player.buffs:
+            stats['haste_rating'] += self.knowledge.HASTE_POTION_ADDITIONAL_HASTE_RATING
+
         return stats
 
     def _apply_temporary_buffs_percentage(self, stats):
@@ -34,6 +43,9 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
             stats['speed_multiplier'] *= self.knowledge.MONGOOSE_SPEED_MULTIPLIER
         if PlayerBuffs.MONGOOSE_OFF in self.player.buffs:
             stats['speed_multiplier'] *= self.knowledge.MONGOOSE_SPEED_MULTIPLIER
+
+        if PlayerBuffs.HEROISM in self.player.buffs:
+            stats['speed_multiplier'] *= self.knowledge.HEROISM_SPEED_MULTIPLIER
 
         return stats
 

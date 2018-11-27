@@ -24,6 +24,11 @@ class Ability(Enum):
 
     # BC
     ANGER_MANAGEMENT = auto()
+    BLOODLUST_BROOCH = auto()
+    DRUMS_OF_BATTLE = auto()
+    DRUMS_OF_WAR = auto()
+    HASTE_POTION = auto()
+    HEROISM = auto()
     HOURGLASS_OF_THE_UNRAVELLER = auto()
     RAMPAGE = auto()
     WHIRLWIND_MAIN = auto()
@@ -116,6 +121,17 @@ class EventType(Enum):
     MONGOOSE_OFF_PROC = auto()
     MONGOOSE_OFF_PROC_END = auto()
 
+    BLOODLUST_BROOCH_CD_END = auto()
+    BLOODLUST_BROOCH_END = auto()
+    DRUMS_OF_BATTLE_CD_END = auto()
+    DRUMS_OF_BATTLE_END = auto()
+    DRUMS_OF_WAR_CD_END = auto()
+    DRUMS_OF_WAR_END = auto()
+    HASTE_POTION_CD_END = auto()
+    HASTE_POTION_END = auto()
+    HEROISM_CD_END = auto()
+    HEROISM_END = auto()
+
 
 class Hand(Enum):
     MAIN = auto()
@@ -131,7 +147,13 @@ class OnUseEffect(Enum):
     JUJU_FLURRY = auto()
 
     # BC
+    BLOODLUST_BROOCH = auto()
+
+    DRUMS_OF_BATTLE = auto()
+    DRUMS_OF_WAR = auto()
     HASTE_POTION = auto()
+
+    HEROISM = auto()
 
 
 class PlayerBuffs(Enum):
@@ -148,12 +170,17 @@ class PlayerBuffs(Enum):
     MIGHTY_RAGE_POTION = auto()
 
     # Burning Crusade
-    RAMPAGE = auto()
+    BLOODLUST_BROOCH = auto()
     DRAKEFIST_HAMMER = auto()
-    HOURGLASS_OF_THE_UNRAVELLER = auto()
+    DRUMS_OF_BATTLE = auto()
+    DRUMS_OF_WAR = auto()
     EXECUTIONER = auto()
+    HASTE_POTION = auto()
+    HEROISM = auto()
+    HOURGLASS_OF_THE_UNRAVELLER = auto()
     MONGOOSE_MAIN = auto()
     MONGOOSE_OFF = auto()
+    RAMPAGE = auto()
 
 
 class Proc(Enum):

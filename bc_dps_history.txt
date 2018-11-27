@@ -158,3 +158,20 @@ Heroic Strike AttackResult.HIT 19537 53.65 AttackResult.CRIT 15809 43.41 AttackR
 Whirlwind AttackResult.HIT 16487 51.62 AttackResult.CRIT 14280 44.71 AttackResult.DODGE 1175 3.68
 Execute AttackResult.HIT 9847 58.94 AttackResult.CRIT 6376 38.16 AttackResult.DODGE 485 2.90
 Windfury Proc AttackResult.CRIT 11121 39.77 AttackResult.GLANCING 6999 25.03 AttackResult.HIT 6112 21.86 AttackResult.MISS 2913 10.42 AttackResult.DODGE 815 2.91
+
+
+drums of battle, drums of war, haste potion, bloodlust brooch, heroism:
+DPS: 1669.52
+White Hit 98442372 32.80 min=194 max=1726 mean=614
+Heroic Strike 78010230 25.99 min=715 max=2269 mean=1428
+Bloodthirst 49301852 16.43 min=969 max=3195 mean=1808
+Windfury Proc 26300852 8.76 min=373 max=1726 mean=943
+Whirlwind 24445805 8.14 min=298 max=1745 mean=782
+Execute 23644780 7.88 min=685 max=4836 mean=1453
+
+White Hit AttackResult.CRIT 74787 39.92 AttackResult.GLANCING 46806 24.99 AttackResult.HIT 38690 20.65 AttackResult.MISS 19703 10.52 AttackResult.DODGE 7343 3.92
+Heroic Strike AttackResult.CRIT 29150 51.77 AttackResult.HIT 25484 45.26 AttackResult.DODGE 1672 2.97
+Bloodthirst AttackResult.HIT 15245 54.29 AttackResult.CRIT 12017 42.79 AttackResult.DODGE 819 2.92
+Windfury Proc AttackResult.CRIT 12887 40.22 AttackResult.GLANCING 8100 25.28 AttackResult.HIT 6911 21.57 AttackResult.MISS 3232 10.09 AttackResult.DODGE 913 2.85
+Whirlwind AttackResult.HIT 17065 52.65 AttackResult.CRIT 14187 43.77 AttackResult.DODGE 1160 3.58
+Execute AttackResult.HIT 9994 59.50 AttackResult.CRIT 6277 37.37 AttackResult.DODGE 526 3.13

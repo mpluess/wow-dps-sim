@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-from wow_dps_sim.enums import Proc
+from wow_dps_sim.enums import Proc, OnUseEffect
 
 # imp. battle shout 8
 _BATTLE_SHOUT_ADDITIONAL_AP = 381
@@ -60,4 +60,8 @@ PERMANENT_BUFF_MULTIPLIERS = {
 
 BUFF_PROCS = {
     Proc.WINDFURY_TOTEM,
+}
+
+BUFF_ON_USE_EFFECTS = {
+    OnUseEffect.HEROISM,
 }
