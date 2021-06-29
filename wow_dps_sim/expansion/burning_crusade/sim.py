@@ -14,6 +14,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
 
         self.rampage_end_event = None
         self.drakefist_hammer_proc_end_event = None
+        self.blackout_truncheon_proc_end_event = None
         self.executioner_proc_end_event = None
         self.mongoose_main_proc_end_event = None
         self.mongoose_off_proc_end_event = None
@@ -47,6 +48,19 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
             self.drakefist_hammer_proc_end_event = None
             self.player.buffs.remove(PlayerBuffs.DRAKEFIST_HAMMER)
             self.log(f"{self._log_entry_beginning()} Drakefist Hammer Proc fades\n")
+        elif event_type == EventType.BLACKOUT_TRUNCHEON_PROC:
+            if self.blackout_truncheon_proc_end_event is None:
+                self.blackout_truncheon_proc_end_event = self._add_event(self.knowledge.BLACKOUT_TRUNCHEON_DURATION, EventType.BLACKOUT_TRUNCHEON_PROC_END)
+                self.log(f"{self._log_entry_beginning()} Blackout Truncheon Proc\n")
+            else:
+                self.blackout_truncheon_proc_end_event.time = self.current_time_seconds + self.knowledge.BLACKOUT_TRUNCHEON_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning()} Blackout Truncheon Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.BLACKOUT_TRUNCHEON)
+        elif event_type == EventType.BLACKOUT_TRUNCHEON_PROC_END:
+            self.blackout_truncheon_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.BLACKOUT_TRUNCHEON)
+            self.log(f"{self._log_entry_beginning()} Blackout Truncheon Proc fades\n")
         elif event_type == EventType.HOURGLASS_OF_THE_UNRAVELLER_PROC:
             # Additional check is necessary for rare cases where attack A procs hourglass and WF and that WF
             # procs the hourglass again, with the WF event coming in before the first proc event, leading to
@@ -253,6 +267,15 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 if Proc.DRAKEFIST_HAMMER_OFF in self.player.procs:
                     if hand == Hand.OFF and random.random() < (self.knowledge.DRAKEFIST_HAMMER_PPM * current_stats['speed_off_hand'] / 60):
                         self._add_event(0.0, EventType.DRAKEFIST_HAMMER_PROC)
+
+            if Proc.BLACKOUT_TRUNCHEON_MAIN in self.player.procs or Proc.BLACKOUT_TRUNCHEON_OFF in self.player.procs:
+                current_stats = self.calcs.current_stats()
+                if Proc.BLACKOUT_TRUNCHEON_MAIN in self.player.procs:
+                    if hand == Hand.MAIN and random.random() < (self.knowledge.BLACKOUT_TRUNCHEON_PPM * current_stats['speed_main_hand'] / 60):
+                        self._add_event(0.0, EventType.BLACKOUT_TRUNCHEON_PROC)
+                if Proc.BLACKOUT_TRUNCHEON_OFF in self.player.procs:
+                    if hand == Hand.OFF and random.random() < (self.knowledge.BLACKOUT_TRUNCHEON_PPM * current_stats['speed_off_hand'] / 60):
+                        self._add_event(0.0, EventType.BLACKOUT_TRUNCHEON_PROC)
 
             if Proc.EXECUTIONER_MAIN in self.player.procs or Proc.EXECUTIONER_OFF in self.player.procs:
                 current_stats = self.calcs.current_stats()

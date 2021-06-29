@@ -14,6 +14,9 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.DRAKEFIST_HAMMER in self.player.buffs:
             stats['haste_rating'] += self.knowledge.DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING
 
+        if PlayerBuffs.BLACKOUT_TRUNCHEON in self.player.buffs:
+            stats['haste_rating'] += self.knowledge.BLACKOUT_TRUNCHEON_ADDITIONAL_HASTE_RATING
+
         if PlayerBuffs.HOURGLASS_OF_THE_UNRAVELLER in self.player.buffs:
             stats['ap'] += self.knowledge.HOURGLASS_OF_THE_UNRAVELLER_ADDITIONAL_AP
 

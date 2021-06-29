@@ -56,6 +56,6 @@ ENCHANT_STATS = {
     },
 }
 ENCHANT_PROCS = {
-    Proc.EXECUTIONER_MAIN,
+    Proc.MONGOOSE_MAIN,
     Proc.MONGOOSE_OFF,
 }

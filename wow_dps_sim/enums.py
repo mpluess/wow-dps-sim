@@ -109,6 +109,9 @@ class EventType(Enum):
     DRAKEFIST_HAMMER_PROC = auto()
     DRAKEFIST_HAMMER_PROC_END = auto()
 
+    BLACKOUT_TRUNCHEON_PROC = auto()
+    BLACKOUT_TRUNCHEON_PROC_END = auto()
+
     HOURGLASS_OF_THE_UNRAVELLER_ICD_END = auto()
     HOURGLASS_OF_THE_UNRAVELLER_PROC = auto()
     HOURGLASS_OF_THE_UNRAVELLER_PROC_END = auto()
@@ -170,6 +173,7 @@ class PlayerBuffs(Enum):
     MIGHTY_RAGE_POTION = auto()
 
     # Burning Crusade
+    BLACKOUT_TRUNCHEON = auto()
     BLOODLUST_BROOCH = auto()
     DRAKEFIST_HAMMER = auto()
     DRUMS_OF_BATTLE = auto()
@@ -200,6 +204,8 @@ class Proc(Enum):
     MONGOOSE_OFF = auto()
     DRAKEFIST_HAMMER_MAIN = auto()
     DRAKEFIST_HAMMER_OFF = auto()
+    BLACKOUT_TRUNCHEON_MAIN = auto()
+    BLACKOUT_TRUNCHEON_OFF = auto()
     HOURGLASS_OF_THE_UNRAVELLER = auto()
 
 

@@ -31,6 +31,10 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
             'main_hand': Proc.DRAKEFIST_HAMMER_MAIN,
             'off_hand': Proc.DRAKEFIST_HAMMER_OFF
         },
+        'Blackout Truncheon': {
+            'main_hand': Proc.BLACKOUT_TRUNCHEON_MAIN,
+            'off_hand': Proc.BLACKOUT_TRUNCHEON_OFF
+        },
     }
 
     on_use_effect_mapping = {
