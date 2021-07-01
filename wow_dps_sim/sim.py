@@ -40,7 +40,7 @@ def do_sim(expansion, player):
 
     result_baseline = do_n_runs(expansion, player)
     stat_weights = dict()
-    # for stat, increase in config.stat_increase_tuples:
+    # for stat, increase in config.STAT_INCREASE_TUPLES:
     #     stats_copy = copy.copy(partial_buffed_permanent_stats)
     #     stats_copy[stat] += increase
     #     result = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)

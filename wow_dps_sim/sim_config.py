@@ -4,4 +4,4 @@ LOGGING = False
 N_RUNS = 1000
 
 # [('hit', 1), ('crit', 1), ('agi', 20), ('ap', 30), ('str', 15), ('haste', 1), ('Sword', 1)]
-STAT_INCREASE_TUPLES = []
+# STAT_INCREASE_TUPLES = []

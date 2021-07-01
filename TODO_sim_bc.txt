@@ -83,5 +83,3 @@ ww: wait for bt
 research:
 is ww with both hands actually 2 attacks, 2 times damage dealt, 2 times chance to proc stuff etc.?
 2.4 patch notes seem to indicate this: "Whirlwind: Critical strikes with the off-hand weapon from this ability can now trigger Flurry and Rampage."
-
-doublecheck ppm procs (is blackout truncheon really so much damage?)

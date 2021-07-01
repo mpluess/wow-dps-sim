@@ -1,5 +1,7 @@
 """ https://www.dalaran-wow.com/forums/community/general-discussion/topic/2149/the-comprehensive-list-of-raid-buffs-debuffs """
 
+# TODO Moonkin hit? Retri % damage?
+
 from collections import defaultdict
 
 from wow_dps_sim.enums import Proc, OnUseEffect
