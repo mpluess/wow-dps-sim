@@ -29,7 +29,10 @@ class Calcs:
         )
 
     def current_stats(self, extra_flat_stats=None):
-        stats = self.player.partial_buffed_permanent_stats
+        if self.sim_state['execute_phase']:
+            stats = self.player.partial_buffed_permanent_stats_execute
+        else:
+            stats = self.player.partial_buffed_permanent_stats
         if extra_flat_stats is not None:
             stats = self.stats.merge_stats(stats, extra_flat_stats)
         stats = self._apply_temporary_buffs_flat(stats)

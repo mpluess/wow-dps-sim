@@ -158,9 +158,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
 
     def _do_rota(self):
         if self.state['execute_phase']:
-            if self._use_death_wish():
-                pass
-            elif self._use_recklessness():
+            if self._use_recklessness():
                 pass
             # elif self._use_rampage(has_priority=True):
             #     pass
@@ -173,11 +171,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 pass
             elif self._use_whirlwind():
                 pass
-            # elif self._use_overpower():
-            #     pass
             elif self._use_rampage():
-                pass
-            elif self._use_death_wish():
                 pass
             elif self._use_recklessness():
                 pass

@@ -468,7 +468,10 @@ class Sim:
                         self._add_event(0.0, EventType.CRUSADER_OFF_PROC)
 
             if hand == Hand.MAIN and Proc.WINDFURY_TOTEM in self.player.procs:
-                if ability != Ability.WINDFURY_PROC and random.random() < self.knowledge.WINDFURY_PROC_CHANCE:
+                # WF probably only procs off whites and HS, not yellows in 2.4.3: https://tbc.wowhead.com/spell=25587/windfury-totem#comments.
+                # Not quite sure at what point in Vanilla it was which way around.
+                # if ability != Ability.WINDFURY_PROC and random.random() < self.knowledge.WINDFURY_PROC_CHANCE:
+                if ability in {Ability.WHITE_MAIN, Ability.HEROIC_STRIKE} and random.random() < self.knowledge.WINDFURY_PROC_CHANCE:
                     self._add_event(0.0, EventType.WINDFURY_TOTEM_PROC)
 
     def _consume_rage(self, ability, rage, attack_result, base_rage_cost=None):

@@ -143,6 +143,19 @@
             "title": "Ranged"
         },
 
+        "use_execute_weapon_set": {
+            "type": "boolean",
+            "title": "Use Execute weapon set"
+        },
+        "execute_main_hand": {
+            "type": "string",
+            "title": "Execute Main Hand"
+        },
+        "execute_off_hand": {
+            "type": "string",
+            "title": "Execute Off Hand"
+        },
+
         "expansion": {
             "type": "string"
         },

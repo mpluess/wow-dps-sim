@@ -69,11 +69,12 @@ def sim():
     expansion = request_data['expansion']
     scraper = Scraper(request_data['scraper_item_db'], expansion)
     items = _fetch_items(scraper, request_data)
+    items_execute = _fetch_items(scraper, request_data, execute=True)
 
     socket_stats, meta_socket_active = _fetch_socket_stats(request_data)
 
     player = Player(
-        faction, race, class_, spec, items, meta_socket_active,
+        faction, race, class_, spec, items, items_execute, meta_socket_active,
         expansion=expansion, socket_stats=socket_stats
     )
     result, stat_weights = do_sim(expansion, player)
@@ -82,10 +83,22 @@ def sim():
     # return f'{result}\nStat weights: {stat_weights}\n'
 
 
-def _fetch_items(scraper, request_data):
-    item_slot_id_tuples = [(form_key.replace('item_', ''), form_value) for form_key, form_value in request_data.items()
-                           if form_key.startswith('item_') and form_value != '']
-    items = [scraper.scrape_item(item_slot, item_id) for item_slot, item_id in item_slot_id_tuples]
+def _fetch_items(scraper, request_data, execute=False):
+    if execute and request_data['use_execute_weapon_set']:
+        item_slot_id_tuples = [
+            (form_key.replace('item_', '').replace('execute_', ''), form_value)
+            for form_key, form_value in request_data.items()
+            if (
+                (form_key.startswith('item_') or form_key.startswith('execute_'))
+                and form_key not in {'item_main_hand', 'item_off_hand'}
+                and form_value != ''
+            )
+        ]
+        items = [scraper.scrape_item(item_slot, item_id) for item_slot, item_id in item_slot_id_tuples]
+    else:
+        item_slot_id_tuples = [(form_key.replace('item_', ''), form_value) for form_key, form_value in request_data.items()
+                               if form_key.startswith('item_') and form_value != '']
+        items = [scraper.scrape_item(item_slot, item_id) for item_slot, item_id in item_slot_id_tuples]
 
     return items
 

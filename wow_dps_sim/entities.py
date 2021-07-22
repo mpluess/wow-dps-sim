@@ -45,13 +45,19 @@ class WhiteHitEvent(Event):
 
 
 class Player:
-    def __init__(self, faction, race, class_, spec, items, meta_socket_active,
-                 expansion=None, socket_stats=None, partial_buffed_permanent_stats=None, procs=None, on_use_effects=None):
+    def __init__(
+        self, faction, race, class_, spec, items, items_execute, meta_socket_active,
+        expansion=None, socket_stats=None,
+        partial_buffed_permanent_stats=None, partial_buffed_permanent_stats_execute=None,
+        procs=None,  # procs_execute=None,
+        on_use_effects=None,  # on_use_effects_execute=None
+    ):
         self.faction = faction
         self.race = race
         self.class_ = class_
         self.spec = spec
         self.items = items
+        self.items_execute = items_execute
         self.meta_socket_active = meta_socket_active
 
         if partial_buffed_permanent_stats is None:
@@ -62,12 +68,27 @@ class Player:
             assert socket_stats is None and expansion is None
             self.partial_buffed_permanent_stats = partial_buffed_permanent_stats
 
+        if partial_buffed_permanent_stats_execute is None:
+            assert socket_stats is not None and expansion is not None
+            stats = Stats(expansion)
+            self.partial_buffed_permanent_stats_execute = stats.calc_partial_buffed_permanent_stats(faction, race, class_, spec, items_execute, socket_stats)
+        else:
+            assert socket_stats is None and expansion is None
+            self.partial_buffed_permanent_stats_execute = partial_buffed_permanent_stats_execute
+
         if procs is None:
             buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
             enchant_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'enchant_config')
             self.procs = self._create_proc_set(items, set.union(buff_config.BUFF_PROCS, enchant_config.ENCHANT_PROCS))
         else:
             self.procs = procs
+
+        # if procs_execute is None:
+        #     buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
+        #     enchant_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'enchant_config')
+        #     self.procs_execute = self._create_proc_set(items_execute, set.union(buff_config.BUFF_PROCS, enchant_config.ENCHANT_PROCS))
+        # else:
+        #     self.procs_execute = procs_execute
 
         if on_use_effects is None:
             buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
@@ -76,16 +97,26 @@ class Player:
         else:
             self.on_use_effects = on_use_effects
 
+        # if on_use_effects_execute is None:
+        #     buff_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'buff_config')
+        #     consumable_config = from_module_import_x('wow_dps_sim.expansion.' + expansion, 'consumable_config')
+        #     self.on_use_effects_execute = self._create_on_use_effect_set(items_execute, set.union(buff_config.BUFF_ON_USE_EFFECTS, consumable_config.CONSUMABLE_ON_USE_EFFECTS))
+        # else:
+        #     self.on_use_effects_execute = on_use_effects_execute
+
         self.buffs = set()
         self.stance = Stance.BERSERKER
 
     @classmethod
     def from_player(cls, player):
         return cls(
-            player.faction, player.race, player.class_, player.spec, player.items, player.meta_socket_active,
+            player.faction, player.race, player.class_, player.spec, player.items, player.items_execute, player.meta_socket_active,
             partial_buffed_permanent_stats=player.partial_buffed_permanent_stats,
+            partial_buffed_permanent_stats_execute=player.partial_buffed_permanent_stats_execute,
             procs=player.procs,
-            on_use_effects=player.on_use_effects
+            # procs_execute=player.procs_execute,
+            on_use_effects=player.on_use_effects,
+            # on_use_effects_execute=player.on_use_effects_execute,
         )
 
     @staticmethod
