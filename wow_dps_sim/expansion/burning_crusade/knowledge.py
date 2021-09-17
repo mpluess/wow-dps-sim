@@ -110,7 +110,7 @@ MIGHTY_RAGE_POTION_MAX_RAGE = 75
 # https://www.reddit.com/r/wowservers/comments/6g23fl/need_help_with_tbc_fury_warrior_weapons_choice/
 DRAKEFIST_HAMMER_ADDITIONAL_HASTE_RATING = 212
 DRAKEFIST_HAMMER_DURATION = 10.0
-DRAKEFIST_HAMMER_PPM = 1.4
+DRAKEFIST_HAMMER_PPM = 0.8
 
 # https://tbc.wowhead.com/item=27901/blackout-truncheon#comments:id=61121
 BLACKOUT_TRUNCHEON_ADDITIONAL_HASTE_RATING = 132

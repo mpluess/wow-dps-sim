@@ -19,5 +19,5 @@ CONSUMABLE_STATS = defaultdict(int, {
 })
 CONSUMABLE_ON_USE_EFFECTS = {
     OnUseEffect.DRUMS_OF_BATTLE,
-    OnUseEffect.HASTE_POTION,
+    # OnUseEffect.HASTE_POTION,
 }

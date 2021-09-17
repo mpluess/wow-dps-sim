@@ -87,3 +87,10 @@ is ww with both hands actually 2 attacks, 2 times damage dealt, 2 times chance t
 execute weapon set:
 trigger gcd, reset swing timer at start of execute phase
 procs, on use, socket_stats, enchants of execute set during execute phase
+
+fix seed for fight lengths to minimize fluctuations?
+
+match gear planner / ingame stats:
+- fix base stats
+- implement wowhead scraper or switch to scrape from gear planner
+x correct enchants, consumables

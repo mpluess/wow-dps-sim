@@ -1,10 +1,10 @@
 """ https://www.dalaran-wow.com/forums/community/general-discussion/topic/2149/the-comprehensive-list-of-raid-buffs-debuffs """
 
-# TODO Moonkin hit? Retri % damage?
-
 from collections import defaultdict
 
 from wow_dps_sim.enums import Proc, OnUseEffect
+
+# TODO https://tbc.wowhead.com/spell=27066/trueshot-aura#taught-by-npc, https://tbc.wowhead.com/spell=34460/ferocious-inspiration#modifies
 
 # imp. battle shout 8
 _BATTLE_SHOUT_ADDITIONAL_AP = 381
@@ -14,7 +14,13 @@ _BLESSING_OF_MIGHT_ADDITIONAL_AP = 264
 
 _HEROIC_PRESENCE_ADDITIONAL_HIT = 1
 
+# imp. faerie fire
+_FAERIE_FIRE_ADDITIONAL_HIT = 3
+
 _LEADER_OF_THE_PACK_ADDITIONAL_CRIT = 5
+
+# imp. seal of the crusader
+_SEAL_OF_THE_CRUSADER_ADDITIONAL_CRIT = 3
 
 # imp. mark of the wild 8
 _MARK_OF_THE_WILD_ADDITIONAL_STATS = 19
@@ -28,9 +34,11 @@ _permanent_buff_flat_stats_alliance['ap'] += _BATTLE_SHOUT_ADDITIONAL_AP
 
 _permanent_buff_flat_stats_alliance['ap'] += _BLESSING_OF_MIGHT_ADDITIONAL_AP
 
-_permanent_buff_flat_stats_alliance['hit'] += _HEROIC_PRESENCE_ADDITIONAL_HIT
+# _permanent_buff_flat_stats_alliance['hit'] += _HEROIC_PRESENCE_ADDITIONAL_HIT
+# _permanent_buff_flat_stats_alliance['hit'] += _FAERIE_FIRE_ADDITIONAL_HIT
 
 _permanent_buff_flat_stats_alliance['crit'] += _LEADER_OF_THE_PACK_ADDITIONAL_CRIT
+# _permanent_buff_flat_stats_alliance['crit'] += _SEAL_OF_THE_CRUSADER_ADDITIONAL_CRIT
 
 _permanent_buff_flat_stats_alliance['agi'] += _MARK_OF_THE_WILD_ADDITIONAL_STATS
 _permanent_buff_flat_stats_alliance['int'] += _MARK_OF_THE_WILD_ADDITIONAL_STATS
@@ -56,14 +64,18 @@ PERMANENT_BUFF_MULTIPLIERS = {
         'sta': _BLESSING_OF_KINGS_STATS_MULTIPLIER,
         'str': _BLESSING_OF_KINGS_STATS_MULTIPLIER,
         'ap': _UNLEASHED_RAGE_AP_MULTIPLIER,
-        'damage_multiplier': _BLOOD_FRENZY_DAMAGE_MULTIPLIER,
+        # 'damage_multiplier': _BLOOD_FRENZY_DAMAGE_MULTIPLIER,
     }
+
+    # 'alliance': dict()
 }
 
 BUFF_PROCS = {
     Proc.WINDFURY_TOTEM,
 }
+# BUFF_PROCS = set()
 
 BUFF_ON_USE_EFFECTS = {
     OnUseEffect.HEROISM,
 }
+# BUFF_ON_USE_EFFECTS = set()
