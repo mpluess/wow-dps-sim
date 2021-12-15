@@ -2,17 +2,17 @@ KINGS = True
 
 AP = 1.0
 STR = 2.0
-CRIT = 1.8
-AGI = 1.2
-HIT = 1.6
-HASTE = 1.6
+CRIT = 2.2
+AGI = 1.47
+HIT = 1.8
+HASTE = 1.8
 EXP = 2.8
 
-item_ap = 0
-item_str = 52
-item_crit = 23
+item_ap = 42
+item_str = 4
+item_crit = 29
 item_agi = 0
-item_hit = 0
+item_hit = 25
 item_haste = 0
 item_exp = 0
 

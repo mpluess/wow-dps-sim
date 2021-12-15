@@ -88,9 +88,20 @@ execute weapon set:
 trigger gcd, reset swing timer at start of execute phase
 procs, on use, socket_stats, enchants of execute set during execute phase
 
-fix seed for fight lengths to minimize fluctuations?
+DST
+set boni
+fight length mean = 4 min
+
+17/44 vs. 21/40 vs. kebab
 
 match gear planner / ingame stats:
 - fix base stats
-- implement wowhead scraper or switch to scrape from gear planner
+- increase fight duration
+- fix seed for fight lengths to minimize fluctuations
+- scrape from gear planner
 x correct enchants, consumables
+
+current stat weights incl. arp
+
+(implement dw arms
+switch to select spec)

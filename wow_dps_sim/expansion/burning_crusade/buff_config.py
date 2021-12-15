@@ -4,7 +4,9 @@ from collections import defaultdict
 
 from wow_dps_sim.enums import Proc, OnUseEffect
 
+# TODO check wowhead composition tool for possible missing buffs and debuffs
 # TODO https://tbc.wowhead.com/spell=27066/trueshot-aura#taught-by-npc, https://tbc.wowhead.com/spell=34460/ferocious-inspiration#modifies
+# TODO retri aura 2% damage
 
 # imp. battle shout 8
 _BATTLE_SHOUT_ADDITIONAL_AP = 381
