@@ -7,9 +7,12 @@ from wow_dps_sim.enums import Proc, OnUseEffect
 # TODO check wowhead composition tool for possible missing buffs and debuffs
 # TODO https://tbc.wowhead.com/spell=27066/trueshot-aura#taught-by-npc, https://tbc.wowhead.com/spell=34460/ferocious-inspiration#modifies
 # TODO retri aura 2% damage
+# TODO grace of air
 
 # imp. battle shout 8
-_BATTLE_SHOUT_ADDITIONAL_AP = 381
+_BATTLE_SHOUT_ADDITIONAL_AP = 382
+
+_SOLARIANS_SAPPHIRE_ADDITIONAL_AP = 88
 
 # imp. greater blessing of might 3
 _BLESSING_OF_MIGHT_ADDITIONAL_AP = 264
@@ -33,7 +36,7 @@ _STRENGTH_OF_EARTH_TOTEM_ADDITIONAL_STRENGTH = 100
 _permanent_buff_flat_stats_alliance = defaultdict(int)
 
 _permanent_buff_flat_stats_alliance['ap'] += _BATTLE_SHOUT_ADDITIONAL_AP
-
+_permanent_buff_flat_stats_alliance['ap'] += _SOLARIANS_SAPPHIRE_ADDITIONAL_AP
 _permanent_buff_flat_stats_alliance['ap'] += _BLESSING_OF_MIGHT_ADDITIONAL_AP
 
 # _permanent_buff_flat_stats_alliance['hit'] += _HEROIC_PRESENCE_ADDITIONAL_HIT

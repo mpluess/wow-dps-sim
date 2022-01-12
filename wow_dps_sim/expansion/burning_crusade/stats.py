@@ -46,8 +46,7 @@ class Stats(wow_dps_sim.expansion.stats.Stats):
         stats = copy.copy(stats)
 
         if class_ == 'warrior' and spec == 'fury':
-            # TODO No idea if this is still correct
-            stats['health'] = 1509 + min(stats['sta'], 20) * 1 + max(stats['sta'] - 20, 0) * 10
+            stats['health'] = 4264 + stats['sta'] * 10
 
             weapon_type_main_hand = stats['weapon_type_main_hand']
             stats['minus_dodge_bonus_main_hand'] = stats[weapon_type_main_hand]['minus_dodge'] if weapon_type_main_hand in stats else 0

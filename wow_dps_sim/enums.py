@@ -25,6 +25,7 @@ class Ability(Enum):
     # BC
     ANGER_MANAGEMENT = auto()
     BLOODLUST_BROOCH = auto()
+    DRAGONSPINE_TROPHY = auto()
     DRUMS_OF_BATTLE = auto()
     DRUMS_OF_WAR = auto()
     HASTE_POTION = auto()
@@ -116,6 +117,9 @@ class EventType(Enum):
     HOURGLASS_OF_THE_UNRAVELLER_PROC = auto()
     HOURGLASS_OF_THE_UNRAVELLER_PROC_END = auto()
 
+    DRAGONSPINE_TROPHY_PROC = auto()
+    DRAGONSPINE_TROPHY_PROC_END = auto()
+
     EXECUTIONER_PROC = auto()
     EXECUTIONER_PROC_END = auto()
 
@@ -175,6 +179,7 @@ class PlayerBuffs(Enum):
     # Burning Crusade
     BLACKOUT_TRUNCHEON = auto()
     BLOODLUST_BROOCH = auto()
+    DRAGONSPINE_TROPHY = auto()
     DRAKEFIST_HAMMER = auto()
     DRUMS_OF_BATTLE = auto()
     DRUMS_OF_WAR = auto()
@@ -207,6 +212,7 @@ class Proc(Enum):
     BLACKOUT_TRUNCHEON_MAIN = auto()
     BLACKOUT_TRUNCHEON_OFF = auto()
     HOURGLASS_OF_THE_UNRAVELLER = auto()
+    DRAGONSPINE_TROPHY = auto()
 
 
 class Stance(Enum):

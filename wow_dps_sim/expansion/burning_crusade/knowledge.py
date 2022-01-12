@@ -115,7 +115,7 @@ DRAKEFIST_HAMMER_PPM = 0.8
 # https://tbc.wowhead.com/item=27901/blackout-truncheon#comments:id=61121
 BLACKOUT_TRUNCHEON_ADDITIONAL_HASTE_RATING = 132
 BLACKOUT_TRUNCHEON_DURATION = 10.0
-BLACKOUT_TRUNCHEON_PPM = 1.9
+BLACKOUT_TRUNCHEON_PPM = 0.8
 
 # https://www.wowhead.com/item=28034/hourglass-of-the-unraveller&bonus=4095#comments
 HOURGLASS_OF_THE_UNRAVELLER_ADDITIONAL_AP = 300
@@ -139,6 +139,11 @@ HASTE_POTION_ADDITIONAL_HASTE_RATING = 400
 HASTE_POTION_CD = 120.0
 HASTE_POTION_DURATION = 15.0
 
+DRAGONSPINE_TROPHY_ADDITIONAL_HASTE_RATING = 325
+DRAGONSPINE_TROPHY_DURATION = 10.0
+# Not sure if it's actually a PPM proc, but it's tuned for slightly above 30 % uptime, in accordance to my logs
+DRAGONSPINE_TROPHY_PPM = 0.6
+
 # Enchants
 CRUSADER_ADDITIONAL_STRENGTH = 100
 CRUSADER_DURATION = 15.0
@@ -161,11 +166,12 @@ MONGOOSE_SPEED_MULTIPLIER = 0.98
 BASE_STATS = {
     'human': {
         'warrior': defaultdict(int, {
-            'agi': 154,
-            'int': 123,
-            'spi': 117,
-            'sta': 154,
-            'str': 252,
+            'agi': 96,
+            'int': 33,
+            'spi': 56,
+            'sta': 133,
+            'str': 145,
+            'ap': 190,
             'damage_multiplier': 1.0,
             'speed_multiplier': 1.0,
             'minus_dodge': 0.0,

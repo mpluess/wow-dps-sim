@@ -48,6 +48,7 @@ def calc_stats():
 
     return render_template(
         'stats.html',
+        unbuffed_stats=str(unbuffed_stats),
         unbuffed_base_stats=unbuffed_base_stats,
         unbuffed_primary_stats=unbuffed_primary_stats,
         unbuffed_secondary_stats=unbuffed_secondary_stats,
@@ -77,10 +78,9 @@ def sim():
         faction, race, class_, spec, items, items_execute, meta_socket_active,
         expansion=expansion, socket_stats=socket_stats
     )
-    result, stat_weights = do_sim(expansion, player)
+    result = do_sim(expansion, player)
 
     return str(result)
-    # return f'{result}\nStat weights: {stat_weights}\n'
 
 
 def _fetch_items(scraper, request_data, execute=False):

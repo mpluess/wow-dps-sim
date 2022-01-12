@@ -88,20 +88,28 @@ execute weapon set:
 trigger gcd, reset swing timer at start of execute phase
 procs, on use, socket_stats, enchants of execute set during execute phase
 
-DST
-set boni
-fight length mean = 4 min
-
-17/44 vs. 21/40 vs. kebab
 
 match gear planner / ingame stats:
-- fix base stats
-- increase fight duration
-- fix seed for fight lengths to minimize fluctuations
 - scrape from gear planner
+- fix stat difference
+x fight length mean = 4 min
+x fix seed for fight lengths to minimize fluctuations
 x correct enchants, consumables
 
-current stat weights incl. arp
+x DST, solarian's sapphire
 
-(implement dw arms
-switch to select spec)
+x current stat weights incl. arp
+
+doublecheck haste formula, seems too strong rn (in-game comparison, wowhead glaives formula)
+
+format output (newlines)
+
+17/44 vs. 21/40 vs. kebab
+(switch to select spec)
+cooldown timing?
+
+wf extra ap
+
+armor debuffs (iea, cor)
+
+set boni

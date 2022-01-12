@@ -18,6 +18,7 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
         self.executioner_proc_end_event = None
         self.mongoose_main_proc_end_event = None
         self.mongoose_off_proc_end_event = None
+        self.dragonspine_trophy_proc_end_event = None
 
         self._add_event(self.knowledge.ANGER_MANAGEMENT_TIME_BETWEEN_TICKS, EventType.ANGER_MANAGEMENT_TICK)
 
@@ -155,6 +156,19 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
         elif event_type == EventType.HEROISM_END:
             self.player.buffs.remove(PlayerBuffs.HEROISM)
             self.log(f"{self._log_entry_beginning(Ability.HEROISM)} fades\n")
+        elif event_type == EventType.DRAGONSPINE_TROPHY_PROC:
+            if self.dragonspine_trophy_proc_end_event is None:
+                self.dragonspine_trophy_proc_end_event = self._add_event(self.knowledge.DRAGONSPINE_TROPHY_DURATION, EventType.DRAGONSPINE_TROPHY_PROC_END)
+                self.log(f"{self._log_entry_beginning(Ability.DRAGONSPINE_TROPHY)} Proc\n")
+            else:
+                self.dragonspine_trophy_proc_end_event.time = self.current_time_seconds + self.knowledge.DRAGONSPINE_TROPHY_DURATION
+                self.event_queue.sort()
+                self.log(f"{self._log_entry_beginning(Ability.DRAGONSPINE_TROPHY)} Proc refreshed\n")
+            self.player.buffs.add(PlayerBuffs.DRAGONSPINE_TROPHY)
+        elif event_type == EventType.DRAGONSPINE_TROPHY_PROC_END:
+            self.dragonspine_trophy_proc_end_event = None
+            self.player.buffs.remove(PlayerBuffs.DRAGONSPINE_TROPHY)
+            self.log(f"{self._log_entry_beginning(Ability.DRAGONSPINE_TROPHY)} Proc fades\n")
 
     def _do_rota(self):
         if self.state['execute_phase']:
@@ -288,6 +302,11 @@ class Sim(wow_dps_sim.expansion.sim.Sim):
                 if Proc.MONGOOSE_OFF in self.player.procs:
                     if hand == Hand.OFF and random.random() < (self.knowledge.MONGOOSE_PPM * current_stats['speed_off_hand'] / 60):
                         self._add_event(0.0, EventType.MONGOOSE_OFF_PROC)
+
+            if Proc.DRAGONSPINE_TROPHY in self.player.procs:
+                current_stats = self.calcs.current_stats()
+                if random.random() < (self.knowledge.DRAGONSPINE_TROPHY_PPM * current_stats['speed_main_hand'] / 60):
+                    self._add_event(0.0, EventType.DRAGONSPINE_TROPHY_PROC)
 
         if attack_result == AttackResult.CRIT:
             if Proc.HOURGLASS_OF_THE_UNRAVELLER in self.player.procs:

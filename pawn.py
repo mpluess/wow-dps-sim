@@ -8,13 +8,13 @@ HIT = 1.8
 HASTE = 1.8
 EXP = 2.8
 
-item_ap = 42
+item_ap = 60
 item_str = 4
-item_crit = 29
-item_agi = 0
-item_hit = 25
+item_crit = 20
+item_agi = 35
+item_hit = 0
 item_haste = 0
-item_exp = 0
+item_exp = 12
 
 pawn = (
     item_ap*AP

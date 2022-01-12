@@ -37,6 +37,9 @@ class Calcs(wow_dps_sim.expansion.calcs.Calcs):
         if PlayerBuffs.HASTE_POTION in self.player.buffs:
             stats['haste_rating'] += self.knowledge.HASTE_POTION_ADDITIONAL_HASTE_RATING
 
+        if PlayerBuffs.DRAGONSPINE_TROPHY in self.player.buffs:
+            stats['haste_rating'] += self.knowledge.DRAGONSPINE_TROPHY_ADDITIONAL_HASTE_RATING
+
         return stats
 
     def _apply_temporary_buffs_percentage(self, stats):

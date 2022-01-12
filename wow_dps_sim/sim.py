@@ -22,10 +22,14 @@ def do_sim(expansion, player):
             return f
 
         result_list = []
-        for run_nr in range(sim_config.N_RUNS):
+        random.seed(42)
+        fight_durations = [
+            sample_fight_duration(sim_config.FIGHT_DURATION_SECONDS_MU, sim_config.FIGHT_DURATION_SECONDS_SIGMA)
+            for _ in range(sim_config.N_RUNS)
+        ]
+        for run_nr, fight_duration in enumerate(fight_durations):
             # Call copy constructor to start with a fresh state
             player = Player.from_player(player)
-            fight_duration = sample_fight_duration(sim_config.FIGHT_DURATION_SECONDS_MU, sim_config.FIGHT_DURATION_SECONDS_SIGMA)
             with Sim(expansion, player, fight_duration, logging=sim_config.LOGGING, run_nr=run_nr) as sim:
                 while sim.current_time_seconds < fight_duration:
                     event = sim.get_next_event()
@@ -38,12 +42,4 @@ def do_sim(expansion, player):
 
         return Result.get_merged_result(result_list)
 
-    result_baseline = do_n_runs(expansion, player)
-    stat_weights = dict()
-    # for stat, increase in config.STAT_INCREASE_TUPLES:
-    #     stats_copy = copy.copy(partial_buffed_permanent_stats)
-    #     stats_copy[stat] += increase
-    #     result = do_n_runs(faction, race, class_, spec, items, stats_copy, boss, config)
-    #     stat_weights[stat] = (result.dps - result_baseline.dps) / increase
-
-    return result_baseline, stat_weights
+    return do_n_runs(expansion, player)

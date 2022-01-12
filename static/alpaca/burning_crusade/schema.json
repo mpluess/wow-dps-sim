@@ -201,6 +201,16 @@
             "type": "string",
             "title": "Haste Rating from sockets",
             "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_exp_rating": {
+            "type": "string",
+            "title": "Expertise Rating from sockets",
+            "description": "Including socket bonuses and meta gem"
+        },
+        "sockets_arp": {
+            "type": "string",
+            "title": "Armor Penetration from sockets",
+            "description": "Including socket bonuses and meta gem"
         }
     },
 

@@ -16,6 +16,7 @@ class ScraperConfig(wow_dps_sim.expansion.scraper_config.ScraperConfig):
 
     proc_mapping = {
         'Hourglass of the Unraveller': Proc.HOURGLASS_OF_THE_UNRAVELLER,
+        'Dragonspine Trophy': Proc.DRAGONSPINE_TROPHY,
     }
 
     weapon_proc_mapping = {

@@ -26,6 +26,7 @@ class Constants:
         # BC
         Ability.ANGER_MANAGEMENT: 'Anger Management',
         Ability.BLOODLUST_BROOCH: 'Bloodlust Brooch',
+        Ability.DRAGONSPINE_TROPHY: 'Dragonspine Trophy',
         Ability.DRUMS_OF_BATTLE: 'Drums of Battle',
         Ability.DRUMS_OF_WAR: 'Drums of War',
         Ability.HASTE_POTION: 'Haste Potion',
