@@ -79,8 +79,33 @@ def sim():
         expansion=expansion, socket_stats=socket_stats
     )
     result = do_sim(expansion, player)
+    results = {'baseline': (result, 0)}
+    for k, stats_added in [
+        ('str', 20),
+        ('crit_rating', 20),
+        ('hit_rating', 20),
+        ('haste_rating', 20),
+        ('exp_rating', 20),
+        ('arp', 120),
+    ]:
+        socket_stats_copy = socket_stats.copy()
+        socket_stats_copy[k] += stats_added
+        player = Player(
+            faction, race, class_, spec, items, items_execute, meta_socket_active,
+            expansion=expansion, socket_stats=socket_stats_copy
+        )
+        result = do_sim(expansion, player)
+        results[k] = (result, stats_added)
 
-    return str(result)
+    result_strings = []
+    for k, (result, stats_added) in results.items():
+        if k == 'baseline':
+            result_string = f'{k}\n{str(result)}'
+        else:
+            result_string = f"{k}\nstat_weight={(result.dps - results['baseline'][0].dps) / stats_added:.3f} DPS\n{str(result)}"
+        result_strings.append(result_string)
+    results_string = '\n\n\n'.join(result_strings)
+    return htmlize(results_string)
 
 
 def _fetch_items(scraper, request_data, execute=False):
@@ -114,3 +139,7 @@ def _fetch_socket_stats(request_data):
             meta_socket_active = form_value
 
     return stats, meta_socket_active
+
+
+def htmlize(text: str):
+    return text.replace('\n', '<br />\n')

@@ -407,7 +407,7 @@ class Sim:
         def apply_flurry_to_event(event):
             if not event.has_flurry:
                 event_str_before = str(event)
-                event.time = self.current_time_seconds + (event.time - self.current_time_seconds) * self.knowledge.FLURRY_FACTOR
+                event.time = self.current_time_seconds + (event.time - self.current_time_seconds) / self.knowledge.FLURRY_FACTOR
                 event.has_flurry = True
                 self.log(f'{self._log_entry_beginning()} Applying flurry, before={{{event_str_before}}}, after={{{event}}}\n')
 

@@ -19,13 +19,19 @@ class Calcs:
 
         self.sim_state = sim_state
 
+    # TODO Not sure if this is correct for Vanilla
+    # https://wowpedia.fandom.com/wiki/Haste
+    # https://us.forums.blizzard.com/en/wow/t/haste-calculation-question/1159479
+    # https://tbc.wowhead.com/item=32837/warglaive-of-azzinoth#comments
     def current_speed(self, hand):
         assert isinstance(hand, Hand)
         current_stats = self.current_stats()
         return (
             current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]
-            * (1 - current_stats['haste']/100)
-            * current_stats['speed_multiplier']
+            / (
+                (1 + current_stats['haste']/100)
+                * current_stats['speed_multiplier']
+            )
         )
 
     def current_stats(self, extra_flat_stats=None):
@@ -124,7 +130,8 @@ class Calcs:
         current_stats = self.current_stats(extra_flat_stats)
         base_damage = self._calc_weapon_damage(
             current_stats[('damage_range_off_hand' if hand == Hand.OFF else 'damage_range_main_hand')],
-            current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')]
+            current_stats[('speed_off_hand' if hand == Hand.OFF else 'speed_main_hand')],
+            current_stats=current_stats
         )
 
         return self._calc_attack_result_damage_rage(base_damage, AttackType.WHITE, hand)
@@ -261,11 +268,12 @@ class Calcs:
     def _unbridled_wrath(self, hand):
         return 1 if random.random() < 0.4 else 0
 
-    def _calc_weapon_damage(self, base_damage_range, speed):
+    def _calc_weapon_damage(self, base_damage_range, speed, current_stats=None):
         base_weapon_min, base_weapon_max = base_damage_range
         base_weapon_damage = random.randint(base_weapon_min, base_weapon_max)
 
-        current_stats = self.current_stats()
+        if current_stats is None:
+            current_stats = self.current_stats()
         weapon_damage = base_weapon_damage + round(current_stats['ap'] / 14 * speed)
 
         return weapon_damage
