@@ -92,11 +92,17 @@ procs, on use, socket_stats, enchants of execute set during execute phase
 match gear planner / ingame stats:
 - scrape from gear planner
 - fix stat difference
+  - check if crit rating matches
+  - -1 stat tavernoftime bug is probably part of it
+
+actual crit chance vs. bosses
+glancing chance = 24 %, damage = 75 %? (grox sim)
 
 17/44 vs. 21/40 vs. kebab
 (switch to select spec)
 cooldown timing?
 
-armor debuffs (iea, cor)
-
+iea
 set boni
+
+speed up sim

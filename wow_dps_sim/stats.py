@@ -123,7 +123,10 @@ class Stats:
 
         if faction in self.buff_config.PERMANENT_BUFF_MULTIPLIERS:
             for stat in self.buff_config.PERMANENT_BUFF_MULTIPLIERS[faction].keys():
-                stats[stat] = round(stats[stat] * self.buff_config.PERMANENT_BUFF_MULTIPLIERS[faction][stat])
+                if type(stats[stat]) == int:
+                    stats[stat] = round(stats[stat] * self.buff_config.PERMANENT_BUFF_MULTIPLIERS[faction][stat])
+                else:
+                    stats[stat] = stats[stat] * self.buff_config.PERMANENT_BUFF_MULTIPLIERS[faction][stat]
         else:
             raise NotImplementedError(f'Buffs for faction {faction} not implemented')
 

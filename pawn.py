@@ -1,29 +1,30 @@
-AP = 0.283
-STR = 0.623
-CRIT = 0.693
-AGI = 0.508
-HIT = 0.607
-HASTE = 0.733
-EXP = 0.866
-ARP = 0.101
+STR = 1.02
+HIT = 0.726
+CRIT = 0.99
+HASTE = 0.983
+EXP = 1.404
+ARP = 0.206
 
-item_ap = 0
-item_str = 47
-item_crit = 0
+AGI = CRIT * 0.7333
+AP = STR / 2.2
+
+item_str = 0
 item_agi = 0
-item_hit = 19
-item_haste = 35
+item_hit = 0
+item_crit = 20
+item_haste = 0
 item_exp = 0
-item_arp = 0
+item_ap = 46
+item_arp = 112
 
 pawn = (
-    item_ap*AP
-    + item_str*STR
-    + item_crit*CRIT
+    item_str*STR
     + item_agi*AGI
     + item_hit*HIT
+    + item_crit*CRIT
     + item_haste*HASTE
     + item_exp*EXP
+    + item_ap*AP
     + item_arp*ARP
 )
 print(f'{pawn:.2f}')
